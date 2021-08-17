@@ -280,9 +280,12 @@ function calculateDamage(
     ? defenseProfile.defenseDice - weapon.ap
     : defenseProfile.defenseDice;
 
-  const adjustedWeaponSkill = weapon.weaponSkillAdjustment
-    ? weaponSkill + weapon.weaponSkillAdjustment
-    : weaponSkill;
+  const adjustedWeaponSkill = Math.max(
+    2,
+    weapon.weaponSkillAdjustment
+      ? weaponSkill + weapon.weaponSkillAdjustment
+      : weaponSkill
+  );
 
   let expectedHits =
     chanceOfSuccess(adjustedWeaponSkill, weapon.weaponSkillCritical) *
@@ -375,7 +378,14 @@ function App() {
                   <TableCell>{weapon.name}</TableCell>
                   <TableCell>{weapon.profile}</TableCell>
                   <TableCell>{weapon.attackDice}</TableCell>
-                  <TableCell>{deathWatchVeteranSkill}</TableCell>
+                  <TableCell>
+                    {Math.max(
+                      2,
+                      weapon.weaponSkillAdjustment
+                        ? deathWatchVeteranSkill + weapon.weaponSkillAdjustment
+                        : deathWatchVeteranSkill
+                    )}
+                  </TableCell>
                   <TableCell>
                     {weapon.damage}/{weapon.damageCritical}
                   </TableCell>
