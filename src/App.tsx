@@ -11,6 +11,14 @@ import {
   Typography,
 } from "@material-ui/core";
 
+interface Rule {
+  label: string;
+  amount?: number;
+}
+interface Rules {
+  [x: string]: Rule;
+}
+
 const specialRules: Rules = {
   NO_COVER: {
     label: "No Cover",
@@ -64,14 +72,6 @@ const specialRules: Rules = {
     label: "Limited",
   },
 };
-
-interface Rule {
-  label: string;
-  amount?: number;
-}
-interface Rules {
-  [x: string]: Rule;
-}
 
 const criticalRules: Rules = {
   RENDING: {
