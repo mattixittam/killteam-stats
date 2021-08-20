@@ -99,7 +99,7 @@ function generateWeaponRow(
   }
 
   return (
-    <TableRow>
+    <TableRow key={weapon.name + weapon.profile}>
       <TableCell style={styles}>{isProfile ? '' : weapon.name}</TableCell>
       <TableCell style={styles}>{weapon.profile}</TableCell>
       <TableCell style={styles}>{weapon.attackDice}</TableCell>
@@ -113,15 +113,15 @@ function generateWeaponRow(
       <TableCell style={styles}>{weapon.criticalRules.map((rule) => rule.label).join(', ')}</TableCell>
       <TableCell style={styles}>
         <strong>{geqDamage.total}</strong>
-        (hit: {geqDamage.hit}, crit: {geqDamage.crit}, mw: {geqDamage.mw}, data: {JSON.stringify(geqDamage.data)})
+        {/* (hit: {geqDamage.hit}, crit: {geqDamage.crit}, mw: {geqDamage.mw}, data: {JSON.stringify(geqDamage.data)}) */}
       </TableCell>
       <TableCell style={styles}>
         <strong>{meqDamage.total}</strong>
-        (hit: {meqDamage.hit}, crit: {meqDamage.crit}, mw: {meqDamage.mw})
+        {/* (hit: {meqDamage.hit}, crit: {meqDamage.crit}, mw: {meqDamage.mw}) */}
       </TableCell>
       <TableCell style={styles}>
         <strong>{custodesDamage.total}</strong>
-        (hit: {custodesDamage.hit}, crit: {custodesDamage.crit}, mw: {custodesDamage.mw})
+        {/* (hit: {custodesDamage.hit}, crit: {custodesDamage.crit}, mw: {custodesDamage.mw}) */}
       </TableCell>
     </TableRow>
   )
@@ -139,7 +139,7 @@ function generateStatBlock(name: string, weaponSkill: number, weapons: Weapon[])
   }
 
   return (
-    <TableContainer component={Paper} style={{ margin: '20px' }}>
+    <TableContainer component={Paper} style={{ margin: '20px' }} key={name}>
       <Table size="small">
         <TableHead>
           <TableRow style={{ backgroundColor: 'rgba(1,1,1,0.3)' }}>
