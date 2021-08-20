@@ -1,4 +1,4 @@
-import "./App.css";
+import './App.css'
 import {
   Paper,
   TableContainer,
@@ -9,37 +9,73 @@ import {
   Grid,
   TableHead,
   Typography,
-} from "@material-ui/core";
-import { Weapon } from "./stats/weapons";
-import { dataSheetsDW } from "./stats/factions/deathwatch";
-import { dataSheetsCSM } from "./stats/factions/chaos";
-import { calculateDamage } from "./calculation";
+} from '@material-ui/core'
+import { Weapon } from './stats/weapons'
+import { dataSheetsDW } from './stats/factions/deathwatch'
+import { dataSheetsCSM } from './stats/factions/chaos'
+import { calculateDamage } from './calculation'
+import { specialRules } from './rules'
 
-const dataSheets = [...dataSheetsDW, ...dataSheetsCSM];
+const dataSheets = [...dataSheetsDW, ...dataSheetsCSM]
 
 export interface Defenseprofile {
-  defenseDice: number;
-  save: number;
-  saveCritical: number;
+  defenseDice: number
+  save: number
+  saveCritical: number
+  weaponSkill: number
+  meleeWeapon: Weapon
 }
 
 const custodesProfile: Defenseprofile = {
   defenseDice: 3,
   save: 2,
   saveCritical: 6,
-};
+  weaponSkill: 2,
+  meleeWeapon: {
+    name: 'Guardian spear',
+    profile: '',
+    attackDice: 5,
+    damage: 5,
+    damageCritical: 7,
+    specialRules: [specialRules.LETHAL5],
+    criticalRules: [],
+    type: 'MELEE',
+  },
+}
 
 export const meqProfile: Defenseprofile = {
   defenseDice: 3,
   save: 3,
   saveCritical: 6,
-};
+  weaponSkill: 3,
+  meleeWeapon: {
+    name: 'Power weapon',
+    profile: '',
+    attackDice: 5,
+    damage: 4,
+    damageCritical: 6,
+    specialRules: [specialRules.LETHAL5],
+    criticalRules: [],
+    type: 'MELEE',
+  },
+}
 
 const geqProfile: Defenseprofile = {
   defenseDice: 3,
   save: 4,
   saveCritical: 6,
-};
+  weaponSkill: 4,
+  meleeWeapon: {
+    name: 'Fists',
+    profile: '',
+    attackDice: 4,
+    damage: 3,
+    damageCritical: 4,
+    specialRules: [],
+    criticalRules: [],
+    type: 'MELEE',
+  },
+}
 
 function generateWeaponRow(
   weapon: Weapon,
@@ -47,79 +83,66 @@ function generateWeaponRow(
   {
     isProfile,
     nextIsProfile,
-    backgroundColor = "transparent",
+    backgroundColor = 'transparent',
   }: { isProfile: boolean; nextIsProfile: boolean; backgroundColor: string }
 ) {
-  const geqDamage = calculateDamage(weapon, weaponSkill, geqProfile);
-  const meqDamage = calculateDamage(weapon, weaponSkill, meqProfile);
-  const custodesDamage = calculateDamage(weapon, weaponSkill, custodesProfile);
+  const geqDamage = calculateDamage(weapon, weaponSkill, geqProfile)
+  const meqDamage = calculateDamage(weapon, weaponSkill, meqProfile)
+  const custodesDamage = calculateDamage(weapon, weaponSkill, custodesProfile)
 
   const styles: { backgroundColor: string; borderBottomWidth?: number } = {
     backgroundColor,
-  };
+  }
 
   if (nextIsProfile) {
-    styles.borderBottomWidth = 0;
+    styles.borderBottomWidth = 0
   }
 
   return (
     <TableRow>
-      <TableCell style={styles}>{isProfile ? "" : weapon.name}</TableCell>
+      <TableCell style={styles}>{isProfile ? '' : weapon.name}</TableCell>
       <TableCell style={styles}>{weapon.profile}</TableCell>
       <TableCell style={styles}>{weapon.attackDice}</TableCell>
       <TableCell style={styles}>
-        {Math.max(
-          2,
-          weapon.weaponSkillAdjustment
-            ? weaponSkill + weapon.weaponSkillAdjustment
-            : weaponSkill
-        )}
+        {Math.max(2, weapon.weaponSkillAdjustment ? weaponSkill + weapon.weaponSkillAdjustment : weaponSkill)}
       </TableCell>
       <TableCell style={styles}>
         {weapon.damage}/{weapon.damageCritical}
       </TableCell>
-      <TableCell style={styles}>
-        {weapon.specialRules.map((rule) => rule.label).join(", ")}
-      </TableCell>
-      <TableCell style={styles}>
-        {weapon.criticalRules.map((rule) => rule.label).join(", ")}
-      </TableCell>
+      <TableCell style={styles}>{weapon.specialRules.map((rule) => rule.label).join(', ')}</TableCell>
+      <TableCell style={styles}>{weapon.criticalRules.map((rule) => rule.label).join(', ')}</TableCell>
       <TableCell style={styles}>
         <strong>{geqDamage.total}</strong>
-        {/* (hit: {geqDamage.hit}, crit: {geqDamage.crit}, mw: {geqDamage.mw}) */}
+        (hit: {geqDamage.hit}, crit: {geqDamage.crit}, mw: {geqDamage.mw}, data: {JSON.stringify(geqDamage.data)})
       </TableCell>
       <TableCell style={styles}>
         <strong>{meqDamage.total}</strong>
-        {/* (hit: {meqDamage.hit}, crit: {meqDamage.crit}, mw: {meqDamage.mw}) */}
+        (hit: {meqDamage.hit}, crit: {meqDamage.crit}, mw: {meqDamage.mw})
       </TableCell>
       <TableCell style={styles}>
         <strong>{custodesDamage.total}</strong>
-        {/* (hit: {custodesDamage.hit}, crit: {custodesDamage.crit}, mw: {custodesDamage.mw}) */}
+        (hit: {custodesDamage.hit}, crit: {custodesDamage.crit}, mw: {custodesDamage.mw})
       </TableCell>
     </TableRow>
-  );
+  )
 }
 
-function generateStatBlock(
-  name: string,
-  weaponSkill: number,
-  weapons: Weapon[]
-) {
-  let rowColor = "rgba(1,1,1,0.1)";
+function generateStatBlock(name: string, weaponSkill: number, weapons: Weapon[]) {
+  let rowColor = 'rgba(1,1,1,0.1)'
 
   function switchRowColor() {
-    if (rowColor === "rgba(1,1,1,0.1)") {
-      rowColor = "transparent";
+    if (rowColor === 'rgba(1,1,1,0.1)') {
+      rowColor = 'transparent'
     } else {
-      rowColor = "rgba(1,1,1,0.1)";
+      rowColor = 'rgba(1,1,1,0.1)'
     }
   }
 
   return (
-    <TableContainer component={Paper} style={{ margin: "20px" }}>
+    <TableContainer component={Paper} style={{ margin: '20px' }}>
       <Table size="small">
         <TableHead>
-          <TableRow style={{ backgroundColor: "rgba(1,1,1,0.3)" }}>
+          <TableRow style={{ backgroundColor: 'rgba(1,1,1,0.3)' }}>
             <TableCell colSpan={10}>
               <Typography variant="h5" fontWeight="700">
                 {name}
@@ -141,37 +164,34 @@ function generateStatBlock(
         </TableHead>
         <TableBody>
           {weapons.map((weapon, index) => {
-            const sameNameAsPrevious =
-              index === 0 ? false : weapon.name === weapons[index - 1]?.name;
+            const sameNameAsPrevious = index === 0 ? false : weapon.name === weapons[index - 1]?.name
 
-            const sameNameAsNext = weapon.name === weapons[index + 1]?.name;
+            const sameNameAsNext = weapon.name === weapons[index + 1]?.name
 
             if (!sameNameAsPrevious) {
-              switchRowColor();
+              switchRowColor()
             }
 
             return generateWeaponRow(weapon, weaponSkill, {
               isProfile: sameNameAsPrevious,
               nextIsProfile: sameNameAsNext,
               backgroundColor: rowColor,
-            });
+            })
           })}
         </TableBody>
       </Table>
     </TableContainer>
-  );
+  )
 }
 
 function App() {
   return (
     <Grid container spacing={4}>
       <Grid item>
-        {dataSheets.map((profile) =>
-          generateStatBlock(profile.name, profile.weaponSkill, profile.weapons)
-        )}
+        {dataSheets.map((profile) => generateStatBlock(profile.name, profile.weaponSkill, profile.weapons))}
       </Grid>
     </Grid>
-  );
+  )
 }
 
-export default App;
+export default App
