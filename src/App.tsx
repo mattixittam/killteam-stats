@@ -77,6 +77,43 @@ const geqProfile: Defenseprofile = {
   },
 }
 
+export interface DamageMelee {
+  type: 'melee'
+  total: {
+    maximumDamage: {
+      done: number
+      taken: number
+    }
+    maximumParry: {
+      done: number
+      taken: number
+    }
+  }
+}
+
+export interface DamageRanged {
+  type: 'ranged'
+  total: number
+  hit: number
+  crit: number
+  mw?: number
+}
+
+type Damage = DamageMelee | DamageRanged
+
+function formatMeleeDamage(damage: DamageMelee) {
+  const d = damage.total
+  return (
+    <>
+      <span>
+        {d.maximumParry.done}-{d.maximumDamage.done} done,
+        <br />
+        {d.maximumParry.taken}-{d.maximumDamage.taken} taken
+      </span>
+    </>
+  )
+}
+
 function generateWeaponRow(
   weapon: Weapon,
   weaponSkill: number,
@@ -86,7 +123,7 @@ function generateWeaponRow(
     backgroundColor = 'transparent',
   }: { isProfile: boolean; nextIsProfile: boolean; backgroundColor: string }
 ) {
-  const geqDamage = calculateDamage(weapon, weaponSkill, geqProfile)
+  const geqDamage: Damage = calculateDamage(weapon, weaponSkill, geqProfile)
   const meqDamage = calculateDamage(weapon, weaponSkill, meqProfile)
   const custodesDamage = calculateDamage(weapon, weaponSkill, custodesProfile)
 
@@ -112,15 +149,15 @@ function generateWeaponRow(
       <TableCell style={styles}>{weapon.specialRules.map((rule) => rule.label).join(', ')}</TableCell>
       <TableCell style={styles}>{weapon.criticalRules.map((rule) => rule.label).join(', ')}</TableCell>
       <TableCell style={styles}>
-        <strong>{geqDamage.total}</strong>
+        <strong>{geqDamage.type === 'melee' ? formatMeleeDamage(geqDamage) : geqDamage.total}</strong>
         {/* (hit: {geqDamage.hit}, crit: {geqDamage.crit}, mw: {geqDamage.mw}, data: {JSON.stringify(geqDamage.data)}) */}
       </TableCell>
       <TableCell style={styles}>
-        <strong>{meqDamage.total}</strong>
+        <strong>{meqDamage.type === 'melee' ? formatMeleeDamage(meqDamage) : meqDamage.total}</strong>
         {/* (hit: {meqDamage.hit}, crit: {meqDamage.crit}, mw: {meqDamage.mw}) */}
       </TableCell>
       <TableCell style={styles}>
-        <strong>{custodesDamage.total}</strong>
+        <strong>{custodesDamage.type === 'melee' ? formatMeleeDamage(custodesDamage) : custodesDamage.total}</strong>
         {/* (hit: {custodesDamage.hit}, crit: {custodesDamage.crit}, mw: {custodesDamage.mw}) */}
       </TableCell>
     </TableRow>

@@ -19,6 +19,8 @@ export const deathwatchVeteranFighter = {
     ...getProfiles('Hand flamer'),
     ...getProfiles('Inferno pistol'),
     ...getProfiles('Plasma pistol'),
+    ...getProfiles('Heavy thunder hammer'),
+    ...getProfiles('Power fist'),
     ...getProfiles('Power weapon'),
   ],
 }

@@ -14,6 +14,28 @@ export interface Weapon {
 
 export const weapons: Weapon[] = [
   {
+    name: 'Heavy thunder hammer',
+    profile: '',
+    attackDice: 5,
+    weaponSkillAdjustment: 1,
+    damage: 6,
+    damageCritical: 8,
+    specialRules: [],
+    criticalRules: [criticalRules.STUN],
+    type: 'MELEE',
+  },
+  {
+    name: 'Power fist',
+    profile: '',
+    attackDice: 5,
+    weaponSkillAdjustment: 1,
+    damage: 5,
+    damageCritical: 7,
+    specialRules: [specialRules.BRUTAL],
+    criticalRules: [],
+    type: 'MELEE',
+  },
+  {
     name: 'Power weapon',
     profile: '',
     attackDice: 5,
