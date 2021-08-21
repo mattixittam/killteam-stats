@@ -234,9 +234,9 @@ function generateStatBlock({ name, weaponSkill, ballisticSkill, weapons }: DataS
               <TableCell>D</TableCell>
               <TableCell>SR</TableCell>
               <TableCell>!</TableCell>
-              <TableCell>Dmg vs GEQ</TableCell>
-              <TableCell>Dmg vs MEQ</TableCell>
-              <TableCell>Dmg vs Custodes</TableCell>
+              <TableCell>Avg Dmg vs GEQ</TableCell>
+              <TableCell>Avg Dmg vs MEQ</TableCell>
+              <TableCell>Avg Dmg vs Custodes</TableCell>
             </TableRow>
           )}
         </TableHead>
@@ -271,15 +271,16 @@ function generateStatBlock({ name, weaponSkill, ballisticSkill, weapons }: DataS
               <TableCell>SR</TableCell>
               <TableCell>!</TableCell>
               <TableCell>
-                GEQ w/ Fists (<span style={{ color: 'green' }}>done</span> <span style={{ color: 'red' }}>taken</span>)
+                Avg Dmg vs GEQ w/ Fists
+                <br />(<span style={{ color: 'green' }}>done</span> <span style={{ color: 'red' }}>taken</span>)
               </TableCell>
               <TableCell>
-                MEQ w/ Power Weapon (<span style={{ color: 'green' }}>done</span>{' '}
-                <span style={{ color: 'red' }}>taken</span>)
+                Avg Dmg vs MEQ w/ Power Weapon
+                <br /> (<span style={{ color: 'green' }}>done</span> <span style={{ color: 'red' }}>taken</span>)
               </TableCell>
               <TableCell>
-                CEQ w/ Guardian Spear (<span style={{ color: 'green' }}>done</span>{' '}
-                <span style={{ color: 'red' }}>taken</span>)
+                Avg Dmg vs CEQ w/ Guardian Spear
+                <br /> (<span style={{ color: 'green' }}>done</span> <span style={{ color: 'red' }}>taken</span>)
               </TableCell>
             </TableRow>
           </TableHead>
