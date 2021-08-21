@@ -25,6 +25,16 @@ export const chaosSmHeavyGunner = {
   weaponSkill: 3,
   weapons: [...getProfiles('Heavy Bolter (CSM)'), ...getProfiles('Missile Launcher'), ...getProfiles('Fists')],
 }
+export const chaosSmIconBearer = {
+  name: 'CHAOS SPACE MARINE (ICON BEARER)',
+  weaponSkill: 3,
+  weapons: [
+    ...getProfiles('Boltgun (CSM)'),
+    ...getProfiles('Bolt Pistol (CSM)'),
+    ...getProfiles('Chainsword'),
+    ...getProfiles('Fists'),
+  ],
+}
 export const chaosSmAspiringChampion = {
   name: 'CHAOS SPACE MARINE ASPIRING CHAMPION',
   weaponSkill: 2,
