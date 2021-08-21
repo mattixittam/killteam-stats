@@ -8,7 +8,7 @@ function oneDiceChanceOfSuccess(successFrom: number, critFrom: number = 6) {
   return chanceOfSuccess - chanceOfCrit
 }
 
-function onsDiceChanceOfMiss(successFrom: number) {
+function oneDiceChanceOfMiss(successFrom: number) {
   return (successFrom - 1) * (1 / 6)
 }
 
@@ -28,24 +28,24 @@ export function calculateDamage(weapon: Weapon, weaponSkill: number, defenseProf
   return calculateDamageMelee(weapon, weaponSkill, defenseProfile)
 }
 
-function calculateDamageRanged(weapon: Weapon, weaponSkill: number, defenseProfile: Defenseprofile): DamageRanged {
+function calculateDamageRanged(weapon: Weapon, ballisticSkill: number, defenseProfile: Defenseprofile): DamageRanged {
   let rolledDefenseDice = defenseProfile.defenseDice
 
-  let weaponSkillCritical = 6
+  let ballisticSkillCritical = 6
 
   // LETHAL 5+
   if (weapon.specialRules.includes(specialRules.LETHAL5)) {
-    weaponSkillCritical = Math.max(5, weaponSkill)
+    ballisticSkillCritical = Math.max(5, ballisticSkill)
   }
 
   // LETHAL 4+
   if (weapon.specialRules.includes(specialRules.LETHAL4)) {
-    weaponSkillCritical = Math.max(4, weaponSkill)
+    ballisticSkillCritical = Math.max(4, ballisticSkill)
   }
 
   // GRAV
   if (weapon.specialRules.includes(specialRules.GRAV) && defenseProfile.save <= 3) {
-    weaponSkillCritical = Math.max(4, weaponSkill)
+    ballisticSkillCritical = Math.max(4, ballisticSkill)
   }
 
   // AP1
@@ -58,14 +58,20 @@ function calculateDamageRanged(weapon: Weapon, weaponSkill: number, defenseProfi
     rolledDefenseDice -= 2
   }
 
-  const adjustedWeaponSkill = Math.max(
+  const adjustedballisticSkill = Math.max(
     2,
-    weapon.weaponSkillAdjustment ? weaponSkill + weapon.weaponSkillAdjustment : weaponSkill
+    weapon.weaponBallisticSkillAdjustment ? ballisticSkill + weapon.weaponBallisticSkillAdjustment : ballisticSkill
   )
 
-  let expectedHits = oneDiceChanceOfSuccess(adjustedWeaponSkill, weaponSkillCritical) * weapon.attackDice
+  let expectedHits = oneDiceChanceOfSuccess(adjustedballisticSkill, ballisticSkillCritical) * weapon.attackDice
+  let expectedCriticalHits = oneDiceChanceOfCrit(ballisticSkillCritical) * weapon.attackDice
 
-  let expectedCriticalHits = oneDiceChanceOfCrit(weaponSkillCritical) * weapon.attackDice
+  // BALANCED
+  if (weapon.specialRules.includes(specialRules.BALANCED)) {
+    const chanceOfMiss = Math.min(1, oneDiceChanceOfMiss(adjustedballisticSkill) * weapon.attackDice)
+    expectedHits += oneDiceChanceOfSuccess(adjustedballisticSkill, ballisticSkillCritical) * chanceOfMiss
+    expectedCriticalHits += oneDiceChanceOfCrit(ballisticSkillCritical) * chanceOfMiss
+  }
 
   const chanceOfAtLeastOneCrit = Math.min(expectedCriticalHits, 1)
 
@@ -99,16 +105,16 @@ function calculateDamageRanged(weapon: Weapon, weaponSkill: number, defenseProfi
   if (weapon.specialRules.includes(specialRules.CEASELESS)) {
     const expectedNaturalOnes = (1 / 6) * weapon.attackDice
 
-    expectedHits += expectedNaturalOnes * oneDiceChanceOfSuccess(weaponSkill, weaponSkillCritical)
-    expectedCriticalHits += expectedNaturalOnes * oneDiceChanceOfCrit(weaponSkillCritical)
+    expectedHits += expectedNaturalOnes * oneDiceChanceOfSuccess(ballisticSkill, ballisticSkillCritical)
+    expectedCriticalHits += expectedNaturalOnes * oneDiceChanceOfCrit(ballisticSkillCritical)
   }
 
   // RELENTLESS
   if (weapon.specialRules.includes(specialRules.RELENTLESS)) {
-    const expectedMisses = onsDiceChanceOfMiss(weaponSkill) * weapon.attackDice
+    const expectedMisses = oneDiceChanceOfMiss(ballisticSkill) * weapon.attackDice
 
-    expectedHits += expectedMisses * oneDiceChanceOfSuccess(weaponSkill, weaponSkillCritical)
-    expectedCriticalHits += expectedMisses * oneDiceChanceOfCrit(weaponSkillCritical)
+    expectedHits += expectedMisses * oneDiceChanceOfSuccess(ballisticSkill, ballisticSkillCritical)
+    expectedCriticalHits += expectedMisses * oneDiceChanceOfCrit(ballisticSkillCritical)
   }
 
   const expectedHitDamage = Math.max(0, expectedHits - expectedSaves) * weapon.damage
@@ -117,6 +123,10 @@ function calculateDamageRanged(weapon: Weapon, weaponSkill: number, defenseProfi
 
   // MWx
   let mw = 0
+
+  if (weapon.criticalRules.includes(criticalRules.MW2)) {
+    mw = 2
+  }
 
   if (weapon.criticalRules.includes(criticalRules.MW3)) {
     mw = 3
@@ -129,7 +139,7 @@ function calculateDamageRanged(weapon: Weapon, weaponSkill: number, defenseProfi
   const expectedMortalWounds = expectedCriticalHits * mw
 
   // const rendingDamage = weapon.criticalRules.includes(criticalRules.RENDING)
-  //   ? calculateRendingDamage(weapon, weaponSkill) -
+  //   ? calculateRendingDamage(weapon, ballisticSkill) -
   //     chanceOfCrit(defenseProfile.saveCritical) * defenseProfile.defenseDice *
   //   : 0;
   const expectedTotalDamage = expectedHitDamage + expectedCritDamage + expectedMortalWounds
@@ -162,7 +172,7 @@ function calculateDamageMelee(weapon: Weapon, weaponSkill: number, defenseProfil
 
   const adjustedWeaponSkill = Math.max(
     2,
-    weapon.weaponSkillAdjustment ? weaponSkill + weapon.weaponSkillAdjustment : weaponSkill
+    weapon.weaponBallisticSkillAdjustment ? weaponSkill + weapon.weaponBallisticSkillAdjustment : weaponSkill
   )
 
   const expectedHitsPerDie = oneDiceChanceOfSuccess(adjustedWeaponSkill, weaponSkillCritical)
@@ -185,8 +195,8 @@ function calculateDamageMelee(weapon: Weapon, weaponSkill: number, defenseProfil
 
   const defenseAdjustedWeaponSkill = Math.max(
     2,
-    defenseProfile.meleeWeapon.weaponSkillAdjustment
-      ? defenseProfile.weaponSkill + defenseProfile.meleeWeapon.weaponSkillAdjustment
+    defenseProfile.meleeWeapon.weaponBallisticSkillAdjustment
+      ? defenseProfile.weaponSkill + defenseProfile.meleeWeapon.weaponBallisticSkillAdjustment
       : defenseProfile.weaponSkill
   )
 
@@ -231,8 +241,17 @@ function calculateDamageMelee(weapon: Weapon, weaponSkill: number, defenseProfil
   }
 
   function maxDamage() {
-    const damageDone1 =
-      (expectedHitsPerDie * weapon.damage + expectedCriticalHitsPerDie * weapon.damageCritical) * weapon.attackDice
+    let expectedHits = expectedHitsPerDie * weapon.attackDice
+    let expectedCrits = expectedCriticalHitsPerDie * weapon.attackDice
+
+    // BALANCED
+    if (weapon.specialRules.includes(specialRules.BALANCED)) {
+      const chanceOfMiss = Math.min(1, oneDiceChanceOfMiss(adjustedWeaponSkill) * weapon.attackDice)
+      expectedHits += oneDiceChanceOfSuccess(adjustedWeaponSkill, weaponSkillCritical) * chanceOfMiss
+      expectedCrits += oneDiceChanceOfCrit(weaponSkillCritical) * chanceOfMiss
+    }
+
+    const damageDone1 = expectedHits * weapon.damage + expectedCrits * weapon.damageCritical
 
     const expectedCriticalhits = Math.min(1, expectedCriticalHitsPerDie * weapon.attackDice)
 
@@ -252,17 +271,24 @@ function calculateDamageMelee(weapon: Weapon, weaponSkill: number, defenseProfil
   }
 
   function minDamageTakenDef() {
+    let expectedHits = expectedHitsPerDie * weapon.attackDice
+    let expectedCrits = expectedCriticalHitsPerDie * weapon.attackDice
+
+    // BALANCED
+    if (weapon.specialRules.includes(specialRules.BALANCED)) {
+      const chanceOfMiss = Math.min(1, oneDiceChanceOfMiss(adjustedWeaponSkill) * weapon.attackDice)
+      expectedHits += oneDiceChanceOfSuccess(adjustedWeaponSkill, weaponSkillCritical) * chanceOfMiss
+      expectedCrits += oneDiceChanceOfCrit(weaponSkillCritical) * chanceOfMiss
+    }
+
     // First unchallenged hit
-    const expectedCriticalFirstHits = Math.min(1, expectedCriticalHitsPerDie * weapon.attackDice)
-    const expectedNormalFirstHits = Math.min(
-      Math.max(0, 1 - expectedCriticalFirstHits),
-      expectedHitsPerDie * weapon.attackDice
-    )
+    const expectedCriticalFirstHits = Math.min(1, expectedCrits)
+    const expectedNormalFirstHits = Math.min(Math.max(0, 1 - expectedCriticalFirstHits), expectedHits)
 
     const firstHitDamage = expectedCriticalFirstHits * weapon.damageCritical + expectedNormalFirstHits * weapon.damage
 
-    const expectedHitsAfterFirst = expectedHitsPerDie * (weapon.attackDice - 1)
-    const expectedCritsAfterFirst = expectedCriticalHitsPerDie * (weapon.attackDice - 1)
+    const expectedHitsAfterFirst = expectedHits - oneDiceChanceOfSuccess(adjustedWeaponSkill, weaponSkillCritical)
+    const expectedCritsAfterFirst = expectedCrits - oneDiceChanceOfCrit(weaponSkillCritical)
     let expectedParries = defenseExpectedHitsPerDie * defenseProfile.meleeWeapon.attackDice
 
     // STUN
@@ -327,8 +353,15 @@ function calculateDamageMelee(weapon: Weapon, weaponSkill: number, defenseProfil
       defenseExpectedHitsPerDie * defenseProfile.meleeWeapon.attackDice
     )
 
-    const expectedHits = expectedHitsPerDie * (weapon.attackDice - 1)
-    const expectedCrits = expectedCriticalHitsPerDie * (weapon.attackDice - 1)
+    let expectedHits = expectedHitsPerDie * weapon.attackDice - defenseExpectedHitsPerDie
+    let expectedCrits = expectedCriticalHitsPerDie * weapon.attackDice - defenseExpectedCriticalHitsPerDie
+
+    // BALANCED
+    if (weapon.specialRules.includes(specialRules.BALANCED)) {
+      const chanceOfMiss = Math.min(1, oneDiceChanceOfMiss(adjustedWeaponSkill) * weapon.attackDice)
+      expectedHits += oneDiceChanceOfSuccess(adjustedWeaponSkill, weaponSkillCritical) * chanceOfMiss
+      expectedCrits += oneDiceChanceOfCrit(weaponSkillCritical) * chanceOfMiss
+    }
 
     const expectedParries =
       defenseExpectedHitsPerDie * defenseProfile.meleeWeapon.attackDice - expectedNormalFirstParries
@@ -386,11 +419,7 @@ function calculateDamageMelee(weapon: Weapon, weaponSkill: number, defenseProfil
     const parryDamageTaken = parriesUsedAsHits * defenseProfile.meleeWeapon.damageCritical + excessParryDamage
 
     if (weapon.criticalRules.includes(criticalRules.STUN)) {
-      console.log(weapon.name, defenseProfile.meleeWeapon.name, {
-        excessCriticalHits: +excessCriticalHits.toFixed(1),
-        excessParryDamage,
-        excessCriticalParryDamage,
-      })
+      // FIXME
     }
 
     const damageTaken3 = criticalParryDamageTaken + parryDamageTaken

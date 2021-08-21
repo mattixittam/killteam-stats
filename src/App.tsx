@@ -13,26 +13,37 @@ import {
   Box,
 } from '@material-ui/core'
 import { Weapon } from './stats/weapons'
-import { dataSheetsDW } from './stats/factions/deathwatch'
-import { dataSheetsCSM } from './stats/factions/chaos'
+import { dataSheetsDeathWatch } from './stats/factions/deathwatch'
+import { dataSheetsChaosSpaceMarines } from './stats/factions/chaos'
 import { calculateDamage } from './calculation'
 import { specialRules } from './rules'
 import React, { FunctionComponent, useState } from 'react'
+import { dataSheetsAdeptusMechanicus } from './stats/factions/adeptusMechanicus'
 
-interface Tab {
+interface FactionTab {
   name: string
   dataSheets: any[]
 }
-type Tabs = Tab[]
+interface DataSheet {
+  name: string
+  ballisticSkill: number
+  weaponSkill: number
+  weapons: Weapon[]
+}
+type FactionTabs = FactionTab[]
 
-const tabs: Tabs = [
+const tabs: FactionTabs = [
   {
     name: 'Deathwatch',
-    dataSheets: [...dataSheetsDW],
+    dataSheets: [...dataSheetsDeathWatch],
   },
   {
     name: 'Chaos Space Marines',
-    dataSheets: [...dataSheetsCSM],
+    dataSheets: [...dataSheetsChaosSpaceMarines],
+  },
+  {
+    name: 'Adeptus Mechanicus',
+    dataSheets: [...dataSheetsAdeptusMechanicus],
   },
 ]
 
@@ -166,7 +177,10 @@ function generateWeaponRow(
       <TableCell style={styles}>{weapon.profile}</TableCell>
       <TableCell style={styles}>{weapon.attackDice}</TableCell>
       <TableCell style={styles}>
-        {Math.max(2, weapon.weaponSkillAdjustment ? weaponSkill + weapon.weaponSkillAdjustment : weaponSkill)}
+        {Math.max(
+          2,
+          weapon.weaponBallisticSkillAdjustment ? weaponSkill + weapon.weaponBallisticSkillAdjustment : weaponSkill
+        )}
       </TableCell>
       <TableCell style={styles}>
         {weapon.damage}/{weapon.damageCritical}
@@ -189,7 +203,7 @@ function generateWeaponRow(
   )
 }
 
-function generateStatBlock(name: string, weaponSkill: number, weapons: Weapon[]) {
+function generateStatBlock({ name, weaponSkill, ballisticSkill, weapons }: DataSheet) {
   let rowColor = 'rgba(1,1,1,0.1)'
 
   function switchRowColor() {
@@ -211,18 +225,20 @@ function generateStatBlock(name: string, weaponSkill: number, weapons: Weapon[])
               </Typography>
             </TableCell>
           </TableRow>
-          <TableRow>
-            <TableCell>Name</TableCell>
-            <TableCell>Profile</TableCell>
-            <TableCell>A</TableCell>
-            <TableCell>BS/WS</TableCell>
-            <TableCell>D</TableCell>
-            <TableCell>SR</TableCell>
-            <TableCell>!</TableCell>
-            <TableCell>Dmg vs GEQ</TableCell>
-            <TableCell>Dmg vs MEQ</TableCell>
-            <TableCell>Dmg vs Custodes</TableCell>
-          </TableRow>
+          {weapons.filter((weapon) => weapon.type === 'RANGED').length > 0 && (
+            <TableRow>
+              <TableCell>Name</TableCell>
+              <TableCell>Profile</TableCell>
+              <TableCell>A</TableCell>
+              <TableCell>BS</TableCell>
+              <TableCell>D</TableCell>
+              <TableCell>SR</TableCell>
+              <TableCell>!</TableCell>
+              <TableCell>Dmg vs GEQ</TableCell>
+              <TableCell>Dmg vs MEQ</TableCell>
+              <TableCell>Dmg vs Custodes</TableCell>
+            </TableRow>
+          )}
         </TableHead>
         <TableBody>
           {weapons
@@ -235,7 +251,9 @@ function generateStatBlock(name: string, weaponSkill: number, weapons: Weapon[])
                 switchRowColor()
               }
 
-              return generateWeaponRow(weapon, weaponSkill, {
+              const neededSkill = weapon.type === 'RANGED' ? ballisticSkill : weaponSkill
+
+              return generateWeaponRow(weapon, neededSkill, {
                 isProfile: sameNameAsPrevious,
                 nextIsProfile: sameNameAsNext,
                 backgroundColor: rowColor,
@@ -248,19 +266,19 @@ function generateStatBlock(name: string, weaponSkill: number, weapons: Weapon[])
               <TableCell>Name</TableCell>
               <TableCell>Profile</TableCell>
               <TableCell>A</TableCell>
-              <TableCell>BS/WS</TableCell>
+              <TableCell>WS</TableCell>
               <TableCell>D</TableCell>
               <TableCell>SR</TableCell>
               <TableCell>!</TableCell>
               <TableCell>
-                ...with Fists (<span style={{ color: 'green' }}>done</span> <span style={{ color: 'red' }}>taken</span>)
+                GEQ w/ Fists (<span style={{ color: 'green' }}>done</span> <span style={{ color: 'red' }}>taken</span>)
               </TableCell>
               <TableCell>
-                ...with Power Weapon (<span style={{ color: 'green' }}>done</span>{' '}
+                MEQ w/ Power Weapon (<span style={{ color: 'green' }}>done</span>{' '}
                 <span style={{ color: 'red' }}>taken</span>)
               </TableCell>
               <TableCell>
-                ...with Guardian Spear (<span style={{ color: 'green' }}>done</span>{' '}
+                CEQ w/ Guardian Spear (<span style={{ color: 'green' }}>done</span>{' '}
                 <span style={{ color: 'red' }}>taken</span>)
               </TableCell>
             </TableRow>
@@ -305,11 +323,7 @@ const TabPanel: FunctionComponent<TabPanelProps> = (props) => {
       aria-labelledby={`simple-tab-${index}`}
       {...other}
     >
-      {value === index && (
-        <Box p={3}>
-          <Typography>{children}</Typography>
-        </Box>
-      )}
+      {value === index && <Box p={3}>{children}</Box>}
     </div>
   )
 }
@@ -332,9 +346,7 @@ function App() {
       </Box>
       {tabs.map((tab, index) => (
         <TabPanel index={index} value={value}>
-          {tab.dataSheets.map((dataSheet) =>
-            generateStatBlock(dataSheet.name, dataSheet.weaponSkill, dataSheet.weapons)
-          )}
+          {tab.dataSheets.map((dataSheet) => generateStatBlock(dataSheet))}
         </TabPanel>
       ))}
     </div>

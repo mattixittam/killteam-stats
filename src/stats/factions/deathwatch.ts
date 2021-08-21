@@ -2,6 +2,7 @@ import { getProfiles } from '../../helpers'
 
 export const deathwatchVeteranWarrior = {
   name: 'DEATHWATCH VETERAN (WARRIOR)',
+  ballisticSkill: 3,
   weaponSkill: 3,
   weapons: [
     ...getProfiles('Deathwatch Boltgun'),
@@ -14,6 +15,7 @@ export const deathwatchVeteranWarrior = {
 }
 export const deathwatchVeteranFighter = {
   name: 'DEATHWATCH VETERAN (FIGHTER)',
+  ballisticSkill: 3,
   weaponSkill: 3,
   weapons: [
     ...getProfiles('Bolt pistol'),
@@ -33,6 +35,7 @@ export const deathwatchVeteranFighter = {
 }
 export const deathwatchVeteranGunner = {
   name: 'DEATHWATCH VETERAN (GUNNER)',
+  ballisticSkill: 3,
   weaponSkill: 3,
   weapons: [
     ...getProfiles('Combi-flamer'),
@@ -49,6 +52,7 @@ export const deathwatchVeteranGunner = {
 }
 export const deathwatchVeteranHeavyGunner = {
   name: 'DEATHWATCH VETERAN (HEAVY GUNNER)',
+  ballisticSkill: 3,
   weaponSkill: 3,
   weapons: [
     ...getProfiles('Frag Cannon'),
@@ -59,6 +63,7 @@ export const deathwatchVeteranHeavyGunner = {
 }
 export const deathwatchVeteranWatchSergeant = {
   name: 'DEATHWATCH VETERAN WATCH SERGEANT',
+  ballisticSkill: 2,
   weaponSkill: 2,
   weapons: [
     ...getProfiles('Deathwatch Boltgun'),
@@ -91,7 +96,7 @@ export const deathwatchVeteranWatchSergeant = {
   ],
 }
 
-export const dataSheetsDW = [
+export const dataSheetsDeathWatch = [
   deathwatchVeteranWarrior,
   deathwatchVeteranFighter,
   deathwatchVeteranGunner,

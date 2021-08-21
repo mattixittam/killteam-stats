@@ -12,11 +12,9 @@ export const specialRules = {
   },
   AP1: {
     label: 'AP1',
-    amount: 1,
   },
   AP2: {
     label: 'AP2',
-    amount: 2,
   },
   RELENTLESS: {
     label: 'Relentless',
@@ -27,9 +25,11 @@ export const specialRules = {
   HEAVY: {
     label: 'Heavy',
   },
+  BLAST1: {
+    label: 'Blast 1"',
+  },
   BLAST2: {
     label: 'Blast 2"',
-    amount: 2,
   },
   TORRENT: {
     label: 'Torrent',
@@ -61,6 +61,15 @@ export const specialRules = {
   BRUTAL: {
     label: 'Brutal',
   },
+  HOT: {
+    label: 'Hot',
+  },
+  UNWIELDY: {
+    label: 'Unwieldy',
+  },
+  BALANCED: {
+    label: 'Balanced',
+  },
 }
 
 export const criticalRules = {
@@ -69,15 +78,15 @@ export const criticalRules = {
   },
   P1: {
     label: 'P1',
-    amount: 1,
+  },
+  MW2: {
+    label: 'MW2',
   },
   MW3: {
     label: 'MW3',
-    amount: 3,
   },
   MW4: {
     label: 'MW4',
-    amount: 4,
   },
   STUN: {
     label: 'Stun',
