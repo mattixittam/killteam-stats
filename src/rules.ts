@@ -6,7 +6,7 @@ export interface Rules {
   [x: string]: Rule
 }
 
-export const specialRules: Rules = {
+export const specialRules = {
   NO_COVER: {
     label: 'No Cover',
   },
@@ -63,7 +63,7 @@ export const specialRules: Rules = {
   },
 }
 
-export const criticalRules: Rules = {
+export const criticalRules = {
   RENDING: {
     label: 'Rending',
   },

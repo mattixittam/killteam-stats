@@ -19,9 +19,14 @@ export const deathwatchVeteranFighter = {
     ...getProfiles('Hand flamer'),
     ...getProfiles('Inferno pistol'),
     ...getProfiles('Plasma pistol'),
+    ...getProfiles('Chainsword'),
     ...getProfiles('Heavy thunder hammer'),
+    ...getProfiles('Lightning claw'),
+    ...getProfiles('Lightning claws'),
     ...getProfiles('Power fist'),
+    ...getProfiles('Power maul'),
     ...getProfiles('Power weapon'),
+    ...getProfiles('Thunder hammer'),
   ],
 }
 export const deathwatchVeteranGunner = {
@@ -65,6 +70,13 @@ export const deathwatchVeteranWatchSergeant = {
     ...getProfiles('Hand flamer'),
     ...getProfiles('Inferno pistol'),
     ...getProfiles('Plasma pistol'),
+    ...getProfiles('Heavy thunder hammer'),
+    ...getProfiles('Lightning claw'),
+    ...getProfiles('Lightning claws'),
+    ...getProfiles('Power fist'),
+    ...getProfiles('Power maul'),
+    ...getProfiles('Power weapon'),
+    ...getProfiles('Thunder hammer'),
   ],
 }
 

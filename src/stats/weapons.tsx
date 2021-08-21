@@ -14,6 +14,16 @@ export interface Weapon {
 
 export const weapons: Weapon[] = [
   {
+    name: 'Chainsword',
+    profile: '',
+    attackDice: 5,
+    damage: 4,
+    damageCritical: 5,
+    specialRules: [],
+    criticalRules: [],
+    type: 'MELEE',
+  },
+  {
     name: 'Heavy thunder hammer',
     profile: '',
     attackDice: 5,
@@ -22,6 +32,26 @@ export const weapons: Weapon[] = [
     damageCritical: 8,
     specialRules: [],
     criticalRules: [criticalRules.STUN],
+    type: 'MELEE',
+  },
+  {
+    name: 'Lightning claw',
+    profile: '',
+    attackDice: 5,
+    damage: 4,
+    damageCritical: 5,
+    specialRules: [specialRules.LETHAL5],
+    criticalRules: [],
+    type: 'MELEE',
+  },
+  {
+    name: 'Lightning claws',
+    profile: '',
+    attackDice: 5,
+    damage: 6,
+    damageCritical: 8,
+    specialRules: [specialRules.LETHAL5, specialRules.RELENTLESS],
+    criticalRules: [],
     type: 'MELEE',
   },
   {
@@ -36,6 +66,16 @@ export const weapons: Weapon[] = [
     type: 'MELEE',
   },
   {
+    name: 'Power maul',
+    profile: '',
+    attackDice: 5,
+    damage: 4,
+    damageCritical: 5,
+    specialRules: [],
+    criticalRules: [criticalRules.STUN],
+    type: 'MELEE',
+  },
+  {
     name: 'Power weapon',
     profile: '',
     attackDice: 5,
@@ -43,6 +83,17 @@ export const weapons: Weapon[] = [
     damageCritical: 6,
     specialRules: [specialRules.LETHAL5],
     criticalRules: [],
+    type: 'MELEE',
+  },
+  {
+    name: 'Thunder hammer',
+    profile: '',
+    attackDice: 5,
+    weaponSkillAdjustment: 1,
+    damage: 5,
+    damageCritical: 6,
+    specialRules: [],
+    criticalRules: [criticalRules.STUN],
     type: 'MELEE',
   },
   {

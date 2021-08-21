@@ -106,9 +106,9 @@ function formatMeleeDamage(damage: DamageMelee) {
   return (
     <>
       <span>
-        {d.maximumParry.done}-{d.maximumDamage.done} done,
+        {d.maximumParry.done} - {d.maximumDamage.done} done
         <br />
-        {d.maximumParry.taken}-{d.maximumDamage.taken} taken
+        {d.maximumParry.taken} - {d.maximumDamage.taken} taken
       </span>
     </>
   )

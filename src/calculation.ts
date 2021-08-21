@@ -149,12 +149,12 @@ function calculateDamageMelee(weapon: Weapon, weaponSkill: number, defenseProfil
 
   // LETHAL 5+
   if (weapon.specialRules.includes(specialRules.LETHAL5)) {
-    weaponSkillCritical = Math.max(5, weaponSkill)
+    weaponSkillCritical = Math.min(5, weaponSkill)
   }
 
   // LETHAL 4+
   if (weapon.specialRules.includes(specialRules.LETHAL4)) {
-    weaponSkillCritical = Math.max(4, weaponSkill)
+    weaponSkillCritical = Math.min(4, weaponSkill)
   }
 
   const adjustedWeaponSkill = Math.max(
@@ -169,18 +169,18 @@ function calculateDamageMelee(weapon: Weapon, weaponSkill: number, defenseProfil
 
   // LETHAL 5+
   if (defenseProfile.meleeWeapon.specialRules.includes(specialRules.LETHAL5)) {
-    defenseWeaponSkillCritical = Math.max(5, weaponSkill)
+    defenseWeaponSkillCritical = Math.min(5, defenseProfile.weaponSkill)
   }
 
   // LETHAL 4+
   if (defenseProfile.meleeWeapon.specialRules.includes(specialRules.LETHAL4)) {
-    defenseWeaponSkillCritical = Math.max(4, defenseProfile.weaponSkill)
+    defenseWeaponSkillCritical = Math.min(4, defenseProfile.weaponSkill)
   }
 
   const defenseAdjustedWeaponSkill = Math.max(
     2,
     defenseProfile.meleeWeapon.weaponSkillAdjustment
-      ? weaponSkill + defenseProfile.meleeWeapon.weaponSkillAdjustment
+      ? defenseProfile.weaponSkill + defenseProfile.meleeWeapon.weaponSkillAdjustment
       : defenseProfile.weaponSkill
   )
 
@@ -235,12 +235,12 @@ function calculateDamageMelee(weapon: Weapon, weaponSkill: number, defenseProfil
     type: 'melee',
     total: {
       maximumDamage: {
-        done: +expectedDamageDoneMD.toFixed(2),
-        taken: +expectedDamageTakenMD.toFixed(2),
+        done: +expectedDamageDoneMD.toFixed(1),
+        taken: +expectedDamageTakenMD.toFixed(1),
       },
       maximumParry: {
-        done: +expectedTotalDamageMP.toFixed(2),
-        taken: +expectedTotalDamageTakenMP.toFixed(2),
+        done: +expectedTotalDamageMP.toFixed(1),
+        taken: +expectedTotalDamageTakenMP.toFixed(1),
       },
     },
     // total: expectedTotalDamage.toFixed(2),
