@@ -103,8 +103,6 @@ export interface DamageRanged {
   mw?: number
 }
 
-type Damage = DamageMelee | DamageRanged
-
 function formatMeleeDamage(damage: DamageMelee) {
   const d = damage.total
   return (
@@ -209,21 +207,64 @@ function generateStatBlock(name: string, weaponSkill: number, weapons: Weapon[])
           </TableRow>
         </TableHead>
         <TableBody>
-          {weapons.map((weapon, index) => {
-            const sameNameAsPrevious = index === 0 ? false : weapon.name === weapons[index - 1]?.name
+          {weapons
+            .filter((weapon) => weapon.type === 'RANGED')
+            .map((weapon, index) => {
+              const sameNameAsPrevious = index === 0 ? false : weapon.name === weapons[index - 1]?.name
+              const sameNameAsNext = weapon.name === weapons[index + 1]?.name
 
-            const sameNameAsNext = weapon.name === weapons[index + 1]?.name
+              if (!sameNameAsPrevious) {
+                switchRowColor()
+              }
 
-            if (!sameNameAsPrevious) {
-              switchRowColor()
-            }
+              return generateWeaponRow(weapon, weaponSkill, {
+                isProfile: sameNameAsPrevious,
+                nextIsProfile: sameNameAsNext,
+                backgroundColor: rowColor,
+              })
+            })}
+        </TableBody>
+        {weapons.filter((weapon) => weapon.type === 'MELEE').length > 0 && (
+          <TableHead>
+            <TableRow>
+              <TableCell>Name</TableCell>
+              <TableCell>Profile</TableCell>
+              <TableCell>A</TableCell>
+              <TableCell>BS/WS</TableCell>
+              <TableCell>D</TableCell>
+              <TableCell>SR</TableCell>
+              <TableCell>!</TableCell>
+              <TableCell>
+                ...with Fists (<span style={{ color: 'green' }}>done</span> <span style={{ color: 'red' }}>taken</span>)
+              </TableCell>
+              <TableCell>
+                ...with Power Weapon (<span style={{ color: 'green' }}>done</span>{' '}
+                <span style={{ color: 'red' }}>taken</span>)
+              </TableCell>
+              <TableCell>
+                ...with Guardian Spear (<span style={{ color: 'green' }}>done</span>{' '}
+                <span style={{ color: 'red' }}>taken</span>)
+              </TableCell>
+            </TableRow>
+          </TableHead>
+        )}
+        <TableBody>
+          {weapons
+            .filter((weapon) => weapon.type === 'MELEE')
+            .map((weapon, index) => {
+              const sameNameAsPrevious = index === 0 ? false : weapon.name === weapons[index - 1]?.name
+              const sameNameAsNext = weapon.name === weapons[index + 1]?.name
 
-            return generateWeaponRow(weapon, weaponSkill, {
-              isProfile: sameNameAsPrevious,
-              nextIsProfile: sameNameAsNext,
-              backgroundColor: rowColor,
-            })
-          })}
+              if (!sameNameAsPrevious) {
+                switchRowColor()
+              }
+
+              return generateWeaponRow(weapon, weaponSkill, {
+                isProfile: sameNameAsPrevious,
+                nextIsProfile: sameNameAsNext,
+                backgroundColor: rowColor,
+              })
+            })}
         </TableBody>
       </Table>
     </TableContainer>

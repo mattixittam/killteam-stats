@@ -14,6 +14,16 @@ export interface Weapon {
 
 export const weapons: Weapon[] = [
   {
+    name: 'Fists',
+    profile: '',
+    attackDice: 4,
+    damage: 3,
+    damageCritical: 4,
+    specialRules: [],
+    criticalRules: [],
+    type: 'MELEE',
+  },
+  {
     name: 'Chainsword',
     profile: '',
     attackDice: 5,
