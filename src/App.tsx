@@ -6,17 +6,35 @@ import {
   TableRow,
   TableCell,
   TableBody,
-  Grid,
   TableHead,
   Typography,
+  Tabs,
+  Tab,
+  Box,
 } from '@material-ui/core'
 import { Weapon } from './stats/weapons'
 import { dataSheetsDW } from './stats/factions/deathwatch'
 import { dataSheetsCSM } from './stats/factions/chaos'
 import { calculateDamage } from './calculation'
 import { specialRules } from './rules'
+import React, { FunctionComponent, useState } from 'react'
 
-const dataSheets = [...dataSheetsDW, ...dataSheetsCSM]
+interface Tab {
+  name: string
+  dataSheets: any[]
+}
+type Tabs = Tab[]
+
+const tabs: Tabs = [
+  {
+    name: 'Deathwatch',
+    dataSheets: [...dataSheetsDW],
+  },
+  {
+    name: 'Chaos Space Marines',
+    dataSheets: [...dataSheetsCSM],
+  },
+]
 
 export interface Defenseprofile {
   defenseDice: number
@@ -271,14 +289,60 @@ function generateStatBlock(name: string, weaponSkill: number, weapons: Weapon[])
   )
 }
 
-function App() {
+interface TabPanelProps {
+  index: number
+  value: number
+}
+
+const TabPanel: FunctionComponent<TabPanelProps> = (props) => {
+  const { children, value, index, ...other } = props
+
   return (
-    <Grid container spacing={4}>
-      <Grid item>
-        {dataSheets.map((profile) => generateStatBlock(profile.name, profile.weaponSkill, profile.weapons))}
-      </Grid>
-    </Grid>
+    <div
+      role="tabpanel"
+      hidden={value !== index}
+      id={`simple-tabpanel-${index}`}
+      aria-labelledby={`simple-tab-${index}`}
+      {...other}
+    >
+      {value === index && (
+        <Box p={3}>
+          <Typography>{children}</Typography>
+        </Box>
+      )}
+    </div>
+  )
+}
+
+function App() {
+  const [value, setValue] = useState(0)
+
+  const handleChange = (event: any, newValue: any) => {
+    setValue(newValue)
+  }
+
+  return (
+    <div>
+      <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+        <Tabs value={value} onChange={handleChange}>
+          {tabs.map((tab) => (
+            <Tab label={tab.name} />
+          ))}
+        </Tabs>
+      </Box>
+      {tabs.map((tab, index) => (
+        <TabPanel index={index} value={value}>
+          {tab.dataSheets.map((dataSheet) =>
+            generateStatBlock(dataSheet.name, dataSheet.weaponSkill, dataSheet.weapons)
+          )}
+        </TabPanel>
+      ))}
+    </div>
   )
 }
 
 export default App
+
+// {
+//   dataSheets.map((profile) => generateStatBlock(profile.name, profile.weaponSkill, profile.weapons))
+// }
