@@ -8,6 +8,8 @@ export const deathwatchVeteranWarrior = {
     ...getProfiles('Deathwatch Shotgun'),
     ...getProfiles('Stalker pattern boltgun'),
     ...getProfiles('Storm bolter'),
+    ...getProfiles('Fists'),
+    ...getProfiles('Power weapon'),
   ],
 }
 export const deathwatchVeteranFighter = {
@@ -42,12 +44,18 @@ export const deathwatchVeteranGunner = {
     ...getProfiles('Grav-gun'),
     ...getProfiles('Meltagun'),
     ...getProfiles('Plasma gun'),
+    ...getProfiles('Fists'),
   ],
 }
 export const deathwatchVeteranHeavyGunner = {
   name: 'DEATHWATCH VETERAN (HEAVY GUNNER)',
   weaponSkill: 3,
-  weapons: [...getProfiles('Frag Cannon'), ...getProfiles('Infernus Heavy Bolter'), ...getProfiles('Missile Launcher')],
+  weapons: [
+    ...getProfiles('Frag Cannon'),
+    ...getProfiles('Infernus Heavy Bolter'),
+    ...getProfiles('Missile Launcher'),
+    ...getProfiles('Fists'),
+  ],
 }
 export const deathwatchVeteranWatchSergeant = {
   name: 'DEATHWATCH VETERAN WATCH SERGEANT',
@@ -70,13 +78,16 @@ export const deathwatchVeteranWatchSergeant = {
     ...getProfiles('Hand flamer'),
     ...getProfiles('Inferno pistol'),
     ...getProfiles('Plasma pistol'),
+    ...getProfiles('Fists'),
     ...getProfiles('Heavy thunder hammer'),
-    ...getProfiles('Lightning claw'),
     ...getProfiles('Lightning claws'),
+    ...getProfiles('Chainsword'),
+    ...getProfiles('Lightning claw'),
     ...getProfiles('Power fist'),
     ...getProfiles('Power maul'),
     ...getProfiles('Power weapon'),
     ...getProfiles('Thunder hammer'),
+    ...getProfiles('Xenophase blade'),
   ],
 }
 
