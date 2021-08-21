@@ -49,4 +49,10 @@ export const chaosSmAspiringChampion = {
   ],
 }
 
-export const dataSheetsCSM = [chaosSmWarrior, chaosSmGunner, chaosSmHeavyGunner, chaosSmAspiringChampion]
+export const dataSheetsCSM = [
+  chaosSmWarrior,
+  chaosSmGunner,
+  chaosSmHeavyGunner,
+  chaosSmIconBearer,
+  chaosSmAspiringChampion,
+]
