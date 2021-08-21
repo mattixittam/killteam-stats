@@ -80,11 +80,15 @@ const geqProfile: Defenseprofile = {
 export interface DamageMelee {
   type: 'melee'
   total: {
-    maximumDamage: {
+    maxDamage: {
       done: number
       taken: number
     }
-    maximumParry: {
+    minTakenDef: {
+      done: number
+      taken: number
+    }
+    minTakenAtt: {
       done: number
       taken: number
     }
@@ -106,9 +110,14 @@ function formatMeleeDamage(damage: DamageMelee) {
   return (
     <>
       <span>
-        {d.maximumParry.done} - {d.maximumDamage.done} done
+        ⚔️ vs ⚔️: <span style={{ color: 'green' }}>{d.maxDamage.done}</span>{' '}
+        <span style={{ color: 'red' }}>{d.maxDamage.taken}</span>
         <br />
-        {d.maximumParry.taken} - {d.maximumDamage.taken} taken
+        ⚔️ vs 🛡️: <span style={{ color: 'green' }}>{d.minTakenDef.done}</span>{' '}
+        <span style={{ color: 'red' }}>{d.minTakenDef.taken}</span>
+        <br />
+        🛡️ vs ⚔️: <span style={{ color: 'green' }}>{d.minTakenAtt.done}</span>{' '}
+        <span style={{ color: 'red' }}>{d.minTakenAtt.taken}</span>
       </span>
     </>
   )
@@ -123,7 +132,7 @@ function generateWeaponRow(
     backgroundColor = 'transparent',
   }: { isProfile: boolean; nextIsProfile: boolean; backgroundColor: string }
 ) {
-  const geqDamage: Damage = calculateDamage(weapon, weaponSkill, geqProfile)
+  const geqDamage = calculateDamage(weapon, weaponSkill, geqProfile)
   const meqDamage = calculateDamage(weapon, weaponSkill, meqProfile)
   const custodesDamage = calculateDamage(weapon, weaponSkill, custodesProfile)
 
