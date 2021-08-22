@@ -19,6 +19,7 @@ import { calculateDamage } from './calculation'
 import { specialRules } from './rules'
 import React, { FunctionComponent, useState } from 'react'
 import { dataSheetsAdeptusMechanicus } from './stats/factions/adeptusMechanicus'
+import { dataSheetsGeneStealerCults } from './stats/factions/genestealerCults'
 
 interface FactionTab {
   name: string
@@ -44,6 +45,10 @@ const tabs: FactionTabs = [
   {
     name: 'Adeptus Mechanicus',
     dataSheets: [...dataSheetsAdeptusMechanicus],
+  },
+  {
+    name: 'Genestealer Cults',
+    dataSheets: [...dataSheetsGeneStealerCults],
   },
 ]
 
@@ -171,17 +176,17 @@ function generateWeaponRow(
     styles.borderBottomWidth = 0
   }
 
+  const weaponBallisticSkill =
+    weapon.fixedWeaponBallisticSkill || weaponSkill + (weapon.weaponBallisticSkillAdjustment || 0)
+
+  const adjustedballisticSkill = Math.max(2, weaponBallisticSkill)
+
   return (
     <TableRow key={weapon.name + weapon.profile}>
       <TableCell style={styles}>{isProfile ? '' : weapon.name}</TableCell>
       <TableCell style={styles}>{weapon.profile}</TableCell>
       <TableCell style={styles}>{weapon.attackDice}</TableCell>
-      <TableCell style={styles}>
-        {Math.max(
-          2,
-          weapon.weaponBallisticSkillAdjustment ? weaponSkill + weapon.weaponBallisticSkillAdjustment : weaponSkill
-        )}
-      </TableCell>
+      <TableCell style={styles}>{adjustedballisticSkill}</TableCell>
       <TableCell style={styles}>
         {weapon.damage}/{weapon.damageCritical}
       </TableCell>

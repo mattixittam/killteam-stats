@@ -57,11 +57,10 @@ function calculateDamageRanged(weapon: Weapon, ballisticSkill: number, defensePr
   if (weapon.specialRules.includes(specialRules.AP2)) {
     rolledDefenseDice -= 2
   }
+  const weaponBallisticSkill =
+    weapon.fixedWeaponBallisticSkill || ballisticSkill + (weapon.weaponBallisticSkillAdjustment || 0)
 
-  const adjustedballisticSkill = Math.max(
-    2,
-    weapon.weaponBallisticSkillAdjustment ? ballisticSkill + weapon.weaponBallisticSkillAdjustment : ballisticSkill
-  )
+  const adjustedballisticSkill = Math.max(2, weaponBallisticSkill)
 
   let expectedHits = oneDiceChanceOfSuccess(adjustedballisticSkill, ballisticSkillCritical) * weapon.attackDice
   let expectedCriticalHits = oneDiceChanceOfCrit(ballisticSkillCritical) * weapon.attackDice
