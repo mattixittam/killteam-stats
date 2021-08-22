@@ -108,15 +108,31 @@ export const sicarianInfiltratorPrinceps = {
   ],
 }
 
-export const dataSheetsAdeptusMechanicus = [
-  skitariiRangerTrooper,
-  skitariiRangerGunner,
-  skitariiRangerAlpha,
-  skitariiVanguardTrooper,
-  skitariiVanguardGunner,
-  skitariiVanguardAlpha,
+const dataSheetsSkitariiRangers = [skitariiRangerTrooper, skitariiRangerGunner, skitariiRangerAlpha]
+
+const dataSheetsSkitariiVanguard = [skitariiVanguardTrooper, skitariiVanguardGunner, skitariiVanguardAlpha]
+
+const dataSheetsSicarian = [
   sicarianRuststalkerTrooper,
   sicarianRuststalkerPrinceps,
   sicarianInfiltratorTrooper,
   sicarianInfiltratorPrinceps,
 ]
+
+export const forgeWorldStats = {
+  name: 'Forge World',
+  fireTeams: [
+    {
+      name: 'Skitarii Rangers',
+      dataSheets: [...dataSheetsSkitariiRangers],
+    },
+    {
+      name: 'Skitarii Vanguards',
+      dataSheets: [...dataSheetsSkitariiVanguard],
+    },
+    {
+      name: 'Sicarians',
+      dataSheets: [...dataSheetsSicarian],
+    },
+  ],
+}

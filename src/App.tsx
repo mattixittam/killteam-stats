@@ -18,12 +18,17 @@ import { dataSheetsChaosSpaceMarines } from './stats/factions/chaos'
 import { calculateDamage } from './calculation'
 import { specialRules } from './rules'
 import React, { FunctionComponent, useState } from 'react'
-import { dataSheetsAdeptusMechanicus } from './stats/factions/adeptusMechanicus'
-import { dataSheetsGeneStealerCults } from './stats/factions/genestealerCults'
+import { forgeWorldStats } from './stats/factions/forgeWorld'
+import { broodCovenStats } from './stats/factions/broodCoven'
 
-interface FactionTab {
+interface FireTeam {
   name: string
   dataSheets: any[]
+}
+
+interface Faction {
+  name: string
+  fireTeams: FireTeam[]
 }
 interface DataSheet {
   name: string
@@ -31,25 +36,29 @@ interface DataSheet {
   weaponSkill: number
   weapons: Weapon[]
 }
-type FactionTabs = FactionTab[]
+type Factions = Faction[]
 
-const tabs: FactionTabs = [
+const factions: Factions = [
   {
-    name: 'Deathwatch',
-    dataSheets: [...dataSheetsDeathWatch],
+    name: 'Adeptus Astartes',
+    fireTeams: [
+      {
+        name: 'DeathWatch Veterans',
+        dataSheets: [...dataSheetsDeathWatch],
+      },
+    ],
   },
   {
-    name: 'Chaos Space Marines',
-    dataSheets: [...dataSheetsChaosSpaceMarines],
+    name: 'Heretic Astartes',
+    fireTeams: [
+      {
+        name: 'Chaos Space Marines',
+        dataSheets: [...dataSheetsChaosSpaceMarines],
+      },
+    ],
   },
-  {
-    name: 'Adeptus Mechanicus',
-    dataSheets: [...dataSheetsAdeptusMechanicus],
-  },
-  {
-    name: 'Genestealer Cults',
-    dataSheets: [...dataSheetsGeneStealerCults],
-  },
+  forgeWorldStats,
+  broodCovenStats,
 ]
 
 export interface Defenseprofile {
@@ -219,6 +228,9 @@ function generateStatBlock({ name, weaponSkill, ballisticSkill, weapons }: DataS
     }
   }
 
+  const rangedWeapons = weapons.filter((weapon) => weapon.type === 'RANGED')
+  const meleeWeapons = weapons.filter((weapon) => weapon.type === 'MELEE')
+
   return (
     <TableContainer component={Paper} style={{ margin: '20px' }} key={name}>
       <Table size="small">
@@ -230,7 +242,7 @@ function generateStatBlock({ name, weaponSkill, ballisticSkill, weapons }: DataS
               </Typography>
             </TableCell>
           </TableRow>
-          {weapons.filter((weapon) => weapon.type === 'RANGED').length > 0 && (
+          {rangedWeapons.length > 0 && (
             <TableRow>
               <TableCell>Name</TableCell>
               <TableCell>Profile</TableCell>
@@ -246,26 +258,24 @@ function generateStatBlock({ name, weaponSkill, ballisticSkill, weapons }: DataS
           )}
         </TableHead>
         <TableBody>
-          {weapons
-            .filter((weapon) => weapon.type === 'RANGED')
-            .map((weapon, index) => {
-              const sameNameAsPrevious = index === 0 ? false : weapon.name === weapons[index - 1]?.name
-              const sameNameAsNext = weapon.name === weapons[index + 1]?.name
+          {rangedWeapons.map((weapon, index) => {
+            const sameNameAsPrevious = index === 0 ? false : weapon.name === rangedWeapons[index - 1]?.name
+            const sameNameAsNext = weapon.name === rangedWeapons[index + 1]?.name
 
-              if (!sameNameAsPrevious) {
-                switchRowColor()
-              }
+            if (!sameNameAsPrevious) {
+              switchRowColor()
+            }
 
-              const neededSkill = weapon.type === 'RANGED' ? ballisticSkill : weaponSkill
+            const neededSkill = weapon.type === 'RANGED' ? ballisticSkill : weaponSkill
 
-              return generateWeaponRow(weapon, neededSkill, {
-                isProfile: sameNameAsPrevious,
-                nextIsProfile: sameNameAsNext,
-                backgroundColor: rowColor,
-              })
-            })}
+            return generateWeaponRow(weapon, neededSkill, {
+              isProfile: sameNameAsPrevious,
+              nextIsProfile: sameNameAsNext,
+              backgroundColor: rowColor,
+            })
+          })}
         </TableBody>
-        {weapons.filter((weapon) => weapon.type === 'MELEE').length > 0 && (
+        {meleeWeapons.length > 0 && (
           <TableHead>
             <TableRow>
               <TableCell>Name</TableCell>
@@ -291,22 +301,20 @@ function generateStatBlock({ name, weaponSkill, ballisticSkill, weapons }: DataS
           </TableHead>
         )}
         <TableBody>
-          {weapons
-            .filter((weapon) => weapon.type === 'MELEE')
-            .map((weapon, index) => {
-              const sameNameAsPrevious = index === 0 ? false : weapon.name === weapons[index - 1]?.name
-              const sameNameAsNext = weapon.name === weapons[index + 1]?.name
+          {meleeWeapons.map((weapon, index) => {
+            const sameNameAsPrevious = index === 0 ? false : weapon.name === meleeWeapons[index - 1]?.name
+            const sameNameAsNext = weapon.name === meleeWeapons[index + 1]?.name
 
-              if (!sameNameAsPrevious) {
-                switchRowColor()
-              }
+            if (!sameNameAsPrevious) {
+              switchRowColor()
+            }
 
-              return generateWeaponRow(weapon, weaponSkill, {
-                isProfile: sameNameAsPrevious,
-                nextIsProfile: sameNameAsNext,
-                backgroundColor: rowColor,
-              })
-            })}
+            return generateWeaponRow(weapon, weaponSkill, {
+              isProfile: sameNameAsPrevious,
+              nextIsProfile: sameNameAsNext,
+              backgroundColor: rowColor,
+            })
+          })}
         </TableBody>
       </Table>
     </TableContainer>
@@ -336,24 +344,42 @@ const TabPanel: FunctionComponent<TabPanelProps> = (props) => {
 
 function App() {
   const [value, setValue] = useState(0)
+  const [lvl2Value, setLvl2Value] = useState(0)
 
   const handleChange = (event: any, newValue: any) => {
     setValue(newValue)
+  }
+
+  const handleChangeLvl2 = (event: any, newValue: any) => {
+    setLvl2Value(newValue)
   }
 
   return (
     <div>
       <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
         <Tabs value={value} onChange={handleChange}>
-          {tabs.map((tab) => (
-            <Tab label={tab.name} />
+          {factions.map((faction) => (
+            <Tab label={faction.name} />
           ))}
         </Tabs>
       </Box>
-      {tabs.map((tab, index) => (
-        <TabPanel index={index} value={value}>
-          {tab.dataSheets.map((dataSheet) => generateStatBlock(dataSheet))}
-        </TabPanel>
+      {factions.map((faction, index) => (
+        <>
+          <TabPanel index={index} value={value}>
+            <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+              <Tabs value={lvl2Value} onChange={handleChangeLvl2}>
+                {faction.fireTeams.map((fireTeam) => (
+                  <Tab label={fireTeam.name} />
+                ))}
+              </Tabs>
+            </Box>
+            {factions[index].fireTeams.map((fireTeam, fireTeamIndex) => (
+              <TabPanel index={fireTeamIndex} value={lvl2Value}>
+                {fireTeam.dataSheets.map((dataSheet) => generateStatBlock(dataSheet))}
+              </TabPanel>
+            ))}
+          </TabPanel>
+        </>
       ))}
     </div>
   )

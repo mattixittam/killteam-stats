@@ -7,6 +7,9 @@ export interface Rules {
 }
 
 export const specialRules = {
+  STORM_SHIELD: {
+    label: 'Storm Shield',
+  },
   NO_COVER: {
     label: 'No Cover',
   },
