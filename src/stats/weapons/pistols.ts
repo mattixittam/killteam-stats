@@ -10,6 +10,7 @@ export const pistols: Weapon[] = [
     damageCritical: 4,
     specialRules: [specialRules.RNG6],
     criticalRules: [],
+    equipment: [],
     type: 'RANGED',
   },
   {
@@ -20,6 +21,7 @@ export const pistols: Weapon[] = [
     damageCritical: 4,
     specialRules: [specialRules.RNG6, specialRules.CEASELESS],
     criticalRules: [],
+    equipment: [],
     type: 'RANGED',
   },
   {
@@ -30,6 +32,7 @@ export const pistols: Weapon[] = [
     damageCritical: 4,
     specialRules: [specialRules.RNG6],
     criticalRules: [criticalRules.P1],
+    equipment: [],
     type: 'RANGED',
   },
   {
@@ -40,6 +43,7 @@ export const pistols: Weapon[] = [
     damageCritical: 4,
     specialRules: [specialRules.RNG6],
     criticalRules: [],
+    equipment: [],
     type: 'RANGED',
   },
   {
@@ -50,6 +54,7 @@ export const pistols: Weapon[] = [
     damageCritical: 5,
     specialRules: [specialRules.RNG6, specialRules.AP1, specialRules.GRAV],
     criticalRules: [],
+    equipment: [],
     type: 'RANGED',
   },
   {
@@ -60,6 +65,7 @@ export const pistols: Weapon[] = [
     damageCritical: 3,
     specialRules: [specialRules.RNG3, specialRules.AP2],
     criticalRules: [criticalRules.MW3],
+    equipment: [],
     type: 'RANGED',
   },
   {
@@ -70,6 +76,7 @@ export const pistols: Weapon[] = [
     damageCritical: 6,
     specialRules: [specialRules.RNG6, specialRules.AP1],
     criticalRules: [],
+    equipment: [],
     type: 'RANGED',
   },
   {
@@ -80,6 +87,7 @@ export const pistols: Weapon[] = [
     damageCritical: 6,
     specialRules: [specialRules.RNG6, specialRules.AP2],
     criticalRules: [],
+    equipment: [],
     type: 'RANGED',
   },
   {
@@ -90,6 +98,7 @@ export const pistols: Weapon[] = [
     damageCritical: 5,
     specialRules: [specialRules.RNG6, specialRules.AP1],
     criticalRules: [criticalRules.STUN],
+    equipment: [],
     type: 'RANGED',
   },
   {
@@ -100,6 +109,7 @@ export const pistols: Weapon[] = [
     damageCritical: 5,
     specialRules: [specialRules.RNG6, specialRules.BLAST1],
     criticalRules: [],
+    equipment: [],
     type: 'RANGED',
   },
   {
@@ -110,6 +120,7 @@ export const pistols: Weapon[] = [
     damageCritical: 3,
     specialRules: [specialRules.RNG6],
     criticalRules: [criticalRules.RENDING],
+    equipment: [],
     type: 'RANGED',
   },
   {
@@ -120,6 +131,7 @@ export const pistols: Weapon[] = [
     damageCritical: 3,
     specialRules: [specialRules.RNG6],
     criticalRules: [],
+    equipment: [],
     type: 'RANGED',
   },
   {
@@ -131,6 +143,7 @@ export const pistols: Weapon[] = [
     damageCritical: 2,
     specialRules: [specialRules.RNG6],
     criticalRules: [criticalRules.STUN],
+    equipment: [],
     type: 'RANGED',
   },
 ]

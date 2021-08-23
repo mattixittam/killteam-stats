@@ -1,14 +1,28 @@
-import { getProfiles } from '../../helpers'
+import { getProfiles, Profile } from '../../helpers'
 
-export const neophyteHybridTrooper = {
+export const neophyteHybridTrooper: Profile = {
   name: 'NEOPHYTE HYBRID (TROOPER)',
+  movement: 6,
+  apl: 2,
+  groupActivation: 2,
+  defense: 3,
+  save: 5,
+  saveCritical: 6,
+  wounds: 7,
   ballisticSkill: 4,
   weaponSkill: 4,
   weapons: [...getProfiles('Autogun'), ...getProfiles('Shotgun'), ...getProfiles('Gun butt')],
 }
 
-export const neophyteHybridGunner = {
+export const neophyteHybridGunner: Profile = {
   name: 'NEOPHYTE HYBRID (GUNNER)',
+  movement: 6,
+  apl: 2,
+  groupActivation: 1,
+  defense: 3,
+  save: 5,
+  saveCritical: 6,
+  wounds: 7,
   ballisticSkill: 4,
   weaponSkill: 4,
   weapons: [
@@ -19,8 +33,15 @@ export const neophyteHybridGunner = {
   ],
 }
 
-export const neophyteHybridHeavyGunner = {
+export const neophyteHybridHeavyGunner: Profile = {
   name: 'NEOPHYTE HYBRID (HEAVY GUNNER)',
+  movement: 6,
+  apl: 2,
+  groupActivation: 1,
+  defense: 3,
+  save: 5,
+  saveCritical: 6,
+  wounds: 8,
   ballisticSkill: 4,
   weaponSkill: 4,
   weapons: [
@@ -31,15 +52,29 @@ export const neophyteHybridHeavyGunner = {
   ],
 }
 
-export const neophyteHybridIconBearer = {
+export const neophyteHybridIconBearer: Profile = {
   name: 'NEOPHYTE HYBRID (ICON BEARER)',
+  movement: 6,
+  apl: 2,
+  groupActivation: 1,
+  defense: 3,
+  save: 5,
+  saveCritical: 6,
+  wounds: 7,
   ballisticSkill: 4,
   weaponSkill: 4,
   weapons: [...getProfiles('Autogun'), ...getProfiles('Shotgun'), ...getProfiles('Gun butt')],
 }
 
-export const neophyteHybridLeader = {
+export const neophyteHybridLeader: Profile = {
   name: 'NEOPHYTE HYBRID (LEADER)',
+  movement: 6,
+  apl: 2,
+  groupActivation: 1,
+  defense: 3,
+  save: 5,
+  saveCritical: 6,
+  wounds: 7,
   ballisticSkill: 3,
   weaponSkill: 3,
   weapons: [
@@ -55,22 +90,43 @@ export const neophyteHybridLeader = {
   ],
 }
 
-export const acolyteHybridTrooper = {
+export const acolyteHybridTrooper: Profile = {
   name: 'NEOPHYTE HYBRID (TROOPER)',
+  movement: 6,
+  apl: 2,
+  groupActivation: 1,
+  defense: 3,
+  save: 5,
+  saveCritical: 6,
+  wounds: 8,
   ballisticSkill: 4,
   weaponSkill: 3,
   weapons: [...getProfiles('Autopistol'), ...getProfiles('Cult knife and claw')],
 }
 
-export const acolyteHybridGunner = {
+export const acolyteHybridGunner: Profile = {
   name: 'NEOPHYTE HYBRID (GUNNER)',
+  movement: 6,
+  apl: 2,
+  groupActivation: 1,
+  defense: 3,
+  save: 5,
+  saveCritical: 6,
+  wounds: 8,
   ballisticSkill: 4,
   weaponSkill: 3,
   weapons: [...getProfiles('Hand flamer'), ...getProfiles('Cult knife and claw')],
 }
 
-export const acolyteHybridFighter = {
+export const acolyteHybridFighter: Profile = {
   name: 'NEOPHYTE HYBRID (FIGHTER)',
+  movement: 6,
+  apl: 2,
+  groupActivation: 1,
+  defense: 3,
+  save: 5,
+  saveCritical: 6,
+  wounds: 8,
   ballisticSkill: 4,
   weaponSkill: 3,
   weapons: [
@@ -81,15 +137,29 @@ export const acolyteHybridFighter = {
   ],
 }
 
-export const acolyteHybridIconBearer = {
+export const acolyteHybridIconBearer: Profile = {
   name: 'NEOPHYTE HYBRID (ICON BEARER)',
+  movement: 6,
+  apl: 2,
+  groupActivation: 1,
+  defense: 3,
+  save: 5,
+  saveCritical: 6,
+  wounds: 8,
   ballisticSkill: 4,
   weaponSkill: 3,
   weapons: [...getProfiles('Autopistol'), ...getProfiles('Cult knife and claw')],
 }
 
-export const acolyteHybridLeader = {
+export const acolyteHybridLeader: Profile = {
   name: 'NEOPHYTE HYBRID (LEADER)',
+  movement: 6,
+  apl: 2,
+  groupActivation: 1,
+  defense: 3,
+  save: 5,
+  saveCritical: 6,
+  wounds: 9,
   ballisticSkill: 3,
   weaponSkill: 2,
   weapons: [
@@ -101,29 +171,57 @@ export const acolyteHybridLeader = {
   ],
 }
 
-export const hybridMetamorphFighter = {
+export const hybridMetamorphFighter: Profile = {
   name: 'HYBRID METAMORPH (FIGHTER)',
+  movement: 6,
+  apl: 2,
+  groupActivation: 1,
+  defense: 3,
+  save: 5,
+  saveCritical: 6,
+  wounds: 8,
   ballisticSkill: 4,
   weaponSkill: 3,
   weapons: [...getProfiles('Autopistol'), ...getProfiles('Metamorph mutations')],
 }
 
-export const hybridMetamorphGunner = {
+export const hybridMetamorphGunner: Profile = {
   name: 'HYBRID METAMORPH (GUNNER)',
+  movement: 6,
+  apl: 2,
+  groupActivation: 1,
+  defense: 3,
+  save: 5,
+  saveCritical: 6,
+  wounds: 8,
   ballisticSkill: 4,
   weaponSkill: 3,
   weapons: [...getProfiles('Hand flamer'), ...getProfiles('Metamorph mutations')],
 }
 
-export const hybridMetamorphIconBearer = {
+export const hybridMetamorphIconBearer: Profile = {
   name: 'HYBRID METAMORPH (ICON BEARER)',
+  movement: 6,
+  apl: 2,
+  groupActivation: 1,
+  defense: 3,
+  save: 5,
+  saveCritical: 6,
+  wounds: 8,
   ballisticSkill: 4,
   weaponSkill: 3,
   weapons: [...getProfiles('Autopistol'), ...getProfiles('Metamorph mutations')],
 }
 
-export const hybridMetamorphLeader = {
+export const hybridMetamorphLeader: Profile = {
   name: 'HYBRID METAMORPH (LEADER)',
+  movement: 6,
+  apl: 2,
+  groupActivation: 1,
+  defense: 3,
+  save: 5,
+  saveCritical: 6,
+  wounds: 9,
   ballisticSkill: 2,
   weaponSkill: 2,
   weapons: [

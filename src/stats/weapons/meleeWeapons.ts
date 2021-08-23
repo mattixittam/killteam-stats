@@ -10,6 +10,7 @@ export const meleeWeapons: Weapon[] = [
     damageCritical: 6,
     specialRules: [specialRules.BRUTAL, specialRules.LETHAL5],
     criticalRules: [],
+    equipment: [],
     type: 'MELEE',
   },
   {
@@ -20,6 +21,7 @@ export const meleeWeapons: Weapon[] = [
     damageCritical: 6,
     specialRules: [specialRules.BRUTAL, specialRules.LETHAL5, specialRules.STORM_SHIELD],
     criticalRules: [],
+    equipment: [],
     type: 'MELEE',
   },
   {
@@ -30,6 +32,7 @@ export const meleeWeapons: Weapon[] = [
     damageCritical: 4,
     specialRules: [],
     criticalRules: [],
+    equipment: [],
     type: 'MELEE',
   },
   {
@@ -40,6 +43,7 @@ export const meleeWeapons: Weapon[] = [
     damageCritical: 3,
     specialRules: [],
     criticalRules: [],
+    equipment: [],
     type: 'MELEE',
   },
   {
@@ -50,6 +54,7 @@ export const meleeWeapons: Weapon[] = [
     damageCritical: 5,
     specialRules: [],
     criticalRules: [criticalRules.STUN],
+    equipment: [],
     type: 'MELEE',
   },
   {
@@ -60,6 +65,7 @@ export const meleeWeapons: Weapon[] = [
     damageCritical: 4,
     specialRules: [specialRules.LETHAL5],
     criticalRules: [criticalRules.STUN],
+    equipment: [],
     type: 'MELEE',
   },
   {
@@ -70,6 +76,7 @@ export const meleeWeapons: Weapon[] = [
     damageCritical: 5,
     specialRules: [],
     criticalRules: [],
+    equipment: [],
     type: 'MELEE',
   },
   {
@@ -81,6 +88,7 @@ export const meleeWeapons: Weapon[] = [
     damageCritical: 8,
     specialRules: [],
     criticalRules: [criticalRules.STUN],
+    equipment: [],
     type: 'MELEE',
   },
   {
@@ -91,6 +99,7 @@ export const meleeWeapons: Weapon[] = [
     damageCritical: 5,
     specialRules: [specialRules.LETHAL5],
     criticalRules: [],
+    equipment: [],
     type: 'MELEE',
   },
   {
@@ -101,6 +110,7 @@ export const meleeWeapons: Weapon[] = [
     damageCritical: 8,
     specialRules: [specialRules.LETHAL5, specialRules.RELENTLESS],
     criticalRules: [],
+    equipment: [],
     type: 'MELEE',
   },
   {
@@ -112,6 +122,7 @@ export const meleeWeapons: Weapon[] = [
     damageCritical: 7,
     specialRules: [specialRules.BRUTAL],
     criticalRules: [],
+    equipment: [],
     type: 'MELEE',
   },
   {
@@ -122,6 +133,7 @@ export const meleeWeapons: Weapon[] = [
     damageCritical: 5,
     specialRules: [],
     criticalRules: [criticalRules.STUN],
+    equipment: [],
     type: 'MELEE',
   },
   {
@@ -132,6 +144,7 @@ export const meleeWeapons: Weapon[] = [
     damageCritical: 6,
     specialRules: [],
     criticalRules: [criticalRules.RENDING],
+    equipment: [],
     type: 'MELEE',
   },
   {
@@ -142,6 +155,7 @@ export const meleeWeapons: Weapon[] = [
     damageCritical: 6,
     specialRules: [specialRules.LETHAL5],
     criticalRules: [],
+    equipment: [],
     type: 'MELEE',
   },
   {
@@ -153,6 +167,7 @@ export const meleeWeapons: Weapon[] = [
     damageCritical: 6,
     specialRules: [],
     criticalRules: [criticalRules.STUN],
+    equipment: [],
     type: 'MELEE',
   },
   {
@@ -163,6 +178,7 @@ export const meleeWeapons: Weapon[] = [
     damageCritical: 5,
     specialRules: [specialRules.BALANCED],
     criticalRules: [],
+    equipment: [],
     type: 'MELEE',
   },
   {
@@ -173,6 +189,7 @@ export const meleeWeapons: Weapon[] = [
     damageCritical: 6,
     specialRules: [],
     criticalRules: [criticalRules.RENDING],
+    equipment: [],
     type: 'MELEE',
   },
   {
@@ -183,6 +200,7 @@ export const meleeWeapons: Weapon[] = [
     damageCritical: 5,
     specialRules: [specialRules.BALANCED],
     criticalRules: [criticalRules.RENDING],
+    equipment: [],
     type: 'MELEE',
   },
   {
@@ -193,6 +211,7 @@ export const meleeWeapons: Weapon[] = [
     damageCritical: 6,
     specialRules: [specialRules.BALANCED, specialRules.LETHAL5],
     criticalRules: [],
+    equipment: [],
     type: 'MELEE',
   },
   {
@@ -204,6 +223,7 @@ export const meleeWeapons: Weapon[] = [
     damageCritical: 7,
     specialRules: [specialRules.LETHAL5],
     criticalRules: [],
+    equipment: [],
     type: 'MELEE',
   },
   {
@@ -215,6 +235,7 @@ export const meleeWeapons: Weapon[] = [
     damageCritical: 7,
     specialRules: [specialRules.LETHAL5, specialRules.RELENTLESS],
     criticalRules: [],
+    equipment: [],
     type: 'MELEE',
   },
   {
@@ -225,6 +246,7 @@ export const meleeWeapons: Weapon[] = [
     damageCritical: 7,
     specialRules: [specialRules.BRUTAL],
     criticalRules: [],
+    equipment: [],
     type: 'MELEE',
   },
   {
@@ -235,6 +257,7 @@ export const meleeWeapons: Weapon[] = [
     damageCritical: 7,
     specialRules: [specialRules.BRUTAL, specialRules.RELENTLESS],
     criticalRules: [],
+    equipment: [],
     type: 'MELEE',
   },
   {
@@ -245,6 +268,7 @@ export const meleeWeapons: Weapon[] = [
     damageCritical: 6,
     specialRules: [],
     criticalRules: [],
+    equipment: [],
     type: 'MELEE',
   },
   {
@@ -255,6 +279,7 @@ export const meleeWeapons: Weapon[] = [
     damageCritical: 6,
     specialRules: [specialRules.RELENTLESS],
     criticalRules: [],
+    equipment: [],
     type: 'MELEE',
   },
   {
@@ -265,6 +290,7 @@ export const meleeWeapons: Weapon[] = [
     damageCritical: 6,
     specialRules: [specialRules.BALANCED, specialRules.LETHAL5],
     criticalRules: [criticalRules.RENDING],
+    equipment: [],
     type: 'MELEE',
   },
   {
@@ -275,6 +301,7 @@ export const meleeWeapons: Weapon[] = [
     damageCritical: 6,
     specialRules: [specialRules.BALANCED, specialRules.BRUTAL],
     criticalRules: [criticalRules.RENDING],
+    equipment: [],
     type: 'MELEE',
   },
 ]

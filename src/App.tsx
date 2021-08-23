@@ -13,13 +13,14 @@ import {
   Box,
 } from '@material-ui/core'
 import { Weapon } from './stats/weapons'
-import { dataSheetsDeathWatch } from './stats/factions/deathwatch'
-import { dataSheetsChaosSpaceMarines } from './stats/factions/chaos'
-import { calculateDamage } from './calculation'
+import { adeptusAstartesStats } from './stats/factions/adeptusAstartes'
+import { hereticAstartesStats } from './stats/factions/hereticAstartes'
+import { calculateDamage, calculateMeleeBasics, getAttackerAttackDice } from './calculation'
 import { specialRules } from './rules'
 import React, { FunctionComponent, useState } from 'react'
 import { forgeWorldStats } from './stats/factions/forgeWorld'
 import { broodCovenStats } from './stats/factions/broodCoven'
+import { Profile } from './helpers'
 
 interface FireTeam {
   name: string
@@ -30,51 +31,35 @@ interface Faction {
   name: string
   fireTeams: FireTeam[]
 }
-interface DataSheet {
-  name: string
-  ballisticSkill: number
-  weaponSkill: number
-  weapons: Weapon[]
-}
+
 type Factions = Faction[]
 
-const factions: Factions = [
-  {
-    name: 'Adeptus Astartes',
-    fireTeams: [
-      {
-        name: 'DeathWatch Veterans',
-        dataSheets: [...dataSheetsDeathWatch],
-      },
-    ],
-  },
-  {
-    name: 'Heretic Astartes',
-    fireTeams: [
-      {
-        name: 'Chaos Space Marines',
-        dataSheets: [...dataSheetsChaosSpaceMarines],
-      },
-    ],
-  },
-  forgeWorldStats,
-  broodCovenStats,
-]
+const factions: Factions = [adeptusAstartesStats, hereticAstartesStats, forgeWorldStats, broodCovenStats]
 
 export interface Defenseprofile {
-  defenseDice: number
+  movement: number
+  apl: number
+  groupActivation: number
+  defense: number
   save: number
   saveCritical: number
+  wounds: number
   weaponSkill: number
-  meleeWeapon: Weapon
+  ballisticSkill: number
+  defensiveWeapon: Weapon
 }
 
 const custodesProfile: Defenseprofile = {
-  defenseDice: 3,
+  movement: 6,
+  apl: 4,
+  groupActivation: 1,
+  defense: 3,
   save: 2,
   saveCritical: 6,
+  wounds: 18,
   weaponSkill: 2,
-  meleeWeapon: {
+  ballisticSkill: 2,
+  defensiveWeapon: {
     name: 'Guardian spear',
     profile: '',
     attackDice: 5,
@@ -82,16 +67,22 @@ const custodesProfile: Defenseprofile = {
     damageCritical: 7,
     specialRules: [specialRules.LETHAL5],
     criticalRules: [],
+    equipment: [],
     type: 'MELEE',
   },
 }
 
 export const meqProfile: Defenseprofile = {
-  defenseDice: 3,
+  movement: 6,
+  apl: 3,
+  groupActivation: 1,
+  defense: 3,
   save: 3,
   saveCritical: 6,
+  wounds: 14,
   weaponSkill: 3,
-  meleeWeapon: {
+  ballisticSkill: 3,
+  defensiveWeapon: {
     name: 'Power weapon',
     profile: '',
     attackDice: 5,
@@ -99,16 +90,22 @@ export const meqProfile: Defenseprofile = {
     damageCritical: 6,
     specialRules: [specialRules.LETHAL5],
     criticalRules: [],
+    equipment: [],
     type: 'MELEE',
   },
 }
 
 const geqProfile: Defenseprofile = {
-  defenseDice: 3,
+  movement: 6,
+  apl: 2,
+  groupActivation: 1,
+  defense: 3,
   save: 4,
   saveCritical: 6,
+  wounds: 8,
   weaponSkill: 4,
-  meleeWeapon: {
+  ballisticSkill: 4,
+  defensiveWeapon: {
     name: 'Fists',
     profile: '',
     attackDice: 4,
@@ -116,6 +113,7 @@ const geqProfile: Defenseprofile = {
     damageCritical: 4,
     specialRules: [],
     criticalRules: [],
+    equipment: [],
     type: 'MELEE',
   },
 }
@@ -124,16 +122,22 @@ export interface DamageMelee {
   type: 'melee'
   total: {
     maxDamage: {
-      done: number
-      taken: number
+      attackerDamage: number
+      attackerDead: boolean
+      defenderDamage: number
+      defenderDead: boolean
     }
-    minTakenDef: {
-      done: number
-      taken: number
+    parryDefender: {
+      attackerDamage: number
+      attackerDead: boolean
+      defenderDamage: number
+      defenderDead: boolean
     }
-    minTakenAtt: {
-      done: number
-      taken: number
+    parryAttacker: {
+      attackerDamage: number
+      attackerDead: boolean
+      defenderDamage: number
+      defenderDead: boolean
     }
   }
 }
@@ -150,32 +154,57 @@ function formatMeleeDamage(damage: DamageMelee) {
   const d = damage.total
   return (
     <>
-      <span>
-        ⚔️ vs ⚔️: <span style={{ color: 'green' }}>{d.maxDamage.done}</span>{' '}
-        <span style={{ color: 'red' }}>{d.maxDamage.taken}</span>
-        <br />
-        ⚔️ vs 🛡️: <span style={{ color: 'green' }}>{d.minTakenDef.done}</span>{' '}
-        <span style={{ color: 'red' }}>{d.minTakenDef.taken}</span>
-        <br />
-        🛡️ vs ⚔️: <span style={{ color: 'green' }}>{d.minTakenAtt.done}</span>{' '}
-        <span style={{ color: 'red' }}>{d.minTakenAtt.taken}</span>
-      </span>
+      <div style={{ display: 'flex', flexWrap: 'wrap' }}>
+        <div style={{ display: 'inline-flex', width: '100%' }}>
+          <span style={{ flex: 'none', flexBasis: '100px' }}>Max damage: </span>
+          <span style={{ flex: 'none', color: 'green', flexBasis: '80px', marginLeft: '10px' }}>
+            {d.maxDamage.defenderDamage.toFixed(2)}
+            {d.maxDamage.defenderDead && '💀'}
+          </span>{' '}
+          <span style={{ flex: 'none', color: 'red', flexBasis: '80px' }}>
+            {d.maxDamage.attackerDamage.toFixed(2)}
+            {d.maxDamage.attackerDead && '💀'}
+          </span>
+        </div>
+        <div style={{ display: 'inline-flex', width: '100%' }}>
+          <span style={{ flex: 'none', flexBasis: '100px' }}>Def. parry: </span>
+          <span style={{ flex: 'none', color: 'green', flexBasis: '80px', marginLeft: '10px' }}>
+            {d.parryDefender.defenderDamage.toFixed(2)}
+            {d.parryDefender.defenderDead && '💀'}
+          </span>{' '}
+          <span style={{ flex: 'none', color: 'red', flexBasis: '80px' }}>
+            {d.parryDefender.attackerDamage.toFixed(2)}
+            {d.parryDefender.attackerDead && '💀'}
+          </span>
+        </div>
+        <div style={{ display: 'inline-flex', width: '100%' }}>
+          <span style={{ flex: 'none', flexBasis: '100px' }}>Att. parry: </span>
+          <span style={{ flex: 'none', color: 'green', flexBasis: '80px', marginLeft: '10px' }}>
+            {d.parryAttacker.defenderDamage.toFixed(2)}
+            {d.parryAttacker.defenderDead && '💀'}
+          </span>{' '}
+          <span style={{ flex: 'none', color: 'red', flexBasis: '80px' }}>
+            {d.parryAttacker.attackerDamage.toFixed(2)}
+            {d.parryAttacker.attackerDead && '💀'}
+          </span>
+        </div>
+      </div>
     </>
   )
 }
 
 function generateWeaponRow(
   weapon: Weapon,
-  weaponSkill: number,
+  attackProfile: Profile,
   {
     isProfile,
     nextIsProfile,
     backgroundColor = 'transparent',
   }: { isProfile: boolean; nextIsProfile: boolean; backgroundColor: string }
 ) {
-  const geqDamage = calculateDamage(weapon, weaponSkill, geqProfile)
-  const meqDamage = calculateDamage(weapon, weaponSkill, meqProfile)
-  const custodesDamage = calculateDamage(weapon, weaponSkill, custodesProfile)
+  const geqDamage = calculateDamage(weapon, geqProfile, attackProfile)
+  const meqDamage = calculateDamage(weapon, meqProfile, attackProfile)
+  const custodesDamage = calculateDamage(weapon, custodesProfile, attackProfile)
 
   const styles: { backgroundColor: string; borderBottomWidth?: number } = {
     backgroundColor,
@@ -185,8 +214,10 @@ function generateWeaponRow(
     styles.borderBottomWidth = 0
   }
 
+  const neededSkill = weapon.type === 'MELEE' ? attackProfile.weaponSkill : attackProfile.ballisticSkill
+
   const weaponBallisticSkill =
-    weapon.fixedWeaponBallisticSkill || weaponSkill + (weapon.weaponBallisticSkillAdjustment || 0)
+    weapon.fixedWeaponBallisticSkill || neededSkill + (weapon.weaponBallisticSkillAdjustment || 0)
 
   const adjustedballisticSkill = Math.max(2, weaponBallisticSkill)
 
@@ -194,7 +225,7 @@ function generateWeaponRow(
     <TableRow key={weapon.name + weapon.profile}>
       <TableCell style={styles}>{isProfile ? '' : weapon.name}</TableCell>
       <TableCell style={styles}>{weapon.profile}</TableCell>
-      <TableCell style={styles}>{weapon.attackDice}</TableCell>
+      <TableCell style={styles}>{getAttackerAttackDice(weapon)}</TableCell>
       <TableCell style={styles}>{adjustedballisticSkill}</TableCell>
       <TableCell style={styles}>
         {weapon.damage}/{weapon.damageCritical}
@@ -217,7 +248,7 @@ function generateWeaponRow(
   )
 }
 
-function generateStatBlock({ name, weaponSkill, ballisticSkill, weapons }: DataSheet) {
+function generateStatBlock(profile: Profile) {
   let rowColor = 'rgba(1,1,1,0.1)'
 
   function switchRowColor() {
@@ -228,17 +259,17 @@ function generateStatBlock({ name, weaponSkill, ballisticSkill, weapons }: DataS
     }
   }
 
-  const rangedWeapons = weapons.filter((weapon) => weapon.type === 'RANGED')
-  const meleeWeapons = weapons.filter((weapon) => weapon.type === 'MELEE')
+  const rangedWeapons = profile.weapons.filter((weapon) => weapon.type === 'RANGED')
+  const meleeWeapons = profile.weapons.filter((weapon) => weapon.type === 'MELEE')
 
   return (
-    <TableContainer component={Paper} style={{ margin: '20px' }} key={name}>
+    <TableContainer component={Paper} style={{ margin: '20px' }} key={profile.name}>
       <Table size="small">
         <TableHead>
           <TableRow style={{ backgroundColor: 'rgba(1,1,1,0.3)' }}>
             <TableCell colSpan={10}>
               <Typography variant="h5" fontWeight="700">
-                {name}
+                {profile.name}
               </Typography>
             </TableCell>
           </TableRow>
@@ -266,9 +297,7 @@ function generateStatBlock({ name, weaponSkill, ballisticSkill, weapons }: DataS
               switchRowColor()
             }
 
-            const neededSkill = weapon.type === 'RANGED' ? ballisticSkill : weaponSkill
-
-            return generateWeaponRow(weapon, neededSkill, {
+            return generateWeaponRow(weapon, profile, {
               isProfile: sameNameAsPrevious,
               nextIsProfile: sameNameAsNext,
               backgroundColor: rowColor,
@@ -287,15 +316,36 @@ function generateStatBlock({ name, weaponSkill, ballisticSkill, weapons }: DataS
               <TableCell>!</TableCell>
               <TableCell>
                 Avg Dmg vs GEQ w/ Fists
-                <br />(<span style={{ color: 'green' }}>done</span> <span style={{ color: 'red' }}>taken</span>)
+                <br />
+                <div style={{ display: 'inline-flex', width: '100%' }}>
+                  <span style={{ flex: 'none', flexBasis: '100px' }}>strategy</span>
+                  <span style={{ flex: 'none', color: 'green', flexBasis: '80px', marginLeft: '10px' }}>
+                    dmg done
+                  </span>{' '}
+                  <span style={{ flex: 'none', color: 'red', flexBasis: '80px' }}>dmg taken</span>
+                </div>
               </TableCell>
               <TableCell>
                 Avg Dmg vs MEQ w/ Power Weapon
-                <br /> (<span style={{ color: 'green' }}>done</span> <span style={{ color: 'red' }}>taken</span>)
+                <br />
+                <div style={{ display: 'inline-flex', width: '100%' }}>
+                  <span style={{ flex: 'none', flexBasis: '100px' }}>strategy</span>
+                  <span style={{ flex: 'none', color: 'green', flexBasis: '80px', marginLeft: '10px' }}>
+                    dmg done
+                  </span>{' '}
+                  <span style={{ flex: 'none', color: 'red', flexBasis: '80px' }}>dmg taken</span>
+                </div>
               </TableCell>
               <TableCell>
                 Avg Dmg vs CEQ w/ Guardian Spear
-                <br /> (<span style={{ color: 'green' }}>done</span> <span style={{ color: 'red' }}>taken</span>)
+                <br />
+                <div style={{ display: 'inline-flex', width: '100%' }}>
+                  <span style={{ flex: 'none', flexBasis: '100px' }}>strategy</span>
+                  <span style={{ flex: 'none', color: 'green', flexBasis: '80px', marginLeft: '10px' }}>
+                    dmg done
+                  </span>{' '}
+                  <span style={{ flex: 'none', color: 'red', flexBasis: '80px' }}>dmg taken</span>
+                </div>
               </TableCell>
             </TableRow>
           </TableHead>
@@ -309,7 +359,7 @@ function generateStatBlock({ name, weaponSkill, ballisticSkill, weapons }: DataS
               switchRowColor()
             }
 
-            return generateWeaponRow(weapon, weaponSkill, {
+            return generateWeaponRow(weapon, profile, {
               isProfile: sameNameAsPrevious,
               nextIsProfile: sameNameAsNext,
               backgroundColor: rowColor,

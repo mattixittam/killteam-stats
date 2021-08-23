@@ -10,6 +10,7 @@ export const heavyRangedWeapons: Weapon[] = [
     damageCritical: 4,
     specialRules: [specialRules.HEAVY, specialRules.AP1],
     criticalRules: [],
+    equipment: [],
     type: 'RANGED',
   },
   {
@@ -20,6 +21,7 @@ export const heavyRangedWeapons: Weapon[] = [
     damageCritical: 5,
     specialRules: [specialRules.HEAVY, specialRules.FUSILLADE],
     criticalRules: [criticalRules.P1],
+    equipment: [],
     type: 'RANGED',
   },
   {
@@ -30,6 +32,7 @@ export const heavyRangedWeapons: Weapon[] = [
     damageCritical: 5,
     specialRules: [specialRules.HEAVY, specialRules.FUSILLADE],
     criticalRules: [criticalRules.P1],
+    equipment: [],
     type: 'RANGED',
   },
   {
@@ -40,6 +43,7 @@ export const heavyRangedWeapons: Weapon[] = [
     damageCritical: 5,
     specialRules: [specialRules.HEAVY, specialRules.FUSILLADE, specialRules.AP1],
     criticalRules: [],
+    equipment: [],
     type: 'RANGED',
   },
   {
@@ -50,6 +54,7 @@ export const heavyRangedWeapons: Weapon[] = [
     damageCritical: 5,
     specialRules: [specialRules.HEAVY, specialRules.FUSILLADE, specialRules.CEASELESS],
     criticalRules: [criticalRules.P1],
+    equipment: [],
     type: 'RANGED',
   },
   {
@@ -60,6 +65,7 @@ export const heavyRangedWeapons: Weapon[] = [
     damageCritical: 5,
     specialRules: [specialRules.HEAVY, specialRules.FUSILLADE],
     criticalRules: [criticalRules.P1],
+    equipment: [],
     type: 'RANGED',
   },
   {
@@ -71,6 +77,7 @@ export const heavyRangedWeapons: Weapon[] = [
     damageCritical: 2,
     specialRules: [specialRules.HEAVY, specialRules.RNG6, specialRules.TORRENT],
     criticalRules: [],
+    equipment: [],
     type: 'RANGED',
   },
   {
@@ -81,6 +88,7 @@ export const heavyRangedWeapons: Weapon[] = [
     damageCritical: 5,
     specialRules: [specialRules.HEAVY, specialRules.BLAST2],
     criticalRules: [],
+    equipment: [],
     type: 'RANGED',
   },
   {
@@ -91,6 +99,7 @@ export const heavyRangedWeapons: Weapon[] = [
     damageCritical: 7,
     specialRules: [specialRules.HEAVY, specialRules.AP1],
     criticalRules: [],
+    equipment: [],
     type: 'RANGED',
   },
   {
@@ -101,6 +110,7 @@ export const heavyRangedWeapons: Weapon[] = [
     damageCritical: 4,
     specialRules: [specialRules.HEAVY, specialRules.CEASELESS, specialRules.FUSILLADE],
     criticalRules: [],
+    equipment: [],
     type: 'RANGED',
   },
   {
@@ -111,6 +121,7 @@ export const heavyRangedWeapons: Weapon[] = [
     damageCritical: 6,
     specialRules: [specialRules.HEAVY, specialRules.AP1],
     criticalRules: [],
+    equipment: [],
     type: 'RANGED',
   },
   {
@@ -121,6 +132,7 @@ export const heavyRangedWeapons: Weapon[] = [
     damageCritical: 2,
     specialRules: [specialRules.HEAVY, specialRules.BLAST2],
     criticalRules: [criticalRules.STUN],
+    equipment: [],
     type: 'RANGED',
   },
   {
@@ -132,6 +144,7 @@ export const heavyRangedWeapons: Weapon[] = [
     damageCritical: 4,
     specialRules: [specialRules.HEAVY, specialRules.RNG6],
     criticalRules: [criticalRules.STUN, criticalRules.P1],
+    equipment: [],
     type: 'RANGED',
   },
   {
@@ -142,6 +155,7 @@ export const heavyRangedWeapons: Weapon[] = [
     damageCritical: 4,
     specialRules: [specialRules.HEAVY],
     criticalRules: [criticalRules.P1],
+    equipment: [],
     type: 'RANGED',
   },
   {
@@ -153,6 +167,7 @@ export const heavyRangedWeapons: Weapon[] = [
     damageCritical: 4,
     specialRules: [specialRules.AP1, specialRules.HEAVY, specialRules.UNWIELDY],
     criticalRules: [criticalRules.MW2],
+    equipment: [],
     type: 'RANGED',
   },
 ]

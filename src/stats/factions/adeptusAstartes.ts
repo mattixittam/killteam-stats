@@ -1,7 +1,14 @@
-import { getProfiles } from '../../helpers'
+import { getProfiles, Profile } from '../../helpers'
 
-export const deathwatchVeteranWarrior = {
+export const deathwatchVeteranWarrior: Profile = {
   name: 'DEATHWATCH VETERAN (WARRIOR)',
+  movement: 6,
+  apl: 3,
+  groupActivation: 1,
+  defense: 3,
+  save: 3,
+  saveCritical: 6,
+  wounds: 11,
   ballisticSkill: 3,
   weaponSkill: 3,
   weapons: [
@@ -13,8 +20,15 @@ export const deathwatchVeteranWarrior = {
     ...getProfiles('Power weapon'),
   ],
 }
-export const deathwatchVeteranFighter = {
+export const deathwatchVeteranFighter: Profile = {
   name: 'DEATHWATCH VETERAN (FIGHTER)',
+  movement: 6,
+  apl: 3,
+  groupActivation: 1,
+  defense: 3,
+  save: 3,
+  saveCritical: 6,
+  wounds: 11,
   ballisticSkill: 3,
   weaponSkill: 3,
   weapons: [
@@ -33,8 +47,15 @@ export const deathwatchVeteranFighter = {
     ...getProfiles('Thunder hammer'),
   ],
 }
-export const deathwatchVeteranGunner = {
+export const deathwatchVeteranGunner: Profile = {
   name: 'DEATHWATCH VETERAN (GUNNER)',
+  movement: 6,
+  apl: 3,
+  groupActivation: 1,
+  defense: 3,
+  save: 3,
+  saveCritical: 6,
+  wounds: 11,
   ballisticSkill: 3,
   weaponSkill: 3,
   weapons: [
@@ -50,8 +71,15 @@ export const deathwatchVeteranGunner = {
     ...getProfiles('Fists'),
   ],
 }
-export const deathwatchVeteranHeavyGunner = {
+export const deathwatchVeteranHeavyGunner: Profile = {
   name: 'DEATHWATCH VETERAN (HEAVY GUNNER)',
+  movement: 6,
+  apl: 3,
+  groupActivation: 1,
+  defense: 3,
+  save: 3,
+  saveCritical: 6,
+  wounds: 11,
   ballisticSkill: 3,
   weaponSkill: 3,
   weapons: [
@@ -61,8 +89,15 @@ export const deathwatchVeteranHeavyGunner = {
     ...getProfiles('Fists'),
   ],
 }
-export const deathwatchVeteranWatchSergeant = {
+export const deathwatchVeteranWatchSergeant: Profile = {
   name: 'DEATHWATCH VETERAN WATCH SERGEANT',
+  movement: 6,
+  apl: 3,
+  groupActivation: 1,
+  defense: 3,
+  save: 3,
+  saveCritical: 6,
+  wounds: 12,
   ballisticSkill: 2,
   weaponSkill: 2,
   weapons: [
@@ -96,10 +131,18 @@ export const deathwatchVeteranWatchSergeant = {
   ],
 }
 
-export const dataSheetsDeathWatch = [
-  deathwatchVeteranWarrior,
-  deathwatchVeteranFighter,
-  deathwatchVeteranGunner,
-  deathwatchVeteranHeavyGunner,
-  deathwatchVeteranWatchSergeant,
-]
+export const adeptusAstartesStats = {
+  name: 'Adeptus Astartes',
+  fireTeams: [
+    {
+      name: 'Deathwatch Veterans',
+      dataSheets: [
+        deathwatchVeteranWarrior,
+        deathwatchVeteranFighter,
+        deathwatchVeteranGunner,
+        deathwatchVeteranHeavyGunner,
+        deathwatchVeteranWatchSergeant,
+      ],
+    },
+  ],
+}

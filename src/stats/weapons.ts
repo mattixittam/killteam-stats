@@ -14,6 +14,7 @@ export interface Weapon {
   damageCritical: number
   specialRules: Rule[]
   criticalRules: Rule[]
+  equipment: Rule[]
   type: 'RANGED' | 'MELEE'
 }
 

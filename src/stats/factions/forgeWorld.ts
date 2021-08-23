@@ -2,6 +2,13 @@ import { getProfiles } from '../../helpers'
 
 export const skitariiRangerTrooper = {
   name: 'SKITARII RANGER (TROOPER)',
+  movement: 6,
+  apl: 2,
+  groupActivation: 1,
+  defense: 3,
+  save: 4,
+  saveCritical: 6,
+  wounds: 7,
   ballisticSkill: 3,
   weaponSkill: 4,
   weapons: [...getProfiles('Galvanic rifle'), ...getProfiles('Gun butt')],
@@ -9,6 +16,13 @@ export const skitariiRangerTrooper = {
 
 export const skitariiRangerGunner = {
   name: 'SKITARII RANGER (GUNNER)',
+  movement: 6,
+  apl: 2,
+  groupActivation: 1,
+  defense: 3,
+  save: 4,
+  saveCritical: 6,
+  wounds: 7,
   ballisticSkill: 3,
   weaponSkill: 4,
   weapons: [
@@ -21,6 +35,13 @@ export const skitariiRangerGunner = {
 
 export const skitariiRangerAlpha = {
   name: 'SKITARII RANGER ALPHA',
+  movement: 6,
+  apl: 2,
+  groupActivation: 1,
+  defense: 3,
+  save: 4,
+  saveCritical: 6,
+  wounds: 8,
   ballisticSkill: 2,
   weaponSkill: 4,
   weapons: [
@@ -37,6 +58,13 @@ export const skitariiRangerAlpha = {
 
 export const skitariiVanguardTrooper = {
   name: 'SKITARII VANGUARD (TROOPER)',
+  movement: 6,
+  apl: 2,
+  groupActivation: 1,
+  defense: 3,
+  save: 4,
+  saveCritical: 6,
+  wounds: 7,
   ballisticSkill: 3,
   weaponSkill: 4,
   weapons: [...getProfiles('Radium carbine'), ...getProfiles('Gun butt')],
@@ -44,6 +72,13 @@ export const skitariiVanguardTrooper = {
 
 export const skitariiVanguardGunner = {
   name: 'SKITARII VANGUARD (GUNNER)',
+  movement: 6,
+  apl: 2,
+  groupActivation: 1,
+  defense: 3,
+  save: 4,
+  saveCritical: 6,
+  wounds: 7,
   ballisticSkill: 3,
   weaponSkill: 4,
   weapons: [
@@ -56,6 +91,13 @@ export const skitariiVanguardGunner = {
 
 export const skitariiVanguardAlpha = {
   name: 'SKITARII VANGUARD ALPHA',
+  movement: 6,
+  apl: 2,
+  groupActivation: 1,
+  defense: 3,
+  save: 4,
+  saveCritical: 6,
+  wounds: 8,
   ballisticSkill: 2,
   weaponSkill: 4,
   weapons: [
@@ -72,6 +114,13 @@ export const skitariiVanguardAlpha = {
 
 export const sicarianRuststalkerTrooper = {
   name: 'SICARIAN RUSTSTALKER (TROOPER)',
+  movement: 6,
+  apl: 2,
+  groupActivation: 1,
+  defense: 3,
+  save: 4,
+  saveCritical: 6,
+  wounds: 10,
   ballisticSkill: 3,
   weaponSkill: 3,
   weapons: [...getProfiles('Chordclaw and transonic razor'), ...getProfiles('Transonic blades')],
@@ -79,6 +128,13 @@ export const sicarianRuststalkerTrooper = {
 
 export const sicarianRuststalkerPrinceps = {
   name: 'SICARIAN RUSTSTALKER PRINCEPS',
+  movement: 6,
+  apl: 2,
+  groupActivation: 1,
+  defense: 3,
+  save: 4,
+  saveCritical: 6,
+  wounds: 11,
   ballisticSkill: 2,
   weaponSkill: 2,
   weapons: [...getProfiles('Chordclaw and transonic razor'), ...getProfiles('Transonic blades')],
@@ -86,6 +142,13 @@ export const sicarianRuststalkerPrinceps = {
 
 export const sicarianInfiltratorTrooper = {
   name: 'SICARIAN INFILTRATOR (TROOPER)',
+  movement: 6,
+  apl: 2,
+  groupActivation: 1,
+  defense: 3,
+  save: 4,
+  saveCritical: 6,
+  wounds: 10,
   ballisticSkill: 3,
   weaponSkill: 3,
   weapons: [
@@ -98,6 +161,13 @@ export const sicarianInfiltratorTrooper = {
 
 export const sicarianInfiltratorPrinceps = {
   name: 'SICARIAN INFILTRATOR PRINCEPS',
+  movement: 6,
+  apl: 2,
+  groupActivation: 1,
+  defense: 3,
+  save: 4,
+  saveCritical: 6,
+  wounds: 11,
   ballisticSkill: 2,
   weaponSkill: 3,
   weapons: [
@@ -108,31 +178,25 @@ export const sicarianInfiltratorPrinceps = {
   ],
 }
 
-const dataSheetsSkitariiRangers = [skitariiRangerTrooper, skitariiRangerGunner, skitariiRangerAlpha]
-
-const dataSheetsSkitariiVanguard = [skitariiVanguardTrooper, skitariiVanguardGunner, skitariiVanguardAlpha]
-
-const dataSheetsSicarian = [
-  sicarianRuststalkerTrooper,
-  sicarianRuststalkerPrinceps,
-  sicarianInfiltratorTrooper,
-  sicarianInfiltratorPrinceps,
-]
-
 export const forgeWorldStats = {
   name: 'Forge World',
   fireTeams: [
     {
       name: 'Skitarii Rangers',
-      dataSheets: [...dataSheetsSkitariiRangers],
+      dataSheets: [skitariiRangerTrooper, skitariiRangerGunner, skitariiRangerAlpha],
     },
     {
       name: 'Skitarii Vanguards',
-      dataSheets: [...dataSheetsSkitariiVanguard],
+      dataSheets: [skitariiVanguardTrooper, skitariiVanguardGunner, skitariiVanguardAlpha],
     },
     {
       name: 'Sicarians',
-      dataSheets: [...dataSheetsSicarian],
+      dataSheets: [
+        sicarianRuststalkerTrooper,
+        sicarianRuststalkerPrinceps,
+        sicarianInfiltratorTrooper,
+        sicarianInfiltratorPrinceps,
+      ],
     },
   ],
 }

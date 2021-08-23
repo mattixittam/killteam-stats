@@ -1,6 +1,8 @@
 import { Weapon } from './stats/weapons'
 import { specialRules, criticalRules } from './rules'
 import { DamageMelee, DamageRanged, Defenseprofile } from './App'
+import { Profile } from './helpers'
+import { hereticAstartesEquipment } from './stats/factions/hereticAstartes'
 
 function oneDiceChanceOfSuccess(successFrom: number, critFrom: number = 6) {
   const chanceOfSuccess = (7 - successFrom) * (1 / 6)
@@ -16,36 +18,36 @@ function oneDiceChanceOfCrit(critFrom: number = 6) {
   return (7 - critFrom) * (1 / 6)
 }
 
-export function calculateDamage(weapon: Weapon, weaponSkill: number, defenseProfile: Defenseprofile) {
+export function calculateDamage(weapon: Weapon, defenseProfile: Defenseprofile, attackProfile: Profile) {
   if (weapon.type === 'MELEE') {
-    return calculateDamageMelee(weapon, weaponSkill, defenseProfile)
+    return calculateDamageMelee(weapon, defenseProfile, attackProfile)
   }
 
   if (weapon.type === 'RANGED') {
-    return calculateDamageRanged(weapon, weaponSkill, defenseProfile)
+    return calculateDamageRanged(weapon, defenseProfile, attackProfile)
   }
 
-  return calculateDamageMelee(weapon, weaponSkill, defenseProfile)
+  return calculateDamageMelee(weapon, defenseProfile, attackProfile)
 }
 
-function calculateDamageRanged(weapon: Weapon, ballisticSkill: number, defenseProfile: Defenseprofile): DamageRanged {
-  let rolledDefenseDice = defenseProfile.defenseDice
+function calculateDamageRanged(weapon: Weapon, defenseProfile: Defenseprofile, attackProfile: Profile): DamageRanged {
+  let rolledDefenseDice = defenseProfile.defense
 
   let ballisticSkillCritical = 6
 
   // LETHAL 5+
   if (weapon.specialRules.includes(specialRules.LETHAL5)) {
-    ballisticSkillCritical = Math.max(5, ballisticSkill)
+    ballisticSkillCritical = Math.max(5, attackProfile.ballisticSkill)
   }
 
   // LETHAL 4+
   if (weapon.specialRules.includes(specialRules.LETHAL4)) {
-    ballisticSkillCritical = Math.max(4, ballisticSkill)
+    ballisticSkillCritical = Math.max(4, attackProfile.ballisticSkill)
   }
 
   // GRAV
   if (weapon.specialRules.includes(specialRules.GRAV) && defenseProfile.save <= 3) {
-    ballisticSkillCritical = Math.max(4, ballisticSkill)
+    ballisticSkillCritical = Math.max(4, attackProfile.ballisticSkill)
   }
 
   // AP1
@@ -58,7 +60,7 @@ function calculateDamageRanged(weapon: Weapon, ballisticSkill: number, defensePr
     rolledDefenseDice -= 2
   }
   const weaponBallisticSkill =
-    weapon.fixedWeaponBallisticSkill || ballisticSkill + (weapon.weaponBallisticSkillAdjustment || 0)
+    weapon.fixedWeaponBallisticSkill || attackProfile.ballisticSkill + (weapon.weaponBallisticSkillAdjustment || 0)
 
   const adjustedballisticSkill = Math.max(2, weaponBallisticSkill)
 
@@ -104,15 +106,15 @@ function calculateDamageRanged(weapon: Weapon, ballisticSkill: number, defensePr
   if (weapon.specialRules.includes(specialRules.CEASELESS)) {
     const expectedNaturalOnes = (1 / 6) * weapon.attackDice
 
-    expectedHits += expectedNaturalOnes * oneDiceChanceOfSuccess(ballisticSkill, ballisticSkillCritical)
+    expectedHits += expectedNaturalOnes * oneDiceChanceOfSuccess(attackProfile.ballisticSkill, ballisticSkillCritical)
     expectedCriticalHits += expectedNaturalOnes * oneDiceChanceOfCrit(ballisticSkillCritical)
   }
 
   // RELENTLESS
   if (weapon.specialRules.includes(specialRules.RELENTLESS)) {
-    const expectedMisses = oneDiceChanceOfMiss(ballisticSkill) * weapon.attackDice
+    const expectedMisses = oneDiceChanceOfMiss(attackProfile.ballisticSkill) * weapon.attackDice
 
-    expectedHits += expectedMisses * oneDiceChanceOfSuccess(ballisticSkill, ballisticSkillCritical)
+    expectedHits += expectedMisses * oneDiceChanceOfSuccess(attackProfile.ballisticSkill, ballisticSkillCritical)
     expectedCriticalHits += expectedMisses * oneDiceChanceOfCrit(ballisticSkillCritical)
   }
 
@@ -153,44 +155,63 @@ function calculateDamageRanged(weapon: Weapon, ballisticSkill: number, defensePr
   }
 }
 
-function calculateDamageMelee(weapon: Weapon, weaponSkill: number, defenseProfile: Defenseprofile): DamageMelee {
+export function getAttackerAttackDice(weapon: Weapon) {
+  let attackDice = weapon.attackDice
+
+  // DARK BLESSING on attacker weapon
+  if (weapon.equipment.includes(hereticAstartesEquipment.DARK_BLESSING)) {
+    attackDice += 1
+  }
+
+  return attackDice
+}
+
+export function calculateMeleeBasics(
+  attackerWeapon: Weapon,
+  attackerWeaponSkill: number,
+  defenseProfile: Defenseprofile
+) {
   /**
    * ATTACKER basic stats
    * */
   let attackerWeaponSkillCritical = 6
 
   // LETHAL 5+ on attacker weapon
-  if (weapon.specialRules.includes(specialRules.LETHAL5)) {
-    attackerWeaponSkillCritical = Math.max(5, weaponSkill)
+  if (attackerWeapon.specialRules.includes(specialRules.LETHAL5)) {
+    attackerWeaponSkillCritical = Math.max(5, attackerWeaponSkill)
   }
 
   // LETHAL 4+ on attacker weapon
-  if (weapon.specialRules.includes(specialRules.LETHAL4)) {
-    attackerWeaponSkillCritical = Math.max(4, weaponSkill)
+  if (attackerWeapon.specialRules.includes(specialRules.LETHAL4)) {
+    attackerWeaponSkillCritical = Math.max(4, attackerWeaponSkill)
   }
 
   const attackerAdjustedWeaponSkill = Math.max(
     2,
-    weapon.weaponBallisticSkillAdjustment ? weaponSkill + weapon.weaponBallisticSkillAdjustment : weaponSkill
+    attackerWeapon.weaponBallisticSkillAdjustment
+      ? attackerWeaponSkill + attackerWeapon.weaponBallisticSkillAdjustment
+      : attackerWeaponSkill
   )
 
-  const attackerExpectedHitsPerDie = oneDiceChanceOfSuccess(attackerAdjustedWeaponSkill, attackerWeaponSkillCritical)
-  const attackerExpectedCriticalHitsPerDie = oneDiceChanceOfCrit(attackerWeaponSkillCritical)
+  const attackerHitsPerDie = oneDiceChanceOfSuccess(attackerAdjustedWeaponSkill, attackerWeaponSkillCritical)
+  const attackerCritsPerDie = oneDiceChanceOfCrit(attackerWeaponSkillCritical)
 
-  let attackerHits = attackerExpectedHitsPerDie * weapon.attackDice
-  let attackerCrits = attackerExpectedCriticalHitsPerDie * weapon.attackDice
+  const attackerAttackDice = getAttackerAttackDice(attackerWeapon)
+
+  let attackerHits = attackerHitsPerDie * attackerAttackDice
+  let attackerCrits = attackerCritsPerDie * attackerAttackDice
 
   // RELENTLESS on attacker weapon
-  if (weapon.specialRules.includes(specialRules.RELENTLESS)) {
-    const expectedMisses = oneDiceChanceOfMiss(attackerAdjustedWeaponSkill) * weapon.attackDice
+  if (attackerWeapon.specialRules.includes(specialRules.RELENTLESS)) {
+    const expectedMisses = oneDiceChanceOfMiss(attackerAdjustedWeaponSkill) * attackerAttackDice
 
     attackerHits += expectedMisses * oneDiceChanceOfSuccess(attackerAdjustedWeaponSkill, attackerWeaponSkillCritical)
     attackerCrits += expectedMisses * oneDiceChanceOfCrit(attackerWeaponSkillCritical)
   }
 
   // BALANCED on attacker weapon
-  if (weapon.specialRules.includes(specialRules.BALANCED)) {
-    const chanceOfMiss = Math.min(1, oneDiceChanceOfMiss(attackerAdjustedWeaponSkill) * weapon.attackDice)
+  if (attackerWeapon.specialRules.includes(specialRules.BALANCED)) {
+    const chanceOfMiss = Math.min(1, oneDiceChanceOfMiss(attackerAdjustedWeaponSkill) * attackerAttackDice)
     attackerHits += oneDiceChanceOfSuccess(attackerAdjustedWeaponSkill, attackerWeaponSkillCritical) * chanceOfMiss
     attackerCrits += oneDiceChanceOfCrit(attackerWeaponSkillCritical) * chanceOfMiss
   }
@@ -203,44 +224,51 @@ function calculateDamageMelee(weapon: Weapon, weaponSkill: number, defenseProfil
   let defenseWeaponSkillCritical = 6
 
   // LETHAL 5+ on defender weapon
-  if (defenseProfile.meleeWeapon.specialRules.includes(specialRules.LETHAL5)) {
+  if (defenseProfile.defensiveWeapon.specialRules.includes(specialRules.LETHAL5)) {
     defenseWeaponSkillCritical = Math.max(5, defenseProfile.weaponSkill)
   }
 
   // LETHAL 4+ on defender weapon
-  if (defenseProfile.meleeWeapon.specialRules.includes(specialRules.LETHAL4)) {
+  if (defenseProfile.defensiveWeapon.specialRules.includes(specialRules.LETHAL4)) {
     defenseWeaponSkillCritical = Math.max(4, defenseProfile.weaponSkill)
   }
 
   const defenseAdjustedWeaponSkill = Math.max(
     2,
-    defenseProfile.meleeWeapon.weaponBallisticSkillAdjustment
-      ? defenseProfile.weaponSkill + defenseProfile.meleeWeapon.weaponBallisticSkillAdjustment
+    defenseProfile.defensiveWeapon.weaponBallisticSkillAdjustment
+      ? defenseProfile.weaponSkill + defenseProfile.defensiveWeapon.weaponBallisticSkillAdjustment
       : defenseProfile.weaponSkill
   )
 
-  const defenderExpectedHitsPerDie = oneDiceChanceOfSuccess(defenseAdjustedWeaponSkill, defenseWeaponSkillCritical)
-  const defenderExpectedCriticalHitsPerDie = oneDiceChanceOfCrit(defenseWeaponSkillCritical)
+  const defenderHitsPerDie = oneDiceChanceOfSuccess(defenseAdjustedWeaponSkill, defenseWeaponSkillCritical)
+  const defenderCritsPerDie = oneDiceChanceOfCrit(defenseWeaponSkillCritical)
 
-  let defenderHits = defenderExpectedHitsPerDie * defenseProfile.meleeWeapon.attackDice
-  let defenderCrits = defenderExpectedCriticalHitsPerDie * defenseProfile.meleeWeapon.attackDice
+  let defenderAttackDice = defenseProfile.defensiveWeapon.attackDice
+
+  // GRISLY TROPHY on attacker weapon
+  if (attackerWeapon.equipment.includes(hereticAstartesEquipment.GRISLY_TROPHY)) {
+    defenderAttackDice -= 1
+  }
+
+  let defenderHits = defenderHitsPerDie * defenderAttackDice
+  let defenderCrits = defenderCritsPerDie * defenderAttackDice
 
   // STUN on attacker weapon
-  if (weapon.criticalRules.includes(criticalRules.STUN)) {
-    defenderHits -= defenderExpectedHitsPerDie * attackerExpectedCriticalHitsMax1
+  if (attackerWeapon.criticalRules.includes(criticalRules.STUN)) {
+    defenderHits -= defenderHitsPerDie * attackerExpectedCriticalHitsMax1
   }
 
   // RELENTLESS on defender weapon
-  if (defenseProfile.meleeWeapon.specialRules.includes(specialRules.RELENTLESS)) {
-    const expectedMisses = oneDiceChanceOfMiss(attackerAdjustedWeaponSkill) * weapon.attackDice
+  if (defenseProfile.defensiveWeapon.specialRules.includes(specialRules.RELENTLESS)) {
+    const expectedMisses = oneDiceChanceOfMiss(attackerAdjustedWeaponSkill) * attackerAttackDice
 
     defenderHits += expectedMisses * oneDiceChanceOfSuccess(attackerAdjustedWeaponSkill, attackerWeaponSkillCritical)
     defenderCrits += expectedMisses * oneDiceChanceOfCrit(attackerWeaponSkillCritical)
   }
 
   // BALANCED on defender weapon
-  if (defenseProfile.meleeWeapon.specialRules.includes(specialRules.BALANCED)) {
-    const chanceOfMiss = Math.min(1, oneDiceChanceOfMiss(attackerAdjustedWeaponSkill) * weapon.attackDice)
+  if (defenseProfile.defensiveWeapon.specialRules.includes(specialRules.BALANCED)) {
+    const chanceOfMiss = Math.min(1, oneDiceChanceOfMiss(attackerAdjustedWeaponSkill) * attackerAttackDice)
     defenderHits += oneDiceChanceOfSuccess(attackerAdjustedWeaponSkill, attackerWeaponSkillCritical) * chanceOfMiss
     defenderCrits += oneDiceChanceOfCrit(attackerWeaponSkillCritical) * chanceOfMiss
   }
@@ -248,169 +276,389 @@ function calculateDamageMelee(weapon: Weapon, weaponSkill: number, defenseProfil
   const defenderExpectedCriticalHitsMax1 = Math.min(1, defenderCrits)
 
   // STUN on defender weapon
-  if (defenseProfile.meleeWeapon.criticalRules.includes(criticalRules.STUN)) {
-    attackerHits -= attackerExpectedHitsPerDie * defenderExpectedCriticalHitsMax1
+  if (defenseProfile.defensiveWeapon.criticalRules.includes(criticalRules.STUN)) {
+    attackerHits -= attackerHitsPerDie * defenderExpectedCriticalHitsMax1
   }
+
+  return {
+    attackerHits,
+    attackerCrits,
+    defenderHits,
+    defenderCrits,
+    attackerAdjustedWeaponSkill,
+    attackerWeaponSkillCritical,
+    defenderHitsPerDie,
+    defenderCritsPerDie,
+    attackerHitsPerDie,
+    attackerCritsPerDie,
+  }
+}
+
+interface CalculateMeleeBlowByBlowProps {
+  attackerWeaponProfile: Weapon
+  attackerHits: number
+  attackerCrits: number
+  attackerStrategy: 'STRIKE' | 'PARRY'
+  defenderWeaponProfile: Weapon
+  defenderHits: number
+  defenderCrits: number
+  defenderStrategy: 'STRIKE' | 'PARRY'
+  defenseProfile: Defenseprofile
+  attackProfile: Profile
+}
+
+function calculateMeleeBlowByBlow({
+  attackerWeaponProfile,
+  attackerHits,
+  attackerCrits,
+  attackerStrategy,
+  defenderWeaponProfile,
+  defenderHits,
+  defenderCrits,
+  defenderStrategy,
+  defenseProfile,
+  attackProfile,
+}: CalculateMeleeBlowByBlowProps) {
+  let aCrits = attackerCrits
+  let aHits = attackerHits
+  const aWounds = attackProfile.wounds
+  let aDamage = 0
+
+  let dCrits = defenderCrits
+  let dHits = defenderHits
+  const dWounds = defenseProfile.wounds
+  let dDamage = 0
+
+  let attackerInitiative = true
+  let counter = 0
+
+  while (
+    (aHits > 0 || aCrits > 0 || dHits > 0 || dCrits > 0) &&
+    aWounds > aDamage &&
+    dWounds > dDamage &&
+    counter < 100
+  ) {
+    resolveDie()
+    attackerInitiative = !attackerInitiative
+    counter++
+  }
+
+  return {
+    attackerDamage: aDamage,
+    defenderDamage: dDamage,
+    attackerDead: aDamage >= aWounds,
+    defenderDead: dDamage >= dWounds,
+    counter,
+    finalStats: { aCrits, dCrits, aHits, dHits },
+  }
+
+  function resolveDie() {
+    if (attackerInitiative) {
+      if (attackerStrategy === 'STRIKE') {
+        if (aCrits >= 1) {
+          dDamage += 1 * attackerWeaponProfile.damageCritical
+          aCrits -= 1
+          return
+        } else if (aCrits > 0 && aCrits < 1) {
+          // If a partial crit does more damage than the next hit, do the partial crit
+          if (aCrits * attackerWeaponProfile.damageCritical > attackerWeaponProfile.damage * Math.min(aHits, 1)) {
+            dDamage += attackerWeaponProfile.damageCritical * aCrits
+            aCrits -= aCrits
+            return
+          }
+          // Otherwise fall through to the hits
+        }
+
+        if (aHits >= 1) {
+          dDamage += 1 * attackerWeaponProfile.damage
+          aHits -= 1
+          return
+        } else if (aHits > 0 && aHits < 1) {
+          dDamage += attackerWeaponProfile.damage * aHits
+          aHits -= aHits
+          return
+        }
+      }
+      if (attackerStrategy === 'PARRY') {
+        if (aCrits >= 1) {
+          // One or more full attacker crits left
+          if (dCrits >= 1) {
+            // One or more full defender crits left
+            // => both left over
+            dCrits -= 1
+            aCrits -= 1
+            return
+          } else if (dCrits > 0 && dCrits < 1) {
+            // Partial defender crit left
+            // => defender crit is used up, attacker crit left over
+            dCrits -= dCrits
+            aCrits -= dCrits
+          } else {
+            // Do damage with leftover crit
+            dDamage += Math.min(aCrits, 1) * attackerWeaponProfile.damageCritical
+            aCrits -= Math.min(aCrits, 1)
+            return
+          }
+        } else if (aCrits > 0 && aCrits < 1) {
+          // Partial attacker crit left
+          if (dCrits >= aCrits) {
+            // Enough defender crits left to soak up all attacker crits left
+            // => attacker crit is used up, defender crit left over
+            dCrits -= aCrits
+            aCrits -= aCrits
+            return
+          } else if (dCrits > 0 && dCrits < aCrits) {
+            // Not enough defender crits left to soak up all attacker crits left
+            // => defender crit is used up, attacker crit left over
+            dCrits -= dCrits
+            aCrits -= dCrits
+          } else {
+            // Do damage with leftover crit
+            dDamage += Math.min(aCrits, 1) * attackerWeaponProfile.damageCritical
+            aCrits -= Math.min(aCrits, 1)
+            return
+          }
+        }
+
+        if (aHits >= 1) {
+          // One or more full attacker hits left
+          if (dHits >= 1) {
+            // One or more full defender hits left
+            // => both left over
+            dHits -= 1
+            aHits -= 1
+            return
+          } else if (dHits > 0 && dHits < 1) {
+            // Partial defender hit left
+            // => defender hit is used up, attacker hit left over
+            dHits -= dHits
+            aHits -= dHits
+          } else {
+            // Do damage with leftover hit
+            dDamage += Math.min(aHits, 1) * attackerWeaponProfile.damage
+            aHits -= Math.min(aHits, 1)
+            return
+          }
+        } else if (aHits > 0 && aHits < 1) {
+          // Partial attacker hit left
+          if (dHits >= aHits) {
+            // Enough defender hits left to soak up all attacker hits left
+            // => attacker hit is used up, defender hit left over
+            dHits -= aHits
+            aHits -= aHits
+            return
+          } else if (dHits > 0 && dHits < aHits) {
+            // Not enough defender hits left to soak up all attacker hits left
+            // => defender hit is used up, attacker hit left over
+            dHits -= dHits
+            aHits -= dHits
+          } else {
+            // Do damage with leftover hit
+            dDamage += Math.min(aHits, 1) * attackerWeaponProfile.damage
+            aHits -= Math.min(aHits, 1)
+            return
+          }
+        }
+      }
+    }
+
+    // DEFENDER has intiative
+    if (!attackerInitiative) {
+      if (defenderStrategy === 'STRIKE') {
+        // FIXME if a partial crit for less damage than the next hit, do the hit
+        if (dCrits >= 1) {
+          aDamage += defenderWeaponProfile.damageCritical
+          dCrits -= 1
+          return
+        } else if (dCrits > 0 && dCrits < 1) {
+          // If a partial crit does more damage than the next hit, do the partial crit
+          if (dCrits * defenderWeaponProfile.damageCritical > defenderWeaponProfile.damage * Math.min(dHits, 1)) {
+            aDamage += defenderWeaponProfile.damageCritical * dCrits
+            dCrits -= dCrits
+            return
+          }
+          // Otherwise fall through to the hits
+        }
+
+        if (dHits >= 1) {
+          aDamage += defenderWeaponProfile.damage
+          dHits -= 1
+          return
+        } else if (dHits > 0 && dHits < 1) {
+          aDamage += dHits * defenderWeaponProfile.damageCritical
+          dHits -= dHits
+          return
+        }
+      }
+      if (defenderStrategy === 'PARRY') {
+        if (dCrits >= 1) {
+          // One or more full defender crits left
+          if (aCrits >= 1) {
+            // One or more full attacker crits left
+            // => both left over
+            aCrits -= 1
+            dCrits -= 1
+            return
+          } else if (aCrits > 0 && aCrits < 1) {
+            // Partial attacker crit left
+            // => attacker crit is used up, defender crit left over
+            aCrits -= aCrits
+            dCrits -= aCrits
+            return
+          } else {
+            // Do damage with leftover crit
+            aDamage += Math.min(dCrits, 1) * defenderWeaponProfile.damageCritical
+            dCrits -= Math.min(dCrits, 1)
+            return
+          }
+        } else if (dCrits > 0 && dCrits < 1) {
+          // Partial defender crit left
+          if (aCrits >= dCrits) {
+            // Enough attacker crits left to soak up all defender crits left
+            // => defender crit is used up, attacker crit left over
+            aCrits -= dCrits
+            dCrits -= dCrits
+            return
+          } else if (aCrits > 0 && aCrits < dCrits) {
+            // Not enough attacker crits left to soak up all defender crits left
+            // => attacker crit is used up, defender crit left over
+            aCrits -= aCrits
+            dCrits -= aCrits
+            return
+          } else {
+            // Do damage with leftover crit
+            aDamage += Math.min(dCrits, 1) * defenderWeaponProfile.damageCritical
+            dCrits -= Math.min(dCrits, 1)
+            return
+          }
+        }
+
+        if (dHits >= 1) {
+          // One or more full defender hits left
+          if (aHits >= 1) {
+            // One or more full attacker hits left
+            // => both left over
+            aHits -= 1
+            dHits -= 1
+            return
+          } else if (aHits > 0 && aHits < 1) {
+            // Partial attacker hit left
+            // => attacker hit is used up, defender hit left over
+            aHits -= aHits
+            dHits -= aHits
+            return
+          } else {
+            // Do damage with leftover hits
+            aDamage += Math.min(dHits, 1) * defenderWeaponProfile.damage
+            dHits -= Math.min(dHits, 1)
+            return
+          }
+        } else if (dHits > 0 && dHits < 1) {
+          // Partial defender hit left
+          if (aHits >= dHits) {
+            // Enough attacker hits left to soak up all defender hits left
+            // => defender hit is used up, attacker hit left over
+            aHits -= dHits
+            dHits -= dHits
+            return
+          } else if (aHits > 0 && aHits < dHits) {
+            // Not enough attacker hits left to soak up all defender hits left
+            // => attacker hit is used up, defender hit left over
+            aHits -= aHits
+            dHits -= aHits
+            return
+          } else {
+            // Do damage with leftover hits
+            aDamage += Math.min(dHits, 1) * defenderWeaponProfile.damage
+            dHits -= Math.min(dHits, 1)
+            return
+          }
+        }
+      }
+    }
+  }
+}
+
+function calculateDamageMelee(weapon: Weapon, defenseProfile: Defenseprofile, attackProfile: Profile): DamageMelee {
+  const { attackerHits, attackerCrits, defenderHits, defenderCrits } = calculateMeleeBasics(
+    weapon,
+    attackProfile.weaponSkill,
+    defenseProfile
+  )
 
   /** STRATEGY 1
    * Goal: attacker & defender => max damage done
    * Strategy: no parries on either side, just straight damage
    * */
   // eslint-disable-next-line
-  const { damageDone1, damageTaken1 } = maxDamage()
+  const maxDamageOutput = calculateMeleeBlowByBlow({
+    attackerWeaponProfile: weapon,
+    attackerHits,
+    attackerCrits,
+    attackerStrategy: 'STRIKE',
+    defenderWeaponProfile: defenseProfile.defensiveWeapon,
+    defenderHits,
+    defenderCrits,
+    defenderStrategy: 'STRIKE',
+    defenseProfile,
+    attackProfile,
+  })
 
   /** STRATEGY 2
    * Goal: attacker => max damage done, defender => min damage taken
    * Strategy: attacker does maximum damage, defender parries whenever possible
    * */
-  const { damageDone2, damageTaken2 } = minDamageTakenDef()
+  const parryDefenderOutput = calculateMeleeBlowByBlow({
+    attackerWeaponProfile: weapon,
+    attackerHits,
+    attackerCrits,
+    attackerStrategy: 'STRIKE',
+    defenderWeaponProfile: defenseProfile.defensiveWeapon,
+    defenderHits,
+    defenderCrits,
+    defenderStrategy: 'PARRY',
+    defenseProfile,
+    attackProfile,
+  })
 
   /** STRATEGY 3
-   * Goal: attacker => min damage taken, defender => min damage taken
-   * Strategy: attacker and defender parry when possible
+   * Goal: attacker => min damage taken, defender => max damage done
+   * Strategy: attacker parries when possible, defender does maximum damage
    * */
-  const { damageDone3, damageTaken3 } = minDamageTakenAtt()
+  const parryAttackerOutput = calculateMeleeBlowByBlow({
+    attackerWeaponProfile: weapon,
+    attackerHits,
+    attackerCrits,
+    attackerStrategy: 'PARRY',
+    defenderWeaponProfile: defenseProfile.defensiveWeapon,
+    defenderHits,
+    defenderCrits,
+    defenderStrategy: 'STRIKE',
+    defenseProfile,
+    attackProfile,
+  })
 
   return {
     type: 'melee',
     total: {
       maxDamage: {
-        done: +damageDone1.toFixed(2),
-        taken: +damageTaken1.toFixed(2),
+        attackerDamage: maxDamageOutput.attackerDamage,
+        defenderDamage: maxDamageOutput.defenderDamage,
+        attackerDead: maxDamageOutput.attackerDead,
+        defenderDead: maxDamageOutput.defenderDead,
       },
-      minTakenDef: {
-        done: +damageDone2.toFixed(2),
-        taken: +damageTaken2.toFixed(2),
+      parryDefender: {
+        attackerDamage: parryDefenderOutput.attackerDamage,
+        defenderDamage: parryDefenderOutput.defenderDamage,
+        attackerDead: parryDefenderOutput.attackerDead,
+        defenderDead: parryDefenderOutput.defenderDead,
       },
-      minTakenAtt: {
-        done: +damageDone3.toFixed(2),
-        taken: +damageTaken3.toFixed(2),
+      parryAttacker: {
+        attackerDamage: parryAttackerOutput.attackerDamage,
+        defenderDamage: parryAttackerOutput.defenderDamage,
+        attackerDead: parryAttackerOutput.attackerDead,
+        defenderDead: parryAttackerOutput.defenderDead,
       },
     },
-  }
-
-  function maxDamage() {
-    const damageDone1 = attackerHits * weapon.damage + attackerCrits * weapon.damageCritical
-
-    const damageTaken1 =
-      defenderHits * defenseProfile.meleeWeapon.damage + defenderCrits * defenseProfile.meleeWeapon.damageCritical
-
-    return { damageDone1, damageTaken1 }
-  }
-
-  function minDamageTakenDef() {
-    // First unchallenged hit
-    const attackerFirstCrits = Math.min(1, attackerCrits)
-    const attackerFirstHits = Math.min(Math.max(0, 1 - attackerFirstCrits), attackerHits)
-
-    const attackerFirstHitDamage = attackerFirstCrits * weapon.damageCritical + attackerFirstHits * weapon.damage
-
-    const attackerHitsAfterFirst =
-      attackerHits - oneDiceChanceOfSuccess(attackerAdjustedWeaponSkill, attackerWeaponSkillCritical)
-    const attackerCritsAfterFirst = attackerCrits - oneDiceChanceOfCrit(attackerWeaponSkillCritical)
-
-    const unparryableAttackerCrits = attackerCritsAfterFirst * 0.5
-
-    // Positive is excess crits, negative is excess critical parries
-    const criticalDifference = attackerCritsAfterFirst - unparryableAttackerCrits - defenderCrits
-    const excessDefenderCrits = criticalDifference < 0 ? -criticalDifference : 0
-    const excessAttackerCrits = criticalDifference > 0 ? criticalDifference : 0
-
-    // Positive is excess hits, negative is excess parries
-    let hitDifference = 0
-
-    const unparryableAttackerHits = attackerHitsAfterFirst * 0.5
-    const parryableAttackerHits = attackerHitsAfterFirst * 0.5
-
-    if (weapon.specialRules.includes(specialRules.BRUTAL)) {
-      // BRUTAL
-      hitDifference = parryableAttackerHits - excessDefenderCrits
-    } else {
-      // Normal
-      hitDifference = parryableAttackerHits - defenderHits - excessDefenderCrits
-    }
-
-    let excessDefenderHits = hitDifference < 0 ? -hitDifference : 0
-
-    // BRUTAL
-    if (weapon.specialRules.includes(specialRules.BRUTAL)) {
-      excessDefenderHits += defenderHits
-    }
-
-    const excessHits = hitDifference > 0 ? hitDifference : 0
-
-    const attackerCritDamageAfterFirst = (excessAttackerCrits + unparryableAttackerCrits) * weapon.damageCritical
-    const attackerHitDamageAfterFirst = (excessHits + unparryableAttackerHits) * weapon.damage
-    const damageDone2 = attackerFirstHitDamage + attackerCritDamageAfterFirst + attackerHitDamageAfterFirst
-
-    const defenderCritDamage = excessDefenderCrits * defenseProfile.meleeWeapon.damageCritical
-    const defenderHitDamage = excessDefenderHits * defenseProfile.meleeWeapon.damage
-    const damageTaken2 = defenderCritDamage + defenderHitDamage
-
-    return { damageDone2, damageTaken2 }
-  }
-
-  function minDamageTakenAtt() {
-    // First unchallenged parry
-    const expectedCriticalFirstParries = Math.min(
-      1,
-      defenderExpectedCriticalHitsPerDie * defenseProfile.meleeWeapon.attackDice
-    )
-    const expectedNormalFirstParries = Math.min(
-      Math.max(0, 1 - expectedCriticalFirstParries),
-      defenderExpectedHitsPerDie * defenseProfile.meleeWeapon.attackDice
-    )
-
-    let expectedAttackerHits = attackerHits - defenderExpectedHitsPerDie
-    let expectedAttackerCrits = attackerCrits - defenderExpectedCriticalHitsPerDie
-
-    const expectedDefenderHits = defenderHits - expectedNormalFirstParries
-    const expectedDefenderCrits = defenderCrits - expectedCriticalFirstParries
-
-    // Should add up to 1
-    const defenderHitsUsedAsStrike = expectedDefenderHits * 0.5
-    const defenderHitsUsedAsParry = expectedDefenderHits * 0.5
-
-    // Should add up to 1
-    const defenderCritsUsedAsStrike = expectedDefenderCrits * 0.5
-    const defenderCritsUsedAsParry = expectedDefenderCrits * 0.5
-
-    // Positive is excess attacker crits, negative is excess defender crits
-    const criticalDifference = expectedAttackerCrits - expectedDefenderCrits - defenderCritsUsedAsParry
-    const excessDefenderCrits = criticalDifference < 0 ? -criticalDifference : 0
-    const excessAttackerCrits = criticalDifference > 0 ? criticalDifference : 0
-
-    // Positive is excess hits, negative is excess parries
-    let hitDifference = 0
-
-    if (weapon.specialRules.includes(specialRules.BRUTAL)) {
-      // BRUTAL
-      hitDifference = expectedAttackerHits - excessDefenderCrits
-    } else {
-      // Normal
-      hitDifference = expectedAttackerHits - excessDefenderCrits - defenderHitsUsedAsParry
-    }
-
-    // FIXME we assume the defender crits are used up as parries, this is sometimes incorrect
-
-    let excessDefenderHits = hitDifference < 0 ? -hitDifference : 0
-    const excessAttackerHits = hitDifference > 0 ? hitDifference : 0
-
-    // BRUTAL
-    if (weapon.specialRules.includes(specialRules.BRUTAL)) {
-      // Cannot be used as parry, because they are simple hits, so strikes instead
-      excessDefenderHits += defenderHitsUsedAsParry
-    }
-
-    const attackerCritDamage = excessAttackerCrits * weapon.damageCritical
-    const attackerHitDamage = excessAttackerHits * weapon.damage
-
-    const damageDone3 = attackerCritDamage + attackerHitDamage
-
-    const critDamageTaken = defenderCritsUsedAsStrike * defenseProfile.meleeWeapon.damageCritical
-    const hitDamageTaken = (defenderHitsUsedAsStrike + excessDefenderHits) * defenseProfile.meleeWeapon.damage
-    const damageTaken3 = critDamageTaken + hitDamageTaken
-
-    return { damageDone3, damageTaken3 }
   }
 }
