@@ -1,8 +1,8 @@
 {
   "files": {
     "main.css": "/killteam-stats/static/css/main.5739ad41.chunk.css",
-    "main.js": "/killteam-stats/static/js/main.c53c89d2.chunk.js",
-    "main.js.map": "/killteam-stats/static/js/main.c53c89d2.chunk.js.map",
+    "main.js": "/killteam-stats/static/js/main.d15f7adb.chunk.js",
+    "main.js.map": "/killteam-stats/static/js/main.d15f7adb.chunk.js.map",
     "runtime-main.js": "/killteam-stats/static/js/runtime-main.aeadfa3b.js",
     "runtime-main.js.map": "/killteam-stats/static/js/runtime-main.aeadfa3b.js.map",
     "static/css/2.3995dbc2.chunk.css": "/killteam-stats/static/css/2.3995dbc2.chunk.css",
@@ -24,6 +24,6 @@
     "static/css/2.3995dbc2.chunk.css",
     "static/js/2.488af101.chunk.js",
     "static/css/main.5739ad41.chunk.css",
-    "static/js/main.c53c89d2.chunk.js"
+    "static/js/main.d15f7adb.chunk.js"
   ]
 }
