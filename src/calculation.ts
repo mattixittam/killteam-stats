@@ -157,37 +157,57 @@ function calculateDamageMelee(weapon: Weapon, weaponSkill: number, defenseProfil
   /**
    * ATTACKER basic stats
    * */
-  let weaponSkillCritical = 6
+  let attackerWeaponSkillCritical = 6
 
-  // LETHAL 5+
+  // LETHAL 5+ on attacker weapon
   if (weapon.specialRules.includes(specialRules.LETHAL5)) {
-    weaponSkillCritical = Math.max(5, weaponSkill)
+    attackerWeaponSkillCritical = Math.max(5, weaponSkill)
   }
 
-  // LETHAL 4+
+  // LETHAL 4+ on attacker weapon
   if (weapon.specialRules.includes(specialRules.LETHAL4)) {
-    weaponSkillCritical = Math.max(4, weaponSkill)
+    attackerWeaponSkillCritical = Math.max(4, weaponSkill)
   }
 
-  const adjustedWeaponSkill = Math.max(
+  const attackerAdjustedWeaponSkill = Math.max(
     2,
     weapon.weaponBallisticSkillAdjustment ? weaponSkill + weapon.weaponBallisticSkillAdjustment : weaponSkill
   )
 
-  const expectedHitsPerDie = oneDiceChanceOfSuccess(adjustedWeaponSkill, weaponSkillCritical)
-  const expectedCriticalHitsPerDie = oneDiceChanceOfCrit(weaponSkillCritical)
+  const attackerExpectedHitsPerDie = oneDiceChanceOfSuccess(attackerAdjustedWeaponSkill, attackerWeaponSkillCritical)
+  const attackerExpectedCriticalHitsPerDie = oneDiceChanceOfCrit(attackerWeaponSkillCritical)
+
+  let attackerHits = attackerExpectedHitsPerDie * weapon.attackDice
+  let attackerCrits = attackerExpectedCriticalHitsPerDie * weapon.attackDice
+
+  // RELENTLESS on attacker weapon
+  if (weapon.specialRules.includes(specialRules.RELENTLESS)) {
+    const expectedMisses = oneDiceChanceOfMiss(attackerAdjustedWeaponSkill) * weapon.attackDice
+
+    attackerHits += expectedMisses * oneDiceChanceOfSuccess(attackerAdjustedWeaponSkill, attackerWeaponSkillCritical)
+    attackerCrits += expectedMisses * oneDiceChanceOfCrit(attackerWeaponSkillCritical)
+  }
+
+  // BALANCED on attacker weapon
+  if (weapon.specialRules.includes(specialRules.BALANCED)) {
+    const chanceOfMiss = Math.min(1, oneDiceChanceOfMiss(attackerAdjustedWeaponSkill) * weapon.attackDice)
+    attackerHits += oneDiceChanceOfSuccess(attackerAdjustedWeaponSkill, attackerWeaponSkillCritical) * chanceOfMiss
+    attackerCrits += oneDiceChanceOfCrit(attackerWeaponSkillCritical) * chanceOfMiss
+  }
+
+  const attackerExpectedCriticalHitsMax1 = Math.min(1, attackerCrits)
 
   /**
    * DEFENDER basic stats
    * */
   let defenseWeaponSkillCritical = 6
 
-  // LETHAL 5+
+  // LETHAL 5+ on defender weapon
   if (defenseProfile.meleeWeapon.specialRules.includes(specialRules.LETHAL5)) {
     defenseWeaponSkillCritical = Math.max(5, defenseProfile.weaponSkill)
   }
 
-  // LETHAL 4+
+  // LETHAL 4+ on defender weapon
   if (defenseProfile.meleeWeapon.specialRules.includes(specialRules.LETHAL4)) {
     defenseWeaponSkillCritical = Math.max(4, defenseProfile.weaponSkill)
   }
@@ -199,8 +219,38 @@ function calculateDamageMelee(weapon: Weapon, weaponSkill: number, defenseProfil
       : defenseProfile.weaponSkill
   )
 
-  const defenseExpectedHitsPerDie = oneDiceChanceOfSuccess(defenseAdjustedWeaponSkill, defenseWeaponSkillCritical)
-  const defenseExpectedCriticalHitsPerDie = oneDiceChanceOfCrit(defenseWeaponSkillCritical)
+  const defenderExpectedHitsPerDie = oneDiceChanceOfSuccess(defenseAdjustedWeaponSkill, defenseWeaponSkillCritical)
+  const defenderExpectedCriticalHitsPerDie = oneDiceChanceOfCrit(defenseWeaponSkillCritical)
+
+  let defenderHits = defenderExpectedHitsPerDie * defenseProfile.meleeWeapon.attackDice
+  let defenderCrits = defenderExpectedCriticalHitsPerDie * defenseProfile.meleeWeapon.attackDice
+
+  // STUN on attacker weapon
+  if (weapon.criticalRules.includes(criticalRules.STUN)) {
+    defenderHits -= defenderExpectedHitsPerDie * attackerExpectedCriticalHitsMax1
+  }
+
+  // RELENTLESS on defender weapon
+  if (defenseProfile.meleeWeapon.specialRules.includes(specialRules.RELENTLESS)) {
+    const expectedMisses = oneDiceChanceOfMiss(attackerAdjustedWeaponSkill) * weapon.attackDice
+
+    defenderHits += expectedMisses * oneDiceChanceOfSuccess(attackerAdjustedWeaponSkill, attackerWeaponSkillCritical)
+    defenderCrits += expectedMisses * oneDiceChanceOfCrit(attackerWeaponSkillCritical)
+  }
+
+  // BALANCED on defender weapon
+  if (defenseProfile.meleeWeapon.specialRules.includes(specialRules.BALANCED)) {
+    const chanceOfMiss = Math.min(1, oneDiceChanceOfMiss(attackerAdjustedWeaponSkill) * weapon.attackDice)
+    defenderHits += oneDiceChanceOfSuccess(attackerAdjustedWeaponSkill, attackerWeaponSkillCritical) * chanceOfMiss
+    defenderCrits += oneDiceChanceOfCrit(attackerWeaponSkillCritical) * chanceOfMiss
+  }
+
+  const defenderExpectedCriticalHitsMax1 = Math.min(1, defenderCrits)
+
+  // STUN on defender weapon
+  if (defenseProfile.meleeWeapon.criticalRules.includes(criticalRules.STUN)) {
+    attackerHits -= attackerExpectedHitsPerDie * defenderExpectedCriticalHitsMax1
+  }
 
   /** STRATEGY 1
    * Goal: attacker & defender => max damage done
@@ -240,103 +290,62 @@ function calculateDamageMelee(weapon: Weapon, weaponSkill: number, defenseProfil
   }
 
   function maxDamage() {
-    let expectedHits = expectedHitsPerDie * weapon.attackDice
-    let expectedCrits = expectedCriticalHitsPerDie * weapon.attackDice
-
-    // BALANCED
-    if (weapon.specialRules.includes(specialRules.BALANCED)) {
-      const chanceOfMiss = Math.min(1, oneDiceChanceOfMiss(adjustedWeaponSkill) * weapon.attackDice)
-      expectedHits += oneDiceChanceOfSuccess(adjustedWeaponSkill, weaponSkillCritical) * chanceOfMiss
-      expectedCrits += oneDiceChanceOfCrit(weaponSkillCritical) * chanceOfMiss
-    }
-
-    const damageDone1 = expectedHits * weapon.damage + expectedCrits * weapon.damageCritical
-
-    const expectedCriticalhits = Math.min(1, expectedCriticalHitsPerDie * weapon.attackDice)
-
-    let defenseHits = defenseExpectedHitsPerDie * defenseProfile.meleeWeapon.attackDice
-
-    // STUN
-    if (weapon.criticalRules.includes(criticalRules.STUN)) {
-      defenseHits -= defenseExpectedHitsPerDie * expectedCriticalhits
-    }
-
-    const defenseCrits = defenseExpectedCriticalHitsPerDie * defenseProfile.meleeWeapon.attackDice
+    const damageDone1 = attackerHits * weapon.damage + attackerCrits * weapon.damageCritical
 
     const damageTaken1 =
-      defenseHits * defenseProfile.meleeWeapon.damage + defenseCrits * defenseProfile.meleeWeapon.damageCritical
+      defenderHits * defenseProfile.meleeWeapon.damage + defenderCrits * defenseProfile.meleeWeapon.damageCritical
 
     return { damageDone1, damageTaken1 }
   }
 
   function minDamageTakenDef() {
-    let expectedHits = expectedHitsPerDie * weapon.attackDice
-    let expectedCrits = expectedCriticalHitsPerDie * weapon.attackDice
-
-    // BALANCED
-    if (weapon.specialRules.includes(specialRules.BALANCED)) {
-      const chanceOfMiss = Math.min(1, oneDiceChanceOfMiss(adjustedWeaponSkill) * weapon.attackDice)
-      expectedHits += oneDiceChanceOfSuccess(adjustedWeaponSkill, weaponSkillCritical) * chanceOfMiss
-      expectedCrits += oneDiceChanceOfCrit(weaponSkillCritical) * chanceOfMiss
-    }
-
     // First unchallenged hit
-    const expectedCriticalFirstHits = Math.min(1, expectedCrits)
-    const expectedNormalFirstHits = Math.min(Math.max(0, 1 - expectedCriticalFirstHits), expectedHits)
+    const attackerFirstCrits = Math.min(1, attackerCrits)
+    const attackerFirstHits = Math.min(Math.max(0, 1 - attackerFirstCrits), attackerHits)
 
-    const firstHitDamage = expectedCriticalFirstHits * weapon.damageCritical + expectedNormalFirstHits * weapon.damage
+    const attackerFirstHitDamage = attackerFirstCrits * weapon.damageCritical + attackerFirstHits * weapon.damage
 
-    const expectedHitsAfterFirst = expectedHits - oneDiceChanceOfSuccess(adjustedWeaponSkill, weaponSkillCritical)
-    const expectedCritsAfterFirst = expectedCrits - oneDiceChanceOfCrit(weaponSkillCritical)
-    let expectedParries = defenseExpectedHitsPerDie * defenseProfile.meleeWeapon.attackDice
+    const attackerHitsAfterFirst =
+      attackerHits - oneDiceChanceOfSuccess(attackerAdjustedWeaponSkill, attackerWeaponSkillCritical)
+    const attackerCritsAfterFirst = attackerCrits - oneDiceChanceOfCrit(attackerWeaponSkillCritical)
 
-    // STUN
-    if (weapon.criticalRules.includes(criticalRules.STUN)) {
-      expectedParries -= defenseExpectedHitsPerDie * (expectedCriticalFirstHits + expectedCritsAfterFirst)
-    }
-
-    const expectedCriticalParries = defenseExpectedCriticalHitsPerDie * defenseProfile.meleeWeapon.attackDice
+    const unparryableAttackerCrits = attackerCritsAfterFirst * 0.5
 
     // Positive is excess crits, negative is excess critical parries
-    const unparryableCrits = expectedCritsAfterFirst * 0.5
-
-    const criticalDifference = expectedCritsAfterFirst - unparryableCrits - expectedCriticalParries
-    const excessCriticalParries = criticalDifference < 0 ? -criticalDifference : 0
-    const excessCriticalHits = criticalDifference > 0 ? criticalDifference : 0
+    const criticalDifference = attackerCritsAfterFirst - unparryableAttackerCrits - defenderCrits
+    const excessDefenderCrits = criticalDifference < 0 ? -criticalDifference : 0
+    const excessAttackerCrits = criticalDifference > 0 ? criticalDifference : 0
 
     // Positive is excess hits, negative is excess parries
     let hitDifference = 0
 
-    const unparryableHits = expectedHitsAfterFirst * 0.5
+    const unparryableAttackerHits = attackerHitsAfterFirst * 0.5
+    const parryableAttackerHits = attackerHitsAfterFirst * 0.5
 
     if (weapon.specialRules.includes(specialRules.BRUTAL)) {
       // BRUTAL
-      hitDifference = expectedHitsAfterFirst - unparryableHits - excessCriticalParries
+      hitDifference = parryableAttackerHits - excessDefenderCrits
     } else {
       // Normal
-      hitDifference = expectedHitsAfterFirst - unparryableHits - expectedParries - excessCriticalParries
+      hitDifference = parryableAttackerHits - defenderHits - excessDefenderCrits
     }
 
-    let excessParries = hitDifference < 0 ? -hitDifference : 0
+    let excessDefenderHits = hitDifference < 0 ? -hitDifference : 0
 
     // BRUTAL
     if (weapon.specialRules.includes(specialRules.BRUTAL)) {
-      excessParries += expectedParries
+      excessDefenderHits += defenderHits
     }
 
     const excessHits = hitDifference > 0 ? hitDifference : 0
 
-    const criticaldamageDoneAfterFirst = (excessCriticalHits + unparryableCrits) * weapon.damageCritical
-    const nonCriticaldamageDoneAfterFirst = (excessHits + unparryableHits) * weapon.damage
+    const attackerCritDamageAfterFirst = (excessAttackerCrits + unparryableAttackerCrits) * weapon.damageCritical
+    const attackerHitDamageAfterFirst = (excessHits + unparryableAttackerHits) * weapon.damage
+    const damageDone2 = attackerFirstHitDamage + attackerCritDamageAfterFirst + attackerHitDamageAfterFirst
 
-    const damageDone2 = firstHitDamage + criticaldamageDoneAfterFirst + nonCriticaldamageDoneAfterFirst
-
-    const excessCriticalParryDamage =
-      excessParries > 0 ? Math.min(excessParries, excessCriticalParries) * defenseProfile.meleeWeapon.damageCritical : 0
-
-    const excessParryDamage =
-      Math.max(excessParries - excessCriticalParries, 0) * defenseProfile.meleeWeapon.damageCritical
-    const damageTaken2 = excessCriticalParryDamage + excessParryDamage
+    const defenderCritDamage = excessDefenderCrits * defenseProfile.meleeWeapon.damageCritical
+    const defenderHitDamage = excessDefenderHits * defenseProfile.meleeWeapon.damage
+    const damageTaken2 = defenderCritDamage + defenderHitDamage
 
     return { damageDone2, damageTaken2 }
   }
@@ -345,83 +354,62 @@ function calculateDamageMelee(weapon: Weapon, weaponSkill: number, defenseProfil
     // First unchallenged parry
     const expectedCriticalFirstParries = Math.min(
       1,
-      defenseExpectedCriticalHitsPerDie * defenseProfile.meleeWeapon.attackDice
+      defenderExpectedCriticalHitsPerDie * defenseProfile.meleeWeapon.attackDice
     )
     const expectedNormalFirstParries = Math.min(
       Math.max(0, 1 - expectedCriticalFirstParries),
-      defenseExpectedHitsPerDie * defenseProfile.meleeWeapon.attackDice
+      defenderExpectedHitsPerDie * defenseProfile.meleeWeapon.attackDice
     )
 
-    let expectedHits = expectedHitsPerDie * weapon.attackDice - defenseExpectedHitsPerDie
-    let expectedCrits = expectedCriticalHitsPerDie * weapon.attackDice - defenseExpectedCriticalHitsPerDie
+    let expectedAttackerHits = attackerHits - defenderExpectedHitsPerDie
+    let expectedAttackerCrits = attackerCrits - defenderExpectedCriticalHitsPerDie
 
-    // BALANCED
-    if (weapon.specialRules.includes(specialRules.BALANCED)) {
-      const chanceOfMiss = Math.min(1, oneDiceChanceOfMiss(adjustedWeaponSkill) * weapon.attackDice)
-      expectedHits += oneDiceChanceOfSuccess(adjustedWeaponSkill, weaponSkillCritical) * chanceOfMiss
-      expectedCrits += oneDiceChanceOfCrit(weaponSkillCritical) * chanceOfMiss
-    }
+    const expectedDefenderHits = defenderHits - expectedNormalFirstParries
+    const expectedDefenderCrits = defenderCrits - expectedCriticalFirstParries
 
-    const expectedParries =
-      defenseExpectedHitsPerDie * defenseProfile.meleeWeapon.attackDice - expectedNormalFirstParries
+    // Should add up to 1
+    const defenderHitsUsedAsStrike = expectedDefenderHits * 0.5
+    const defenderHitsUsedAsParry = expectedDefenderHits * 0.5
 
-    const expectedCriticalParries =
-      defenseExpectedCriticalHitsPerDie * defenseProfile.meleeWeapon.attackDice - expectedCriticalFirstParries
+    // Should add up to 1
+    const defenderCritsUsedAsStrike = expectedDefenderCrits * 0.5
+    const defenderCritsUsedAsParry = expectedDefenderCrits * 0.5
 
-    const parriesUsedAsHits = expectedParries * 0.5
-    const parriesUsedAsCrits = expectedCriticalParries * 0.5
-
-    // Positive is excess crits, negative is excess critical parries
-    const criticalDifference = expectedCrits - (expectedCriticalParries - parriesUsedAsCrits)
-    const excessCriticalParries = criticalDifference < 0 ? -criticalDifference : 0
-    const excessCriticalHits = criticalDifference > 0 ? criticalDifference : 0
+    // Positive is excess attacker crits, negative is excess defender crits
+    const criticalDifference = expectedAttackerCrits - expectedDefenderCrits - defenderCritsUsedAsParry
+    const excessDefenderCrits = criticalDifference < 0 ? -criticalDifference : 0
+    const excessAttackerCrits = criticalDifference > 0 ? criticalDifference : 0
 
     // Positive is excess hits, negative is excess parries
-    let hitDifferenceAfterParries = 0
+    let hitDifference = 0
 
     if (weapon.specialRules.includes(specialRules.BRUTAL)) {
       // BRUTAL
-      hitDifferenceAfterParries = expectedHits - (excessCriticalParries - parriesUsedAsHits)
+      hitDifference = expectedAttackerHits - excessDefenderCrits
     } else {
       // Normal
-      hitDifferenceAfterParries = expectedHits - expectedParries - (excessCriticalParries - parriesUsedAsHits)
+      hitDifference = expectedAttackerHits - excessDefenderCrits - defenderHitsUsedAsParry
     }
 
-    let excessParries = hitDifferenceAfterParries < 0 ? -hitDifferenceAfterParries : 0
+    // FIXME we assume the defender crits are used up as parries, this is sometimes incorrect
 
-    // STUN
-    if (weapon.criticalRules.includes(criticalRules.STUN)) {
-      excessParries -= defenseExpectedHitsPerDie * Math.min(excessCriticalHits, 1)
-    }
+    let excessDefenderHits = hitDifference < 0 ? -hitDifference : 0
+    const excessAttackerHits = hitDifference > 0 ? hitDifference : 0
 
     // BRUTAL
     if (weapon.specialRules.includes(specialRules.BRUTAL)) {
-      excessParries += expectedParries - parriesUsedAsHits
+      // Cannot be used as parry, because they are simple hits, so strikes instead
+      excessDefenderHits += defenderHitsUsedAsParry
     }
 
-    const excessHits = hitDifferenceAfterParries > 0 ? hitDifferenceAfterParries : 0
+    const attackerCritDamage = excessAttackerCrits * weapon.damageCritical
+    const attackerHitDamage = excessAttackerHits * weapon.damage
 
-    const criticaldamageDoneAfterParries = excessCriticalHits * weapon.damageCritical
-    const nonCriticaldamageDoneAfterParries = excessHits * weapon.damage
+    const damageDone3 = attackerCritDamage + attackerHitDamage
 
-    const damageDone3 = criticaldamageDoneAfterParries + nonCriticaldamageDoneAfterParries
-
-    const excessCriticalParryDamage =
-      excessParries > 0 ? Math.min(excessParries, excessCriticalParries) * defenseProfile.meleeWeapon.damageCritical : 0
-
-    const excessParryDamage =
-      Math.max(excessParries - excessCriticalParries, 0) * defenseProfile.meleeWeapon.damageCritical
-
-    const criticalParryDamageTaken =
-      parriesUsedAsCrits * defenseProfile.meleeWeapon.damageCritical + excessCriticalParryDamage
-
-    const parryDamageTaken = parriesUsedAsHits * defenseProfile.meleeWeapon.damageCritical + excessParryDamage
-
-    if (weapon.criticalRules.includes(criticalRules.STUN)) {
-      // FIXME
-    }
-
-    const damageTaken3 = criticalParryDamageTaken + parryDamageTaken
+    const critDamageTaken = defenderCritsUsedAsStrike * defenseProfile.meleeWeapon.damageCritical
+    const hitDamageTaken = (defenderHitsUsedAsStrike + excessDefenderHits) * defenseProfile.meleeWeapon.damage
+    const damageTaken3 = critDamageTaken + hitDamageTaken
 
     return { damageDone3, damageTaken3 }
   }

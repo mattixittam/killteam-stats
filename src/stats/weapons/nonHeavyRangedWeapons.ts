@@ -369,4 +369,15 @@ export const nonHeavyRangedWeapons: Weapon[] = [
     criticalRules: [],
     type: 'RANGED',
   },
+  {
+    name: 'Lash whip',
+    profile: '',
+    attackDice: 4,
+    weaponBallisticSkillAdjustment: -1,
+    damage: 3,
+    damageCritical: 4,
+    specialRules: [specialRules.RNG3],
+    criticalRules: [criticalRules.STUN],
+    type: 'RANGED',
+  },
 ]
