@@ -14,17 +14,6 @@ export const meleeWeapons: Weapon[] = [
     type: 'MELEE',
   },
   {
-    name: 'Xenophase blade',
-    profile: '+ storm shield',
-    attackDice: 5,
-    damage: 4,
-    damageCritical: 6,
-    specialRules: [specialRules.BRUTAL, specialRules.LETHAL5, specialRules.STORM_SHIELD],
-    criticalRules: [],
-    equipment: [],
-    type: 'MELEE',
-  },
-  {
     name: 'Fists',
     profile: '',
     attackDice: 4,

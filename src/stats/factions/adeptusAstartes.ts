@@ -1,4 +1,10 @@
-import { getProfiles, Profile } from '../../helpers'
+import { addEquipmentToProfiles, getProfiles, Profile } from '../../helpers'
+
+export const adeptusAstartesEquipment = {
+  STORM_SHIELD: {
+    label: 'Storm shield',
+  },
+}
 
 export const deathwatchVeteranWarrior: Profile = {
   name: 'DEATHWATCH VETERAN (WARRIOR)',
@@ -127,7 +133,7 @@ export const deathwatchVeteranWatchSergeant: Profile = {
     ...getProfiles('Power maul'),
     ...getProfiles('Power weapon'),
     ...getProfiles('Thunder hammer'),
-    ...getProfiles('Xenophase blade'),
+    ...addEquipmentToProfiles(getProfiles('Xenophase blade'), [adeptusAstartesEquipment.STORM_SHIELD]),
   ],
 }
 

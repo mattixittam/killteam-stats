@@ -3,6 +3,7 @@ import { specialRules, criticalRules } from './rules'
 import { DamageMelee, DamageRanged, Defenseprofile } from './App'
 import { Profile } from './helpers'
 import { hereticAstartesEquipment } from './stats/factions/hereticAstartes'
+import { adeptusAstartesEquipment } from './stats/factions/adeptusAstartes'
 
 function oneDiceChanceOfSuccess(successFrom: number, critFrom: number = 6) {
   const chanceOfSuccess = (7 - successFrom) * (1 / 6)
@@ -307,6 +308,8 @@ interface CalculateMeleeBlowByBlowProps {
   attackProfile: Profile
 }
 
+type Actor = 'ATTACKER' | 'DEFENDER'
+
 function calculateMeleeBlowByBlow({
   attackerWeaponProfile,
   attackerHits,
@@ -391,8 +394,15 @@ function calculateMeleeBlowByBlow({
           } else if (dCrits > 0 && dCrits < 1) {
             // Partial defender crit left
             // => defender crit is used up, attacker crit left over
-            dCrits -= dCrits
             aCrits -= dCrits
+
+            // Do damage with leftover crit up to a full die combined with the parry
+            dDamage += Math.min(aCrits, 1 - dCrits) * attackerWeaponProfile.damage
+            aCrits -= Math.min(aCrits, 1 - dCrits)
+
+            // => defender crit is used up
+            dCrits -= dCrits
+            return
           } else {
             // Do damage with leftover crit
             dDamage += Math.min(aCrits, 1) * attackerWeaponProfile.damageCritical
@@ -410,8 +420,15 @@ function calculateMeleeBlowByBlow({
           } else if (dCrits > 0 && dCrits < aCrits) {
             // Not enough defender crits left to soak up all attacker crits left
             // => defender crit is used up, attacker crit left over
-            dCrits -= dCrits
             aCrits -= dCrits
+
+            // Do damage with leftover crit up to a full die combined with the parry
+            dDamage += Math.min(aCrits, 1 - dCrits) * attackerWeaponProfile.damage
+            aCrits -= Math.min(aCrits, 1 - dCrits)
+
+            // => defender crit is used up
+            dCrits -= dCrits
+            return
           } else {
             // Do damage with leftover crit
             dDamage += Math.min(aCrits, 1) * attackerWeaponProfile.damageCritical
@@ -431,8 +448,15 @@ function calculateMeleeBlowByBlow({
           } else if (dHits > 0 && dHits < 1) {
             // Partial defender hit left
             // => defender hit is used up, attacker hit left over
-            dHits -= dHits
             aHits -= dHits
+
+            // Do damage with leftover hit up to a full die combined with the parry
+            dDamage += Math.min(aHits, 1 - dHits) * attackerWeaponProfile.damage
+            aHits -= Math.min(aHits, 1 - dHits)
+
+            // => defender hit is used up
+            dHits -= dHits
+            return
           } else {
             // Do damage with leftover hit
             dDamage += Math.min(aHits, 1) * attackerWeaponProfile.damage
@@ -450,8 +474,15 @@ function calculateMeleeBlowByBlow({
           } else if (dHits > 0 && dHits < aHits) {
             // Not enough defender hits left to soak up all attacker hits left
             // => defender hit is used up, attacker hit left over
-            dHits -= dHits
             aHits -= dHits
+
+            // Do damage with leftover hit up to a full die combined with the parry
+            dDamage += Math.min(aHits, 1 - dHits) * attackerWeaponProfile.damage
+            aHits -= Math.min(aHits, 1 - dHits)
+
+            // => defender hit is used up
+            dHits -= dHits
+            return
           } else {
             // Do damage with leftover hit
             dDamage += Math.min(aHits, 1) * attackerWeaponProfile.damage
@@ -504,6 +535,9 @@ function calculateMeleeBlowByBlow({
             // => attacker crit is used up, defender crit left over
             aCrits -= aCrits
             dCrits -= aCrits
+            // Do damage with leftover crit
+            aDamage += Math.min(dCrits, 1) * defenderWeaponProfile.damageCritical
+            dCrits -= Math.min(dCrits, 1)
             return
           } else {
             // Do damage with leftover crit
@@ -521,9 +555,15 @@ function calculateMeleeBlowByBlow({
             return
           } else if (aCrits > 0 && aCrits < dCrits) {
             // Not enough attacker crits left to soak up all defender crits left
+            // => defender crit left over
+            dCrits -= aCrits
+
+            // Do damage with leftover crit up to a full die combined with the parry
+            aDamage += Math.min(dCrits, 1 - aCrits) * defenderWeaponProfile.damageCritical
+            dCrits -= Math.min(dCrits, 1 - aCrits)
+
             // => attacker crit is used up, defender crit left over
             aCrits -= aCrits
-            dCrits -= aCrits
             return
           } else {
             // Do damage with leftover crit
@@ -543,9 +583,15 @@ function calculateMeleeBlowByBlow({
             return
           } else if (aHits > 0 && aHits < 1) {
             // Partial attacker hit left
-            // => attacker hit is used up, defender hit left over
-            aHits -= aHits
+            // => defender hit left over
             dHits -= aHits
+
+            // Do damage with leftover hit up to a full die combined with the parry
+            aDamage += Math.min(dHits, 1 - aHits) * defenderWeaponProfile.damage
+            dHits -= Math.min(dHits, 1 - aHits)
+
+            // => attacker hit is used up
+            aHits -= aHits
             return
           } else {
             // Do damage with leftover hits
@@ -563,9 +609,15 @@ function calculateMeleeBlowByBlow({
             return
           } else if (aHits > 0 && aHits < dHits) {
             // Not enough attacker hits left to soak up all defender hits left
-            // => attacker hit is used up, defender hit left over
-            aHits -= aHits
+            // => defender hit left over
             dHits -= aHits
+
+            // Do damage with leftover hit up to a full die combined with the parry
+            aDamage += Math.min(dHits, 1 - aHits) * defenderWeaponProfile.damage
+            dHits -= Math.min(dHits, 1 - aHits)
+
+            // => attacker hit is used up
+            aHits -= aHits
             return
           } else {
             // Do damage with leftover hits
