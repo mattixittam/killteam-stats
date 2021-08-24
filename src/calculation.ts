@@ -384,6 +384,48 @@ function calculateMeleeBlowByBlow({
     const initiator = stats[initiativeActor]
     const responder = stats[respondingActor]
 
+    function resolveLeftOverCrit() {
+      // => initiator crit left over
+      initiator.crits -= responder.crits
+
+      let dieLeft = 1 - responder.crits
+
+      // => responder crit is used up
+      responder.crits -= responder.crits
+
+      // Use the leftover initiator crit to parry a hit up to a full die, combined with the critical parry
+      if (responder.hits > 0) {
+        const hitAmountParried = Math.min(initiator.crits, dieLeft, responder.hits)
+        responder.hits -= hitAmountParried
+        initiator.crits -= hitAmountParried
+        dieLeft -= hitAmountParried
+      }
+
+      if (initiator.crits > 0 && dieLeft > 0) {
+        // Do damage with leftover crit up to a full die combined with the critical parry
+        const critDone = Math.min(initiator.crits, dieLeft)
+        responder.damage += critDone * initiator.weaponProfile.damageCritical
+        initiator.crits -= critDone
+      }
+    }
+
+    function resolveLeftOverHit() {
+      // => parry, initiator hit left over
+      initiator.hits -= responder.hits
+
+      let dieLeft = 1 - responder.hits
+
+      // => responder hit is used up
+      responder.hits -= responder.hits
+
+      if (initiator.hits > 0 && dieLeft > 0) {
+        // Do damage with leftover hit up to a full die combined with the parry
+        const hitDone = Math.min(initiator.hits, dieLeft)
+        responder.damage += hitDone * initiator.weaponProfile.damage
+        initiator.hits -= hitDone
+      }
+    }
+
     if (strategy === 'STRIKE') {
       if (initiator.crits >= 1) {
         responder.damage += 1 * initiator.weaponProfile.damageCritical
@@ -414,51 +456,35 @@ function calculateMeleeBlowByBlow({
     }
     if (strategy === 'PARRY') {
       if (initiator.crits >= 1) {
-        // One or more full attacker crits left
+        // One or more full initiator crits left
         if (responder.crits >= 1) {
-          // One or more full defender crits left
+          // One or more full responder crits left
           // => both left over
           responder.crits -= 1
           initiator.crits -= 1
           return
         } else if (responder.crits > 0 && responder.crits < 1) {
-          // Partial defender crit left
-          // => defender crit is used up, attacker crit left over
-          initiator.crits -= responder.crits
-
-          // Do damage with leftover crit up to a full die combined with the parry
-          responder.damage += Math.min(initiator.crits, 1 - responder.crits) * initiator.weaponProfile.damageCritical
-          initiator.crits -= Math.min(initiator.crits, 1 - responder.crits)
-
-          // => defender crit is used up
-          responder.crits -= responder.crits
-          return
+          // Responder crits used up, initiator crits leftover
+          // Try parrying hits, then do damage
+          resolveLeftOverCrit()
         } else {
-          // Do damage with leftover crit
+          // Do damage with leftover initiator crit
           responder.damage += Math.min(initiator.crits, 1) * initiator.weaponProfile.damageCritical
           initiator.crits -= Math.min(initiator.crits, 1)
           return
         }
       } else if (initiator.crits > 0 && initiator.crits < 1) {
-        // Partial attacker crit left
+        // Partial initiator crit left
         if (responder.crits >= initiator.crits) {
-          // Enough defender crits left to soak up all attacker crits left
-          // => attacker crit is used up, defender crit left over
+          // Enough responder crits left to soak up all initiator crits left
+          // => initiator crit is used up, responder crit left over
           responder.crits -= initiator.crits
           initiator.crits -= initiator.crits
           return
         } else if (responder.crits > 0 && responder.crits < initiator.crits) {
-          // Not enough defender crits left to soak up all attacker crits left
-          // => defender crit is used up, attacker crit left over
-          initiator.crits -= responder.crits
-
-          // Do damage with leftover crit up to a full die combined with the parry
-          responder.damage += Math.min(initiator.crits, 1 - responder.crits) * initiator.weaponProfile.damageCritical
-          initiator.crits -= Math.min(initiator.crits, 1 - responder.crits)
-
-          // => defender crit is used up
-          responder.crits -= responder.crits
-          return
+          // Responder crits used up, initiator crits leftover
+          // Try parrying hits, then do damage
+          resolveLeftOverCrit()
         } else {
           // Do damage with leftover crit
           responder.damage += Math.min(initiator.crits, 1) * initiator.weaponProfile.damageCritical
@@ -468,25 +494,17 @@ function calculateMeleeBlowByBlow({
       }
 
       if (initiator.hits >= 1) {
-        // One or more full attacker hits left
+        // One or more full initiator hits left
         if (responder.hits >= 1) {
-          // One or more full defender hits left
+          // One or more full responder hits left
           // => both left over
           responder.hits -= 1
           initiator.hits -= 1
           return
         } else if (responder.hits > 0 && responder.hits < 1) {
-          // Partial defender hit left
-          // => defender hit is used up, attacker hit left over
-          initiator.hits -= responder.hits
-
-          // Do damage with leftover hit up to a full die combined with the parry
-          responder.damage += Math.min(initiator.hits, 1 - responder.hits) * initiator.weaponProfile.damage
-          initiator.hits -= Math.min(initiator.hits, 1 - responder.hits)
-
-          // => defender hit is used up
-          responder.hits -= responder.hits
-          return
+          // Partial responder hit left
+          // => responder hit is used up, initiator hit left over
+          resolveLeftOverHit()
         } else {
           // Do damage with leftover hit
           responder.damage += Math.min(initiator.hits, 1) * initiator.weaponProfile.damage
@@ -494,24 +512,17 @@ function calculateMeleeBlowByBlow({
           return
         }
       } else if (initiator.hits > 0 && initiator.hits < 1) {
-        // Partial attacker hit left
+        // Partial initiator hit left
         if (responder.hits >= initiator.hits) {
-          // Enough defender hits left to soak up all attacker hits left
-          // => attacker hit is used up, defender hit left over
+          // Enough responder hits left to soak up all initiator hits left
+          // => initiator hit is used up, responder hit left over
           responder.hits -= initiator.hits
           initiator.hits -= initiator.hits
           return
         } else if (responder.hits > 0 && responder.hits < initiator.hits) {
-          // Not enough defender hits left to soak up all attacker hits left
-          // => defender hit is used up, attacker hit left over
-          initiator.hits -= responder.hits
-
-          // Do damage with leftover hit up to a full die combined with the parry
-          responder.damage += Math.min(initiator.hits, 1 - responder.hits) * initiator.weaponProfile.damage
-          initiator.hits -= Math.min(initiator.hits, 1 - responder.hits)
-
-          // => defender hit is used up
-          responder.hits -= responder.hits
+          // Not enough responder hits left to soak up all initiator hits left
+          // => responder hit is used up, initiator hit left over
+          resolveLeftOverHit()
           return
         } else {
           // Do damage with leftover hit
