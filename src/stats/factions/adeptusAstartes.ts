@@ -38,14 +38,26 @@ export const deathwatchVeteranFighter: Profile = {
     ...getProfiles('Hand flamer'),
     ...getProfiles('Inferno pistol'),
     ...getProfiles('Plasma pistol'),
-    ...getProfiles('Chainsword', { attackDiceAdjustment: 1 }),
     ...getProfiles('Heavy thunder hammer', { attackDiceAdjustment: 1 }),
-    ...getProfiles('Lightning claw', { attackDiceAdjustment: 1 }),
     ...getProfiles('Lightning claws', { attackDiceAdjustment: 1 }),
-    ...getProfiles('Power fist', { attackDiceAdjustment: 1 }),
-    ...getProfiles('Power maul', { attackDiceAdjustment: 1 }),
-    ...getProfiles('Power weapon', { attackDiceAdjustment: 1 }),
-    ...getProfiles('Thunder hammer', { attackDiceAdjustment: 1 }),
+    ...addEquipmentToProfiles(getProfiles('Chainsword', { attackDiceAdjustment: 1 }), [
+      adeptusAstartesEquipment.STORM_SHIELD,
+    ]),
+    ...addEquipmentToProfiles(getProfiles('Lightning claw', { attackDiceAdjustment: 1 }), [
+      adeptusAstartesEquipment.STORM_SHIELD,
+    ]),
+    ...addEquipmentToProfiles(getProfiles('Power fist', { attackDiceAdjustment: 1 }), [
+      adeptusAstartesEquipment.STORM_SHIELD,
+    ]),
+    ...addEquipmentToProfiles(getProfiles('Power maul', { attackDiceAdjustment: 1 }), [
+      adeptusAstartesEquipment.STORM_SHIELD,
+    ]),
+    ...addEquipmentToProfiles(getProfiles('Power weapon', { attackDiceAdjustment: 1 }), [
+      adeptusAstartesEquipment.STORM_SHIELD,
+    ]),
+    ...addEquipmentToProfiles(getProfiles('Thunder hammer', { attackDiceAdjustment: 1 }), [
+      adeptusAstartesEquipment.STORM_SHIELD,
+    ]),
   ],
 }
 export const deathwatchVeteranGunner: Profile = {
