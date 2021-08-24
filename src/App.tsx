@@ -139,6 +139,12 @@ export interface DamageMelee {
       defenderDamage: number
       defenderDead: boolean
     }
+    parryBoth: {
+      attackerDamage: number
+      attackerDead: boolean
+      defenderDamage: number
+      defenderDead: boolean
+    }
   }
 }
 
@@ -188,6 +194,17 @@ function formatMeleeDamage(damage: DamageMelee) {
             {d.parryAttacker.attackerDead && '💀'}
           </span>
         </div>
+        {/* <div style={{ display: 'inline-flex', width: '100%' }}>
+          <span style={{ flex: 'none', flexBasis: '100px' }}>Both parry: </span>
+          <span style={{ flex: 'none', color: 'green', flexBasis: '80px', marginLeft: '10px' }}>
+            {d.parryBoth.defenderDamage.toFixed(2)}
+            {d.parryBoth.defenderDead && '💀'}
+          </span>{' '}
+          <span style={{ flex: 'none', color: 'red', flexBasis: '80px' }}>
+            {d.parryBoth.attackerDamage.toFixed(2)}
+            {d.parryBoth.attackerDead && '💀'}
+          </span>
+        </div> */}
       </div>
     </>
   )

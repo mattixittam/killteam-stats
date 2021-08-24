@@ -2,6 +2,7 @@ import { Weapon, weapons } from './stats/weapons'
 
 interface Options {
   weaponBallisticSkillAdjustment?: number
+  attackDiceAdjustment?: number
   equipmentProfiles?: string[]
 }
 
@@ -25,17 +26,19 @@ export interface Profile {
 
 export function getProfiles(name: string, options?: Options): Weapon[] {
   const modifiedSkill = options?.weaponBallisticSkillAdjustment
+  const attackDiceAdjustment = options?.attackDiceAdjustment
 
   return weapons
     .filter((weapon) => weapon.name === name)
     .map((profile) => ({
       ...profile,
       weaponBallisticSkillAdjustment: modifiedSkill ? modifiedSkill : profile.weaponBallisticSkillAdjustment,
+      attackDice: attackDiceAdjustment ? profile.attackDice + attackDiceAdjustment : profile.attackDice,
     }))
 }
 
 export function generateEquipmentProfile(weapon: Weapon, newEquipment: Equipment): Weapon {
-  return { ...weapon, profile: newEquipment.label, equipment: [...weapon.equipment, newEquipment] }
+  return { ...weapon, profile: `+ ${newEquipment.label}`, equipment: [...weapon.equipment, newEquipment] }
 }
 
 export function addEquipmentToProfiles(profiles: Weapon[], equipment: Equipment[]) {

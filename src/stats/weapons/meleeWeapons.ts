@@ -5,7 +5,7 @@ export const meleeWeapons: Weapon[] = [
   {
     name: 'Xenophase blade',
     profile: '',
-    attackDice: 5,
+    attackDice: 4,
     damage: 4,
     damageCritical: 6,
     specialRules: [specialRules.BRUTAL, specialRules.LETHAL5],
@@ -60,7 +60,7 @@ export const meleeWeapons: Weapon[] = [
   {
     name: 'Chainsword',
     profile: '',
-    attackDice: 5,
+    attackDice: 4,
     damage: 4,
     damageCritical: 5,
     specialRules: [],
@@ -71,7 +71,7 @@ export const meleeWeapons: Weapon[] = [
   {
     name: 'Heavy thunder hammer',
     profile: '',
-    attackDice: 5,
+    attackDice: 4,
     weaponBallisticSkillAdjustment: 1,
     damage: 6,
     damageCritical: 8,
@@ -83,7 +83,7 @@ export const meleeWeapons: Weapon[] = [
   {
     name: 'Lightning claw',
     profile: '',
-    attackDice: 5,
+    attackDice: 4,
     damage: 4,
     damageCritical: 5,
     specialRules: [specialRules.LETHAL5],
@@ -94,7 +94,7 @@ export const meleeWeapons: Weapon[] = [
   {
     name: 'Lightning claws',
     profile: '',
-    attackDice: 5,
+    attackDice: 4,
     damage: 6,
     damageCritical: 8,
     specialRules: [specialRules.LETHAL5, specialRules.RELENTLESS],
@@ -105,7 +105,7 @@ export const meleeWeapons: Weapon[] = [
   {
     name: 'Power fist',
     profile: '',
-    attackDice: 5,
+    attackDice: 4,
     weaponBallisticSkillAdjustment: 1,
     damage: 5,
     damageCritical: 7,
@@ -117,7 +117,7 @@ export const meleeWeapons: Weapon[] = [
   {
     name: 'Power maul',
     profile: '',
-    attackDice: 5,
+    attackDice: 4,
     damage: 4,
     damageCritical: 5,
     specialRules: [],
@@ -150,7 +150,7 @@ export const meleeWeapons: Weapon[] = [
   {
     name: 'Thunder hammer',
     profile: '',
-    attackDice: 5,
+    attackDice: 4,
     weaponBallisticSkillAdjustment: 1,
     damage: 5,
     damageCritical: 6,

@@ -96,11 +96,11 @@ export const chaosSmAspiringChampion: Profile = {
       hereticAstartesEquipment.GRISLY_TROPHY,
       hereticAstartesEquipment.DARK_BLESSING,
     ]),
-    ...addEquipmentToProfiles(getProfiles('Power fist'), [
+    ...addEquipmentToProfiles(getProfiles('Power fist', { attackDiceAdjustment: 1 }), [
       hereticAstartesEquipment.GRISLY_TROPHY,
       hereticAstartesEquipment.DARK_BLESSING,
     ]),
-    ...addEquipmentToProfiles(getProfiles('Power weapon'), [
+    ...addEquipmentToProfiles(getProfiles('Power weapon', { attackDiceAdjustment: 1 }), [
       hereticAstartesEquipment.GRISLY_TROPHY,
       hereticAstartesEquipment.DARK_BLESSING,
     ]),

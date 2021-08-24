@@ -3,6 +3,7 @@ import { specialRules, criticalRules } from './rules'
 import { DamageMelee, DamageRanged, Defenseprofile } from './App'
 import { Profile } from './helpers'
 import { hereticAstartesEquipment } from './stats/factions/hereticAstartes'
+import { adeptusAstartesEquipment } from './stats/factions/adeptusAstartes'
 
 function oneDiceChanceOfSuccess(successFrom: number, critFrom: number = 6) {
   const chanceOfSuccess = (7 - successFrom) * (1 / 6)
@@ -353,13 +354,27 @@ function calculateMeleeBlowByBlow({
 
   let attackerInitiative = true
   let counter = 0
+  // if (
+  //   stats.attacker.weaponProfile.specialRules.includes(specialRules.BRUTAL) ||
+  //   stats.defender.weaponProfile.specialRules.includes(specialRules.BRUTAL)
+  // ) {
+  // console.log(
+  //   'Start a new calculation',
+  //   stats.attacker.weaponProfile.name,
+  //   attackerStrategy,
+  //   stats.attacker.crits,
+  //   stats.attacker.hits,
+  //   stats.defender.weaponProfile.name,
+  //   defenderStrategy
+  // )
+  // }
 
   // Main loop, attribute dice until someone dies or the dice run out
   while (
     (stats.attacker.hits > 0 || stats.attacker.crits > 0 || stats.defender.hits > 0 || stats.defender.crits > 0) &&
     stats.attacker.wounds > stats.attacker.damage &&
     stats.defender.wounds > stats.defender.damage &&
-    counter < 100
+    counter < 100 // Safeguard against runaway loops
   ) {
     resolveDie()
     attackerInitiative = !attackerInitiative
@@ -384,152 +399,143 @@ function calculateMeleeBlowByBlow({
     const initiator = stats[initiativeActor]
     const responder = stats[respondingActor]
 
-    function resolveLeftOverCrit() {
-      // => initiator crit left over
-      initiator.crits -= responder.crits
+    if (strategy === 'STRIKE') {
+      let dieLeft = 1
 
-      let dieLeft = 1 - responder.crits
+      if (initiator.crits > 0) {
+        const criticalDamageAmount = Math.min(initiator.crits, dieLeft)
+        responder.damage += criticalDamageAmount * initiator.weaponProfile.damageCritical
+        initiator.crits -= criticalDamageAmount
+        dieLeft -= criticalDamageAmount
 
-      // => responder crit is used up
-      responder.crits -= responder.crits
+        // if (
+        //   initiator.weaponProfile.specialRules.includes(specialRules.BRUTAL) ||
+        //   responder.weaponProfile.specialRules.includes(specialRules.BRUTAL)
+        // ) {
+        //   console.log(
+        //     'After critical hits as critical hits',
+        //     initiativeActor,
+        //     JSON.stringify({ initiator, responder, dieLeft })
+        //   )
+        // }
 
-      // Use the leftover initiator crit to parry a hit up to a full die, combined with the critical parry
-      if (responder.hits > 0) {
-        const hitAmountParried = Math.min(initiator.crits, dieLeft, responder.hits)
-        responder.hits -= hitAmountParried
-        initiator.crits -= hitAmountParried
-        dieLeft -= hitAmountParried
+        if (dieLeft === 0) return
+
+        const damageAmount = Math.min(initiator.crits, dieLeft)
+        responder.damage += damageAmount * initiator.weaponProfile.damage
+        initiator.crits -= damageAmount
+        dieLeft -= damageAmount
+
+        // if (
+        //   initiator.weaponProfile.specialRules.includes(specialRules.BRUTAL) ||
+        //   responder.weaponProfile.specialRules.includes(specialRules.BRUTAL)
+        // ) {
+        //   console.log('After critical hits as hits', initiativeActor, JSON.stringify({ ...stats, dieLeft }))
+        // }
+
+        if (dieLeft === 0) return
       }
-
-      if (initiator.crits > 0 && dieLeft > 0) {
-        // Do damage with leftover crit up to a full die combined with the critical parry
-        const critDone = Math.min(initiator.crits, dieLeft)
-        responder.damage += critDone * initiator.weaponProfile.damageCritical
-        initiator.crits -= critDone
-      }
-    }
-
-    function resolveLeftOverHit() {
-      // => parry, initiator hit left over
-      initiator.hits -= responder.hits
-
-      let dieLeft = 1 - responder.hits
-
-      // => responder hit is used up
-      responder.hits -= responder.hits
 
       if (initiator.hits > 0 && dieLeft > 0) {
-        // Do damage with leftover hit up to a full die combined with the parry
-        const hitDone = Math.min(initiator.hits, dieLeft)
-        responder.damage += hitDone * initiator.weaponProfile.damage
-        initiator.hits -= hitDone
-      }
-    }
+        const damageAmount = Math.min(initiator.hits, dieLeft)
+        responder.damage += damageAmount * initiator.weaponProfile.damage
+        initiator.hits -= damageAmount
+        dieLeft -= damageAmount
 
-    if (strategy === 'STRIKE') {
-      if (initiator.crits >= 1) {
-        responder.damage += 1 * initiator.weaponProfile.damageCritical
-        initiator.crits -= 1
-        return
-      } else if (initiator.crits > 0 && initiator.crits < 1) {
-        // If a partial crit does more damage than the next hit, do the partial crit
-        if (
-          initiator.crits * initiator.weaponProfile.damageCritical >
-          initiator.weaponProfile.damage * Math.min(initiator.hits, 1)
-        ) {
-          responder.damage += initiator.weaponProfile.damageCritical * initiator.crits
-          initiator.crits -= initiator.crits
-          return
-        }
-        // Otherwise fall through to the hits
-      }
+        // if (
+        //   initiator.weaponProfile.specialRules.includes(specialRules.BRUTAL) ||
+        //   responder.weaponProfile.specialRules.includes(specialRules.BRUTAL)
+        // ) {
+        //   console.log('After hits as hits', initiativeActor, JSON.stringify({ ...stats, dieLeft }))
+        // }
 
-      if (initiator.hits >= 1) {
-        responder.damage += 1 * initiator.weaponProfile.damage
-        initiator.hits -= 1
-        return
-      } else if (initiator.hits > 0 && initiator.hits < 1) {
-        responder.damage += initiator.weaponProfile.damage * initiator.hits
-        initiator.hits -= initiator.hits
-        return
+        if (dieLeft === 0) return
       }
     }
     if (strategy === 'PARRY') {
-      if (initiator.crits >= 1) {
-        // One or more full initiator crits left
-        if (responder.crits >= 1) {
-          // One or more full responder crits left
-          // => both left over
-          responder.crits -= 1
-          initiator.crits -= 1
-          return
-        } else if (responder.crits > 0 && responder.crits < 1) {
-          // Responder crits used up, initiator crits leftover
-          // Try parrying hits, then do damage
-          resolveLeftOverCrit()
-        } else {
-          // Do damage with leftover initiator crit
-          responder.damage += Math.min(initiator.crits, 1) * initiator.weaponProfile.damageCritical
-          initiator.crits -= Math.min(initiator.crits, 1)
-          return
-        }
-      } else if (initiator.crits > 0 && initiator.crits < 1) {
-        // Partial initiator crit left
-        if (responder.crits >= initiator.crits) {
-          // Enough responder crits left to soak up all initiator crits left
-          // => initiator crit is used up, responder crit left over
-          responder.crits -= initiator.crits
-          initiator.crits -= initiator.crits
-          return
-        } else if (responder.crits > 0 && responder.crits < initiator.crits) {
-          // Responder crits used up, initiator crits leftover
-          // Try parrying hits, then do damage
-          resolveLeftOverCrit()
-        } else {
-          // Do damage with leftover crit
-          responder.damage += Math.min(initiator.crits, 1) * initiator.weaponProfile.damageCritical
-          initiator.crits -= Math.min(initiator.crits, 1)
-          return
-        }
+      let dieLeft = 1
+
+      if (initiator.crits > 0) {
+        const criticalParryUsed = Math.min(initiator.crits, responder.crits, dieLeft)
+        const criticalParryDone = initiator.weaponProfile.equipment.includes(adeptusAstartesEquipment.STORM_SHIELD)
+          ? Math.min(responder.crits, criticalParryUsed * 2)
+          : criticalParryUsed
+
+        responder.crits -= criticalParryDone
+        initiator.crits -= criticalParryUsed
+        dieLeft -= criticalParryUsed
+
+        // if (
+        //   initiator.weaponProfile.specialRules.includes(specialRules.BRUTAL) ||
+        //   responder.weaponProfile.specialRules.includes(specialRules.BRUTAL)
+        // ) {
+        //   console.log(
+        //     'After critical parries as critical parries',
+        //     initiativeActor,
+        //     JSON.stringify({ ...stats, dieLeft })
+        //   )
+        // }
+        if (dieLeft === 0) return
+
+        const parryUsed = Math.min(initiator.crits, responder.hits, dieLeft)
+        const parryDone = initiator.weaponProfile.equipment.includes(adeptusAstartesEquipment.STORM_SHIELD)
+          ? Math.min(responder.hits, parryUsed * 2)
+          : parryUsed
+
+        responder.hits -= parryDone
+        initiator.crits -= parryUsed
+        dieLeft -= parryUsed
+
+        // if (
+        //   initiator.weaponProfile.specialRules.includes(specialRules.BRUTAL) ||
+        //   responder.weaponProfile.specialRules.includes(specialRules.BRUTAL)
+        // ) {
+        //   console.log(
+        //     'After critical parries as normal parries',
+        //     initiativeActor,
+        //     JSON.stringify({ ...stats, dieLeft })
+        //   )
+        // }
+        if (dieLeft === 0) return
+
+        const criticalDamageAmount = Math.min(initiator.crits, dieLeft)
+        responder.damage += criticalDamageAmount * initiator.weaponProfile.damageCritical
+        initiator.crits -= criticalDamageAmount
+        dieLeft -= criticalDamageAmount
+
+        // if (
+        //   initiator.weaponProfile.specialRules.includes(specialRules.BRUTAL) ||
+        //   responder.weaponProfile.specialRules.includes(specialRules.BRUTAL)
+        // ) {
+        //   console.log('After critical parries as damage', initiativeActor, JSON.stringify({ ...stats, dieLeft }))
+        // }
+        if (dieLeft === 0) return
       }
 
-      if (initiator.hits >= 1) {
-        // One or more full initiator hits left
-        if (responder.hits >= 1) {
-          // One or more full responder hits left
-          // => both left over
-          responder.hits -= 1
-          initiator.hits -= 1
-          return
-        } else if (responder.hits > 0 && responder.hits < 1) {
-          // Partial responder hit left
-          // => responder hit is used up, initiator hit left over
-          resolveLeftOverHit()
+      if (initiator.hits > 0) {
+        if (responder.weaponProfile.specialRules.includes(specialRules.BRUTAL)) {
+          // console.log(initiativeActor, 'Skipping normal parries, opponent has BRUTAL', dieLeft)
         } else {
-          // Do damage with leftover hit
-          responder.damage += Math.min(initiator.hits, 1) * initiator.weaponProfile.damage
-          initiator.hits -= Math.min(initiator.hits, 1)
-          return
+          const parryUsed = Math.min(initiator.crits, responder.hits, dieLeft)
+          const parryDone = initiator.weaponProfile.equipment.includes(adeptusAstartesEquipment.STORM_SHIELD)
+            ? Math.min(responder.hits, parryUsed * 2)
+            : parryUsed
+
+          responder.hits -= parryDone
+          initiator.hits -= parryUsed
+          dieLeft -= parryUsed
         }
-      } else if (initiator.hits > 0 && initiator.hits < 1) {
-        // Partial initiator hit left
-        if (responder.hits >= initiator.hits) {
-          // Enough responder hits left to soak up all initiator hits left
-          // => initiator hit is used up, responder hit left over
-          responder.hits -= initiator.hits
-          initiator.hits -= initiator.hits
-          return
-        } else if (responder.hits > 0 && responder.hits < initiator.hits) {
-          // Not enough responder hits left to soak up all initiator hits left
-          // => responder hit is used up, initiator hit left over
-          resolveLeftOverHit()
-          return
-        } else {
-          // Do damage with leftover hit
-          responder.damage += Math.min(initiator.hits, 1) * initiator.weaponProfile.damage
-          initiator.hits -= Math.min(initiator.hits, 1)
-          return
-        }
+
+        // console.log('After parries as parries', initiativeActor, JSON.stringify({ ...stats, dieLeft }))
+        if (dieLeft === 0) return
+
+        const damageAmount = Math.min(initiator.hits, dieLeft)
+        responder.damage += damageAmount * initiator.weaponProfile.damage
+        initiator.hits -= damageAmount
+        dieLeft -= damageAmount
+
+        // console.log('After parries as damage', initiativeActor, JSON.stringify({ ...stats, dieLeft }))
+        if (dieLeft === 0) return
       }
     }
   }
@@ -594,6 +600,23 @@ function calculateDamageMelee(weapon: Weapon, defenseProfile: Defenseprofile, at
     attackProfile,
   })
 
+  /** STRATEGY 4
+   * Goal: attacker => min damage taken, defender => min damage taken
+   * Strategy: attacker and defender parry when possible
+   * */
+  const parryBothOutput = calculateMeleeBlowByBlow({
+    attackerWeaponProfile: weapon,
+    attackerHits,
+    attackerCrits,
+    attackerStrategy: 'PARRY',
+    defenderWeaponProfile: defenseProfile.defensiveWeapon,
+    defenderHits,
+    defenderCrits,
+    defenderStrategy: 'PARRY',
+    defenseProfile,
+    attackProfile,
+  })
+
   return {
     type: 'melee',
     total: {
@@ -614,6 +637,12 @@ function calculateDamageMelee(weapon: Weapon, defenseProfile: Defenseprofile, at
         defenderDamage: parryAttackerOutput.defenderDamage,
         attackerDead: parryAttackerOutput.attackerDead,
         defenderDead: parryAttackerOutput.defenderDead,
+      },
+      parryBoth: {
+        attackerDamage: parryBothOutput.attackerDamage,
+        defenderDamage: parryBothOutput.defenderDamage,
+        attackerDead: parryBothOutput.attackerDead,
+        defenderDead: parryBothOutput.defenderDead,
       },
     },
   }
