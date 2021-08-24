@@ -3,7 +3,6 @@ import { specialRules, criticalRules } from './rules'
 import { DamageMelee, DamageRanged, Defenseprofile } from './App'
 import { Profile } from './helpers'
 import { hereticAstartesEquipment } from './stats/factions/hereticAstartes'
-import { adeptusAstartesEquipment } from './stats/factions/adeptusAstartes'
 
 function oneDiceChanceOfSuccess(successFrom: number, critFrom: number = 6) {
   const chanceOfSuccess = (7 - successFrom) * (1 / 6)
@@ -309,8 +308,6 @@ interface CalculateMeleeBlowByBlowProps {
   defenseProfile: Defenseprofile
   attackProfile: Profile
 }
-
-type Actor = 'ATTACKER' | 'DEFENDER'
 
 function calculateMeleeBlowByBlow({
   attackerWeaponProfile,
