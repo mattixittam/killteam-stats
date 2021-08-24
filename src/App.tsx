@@ -79,7 +79,7 @@ export const meqProfile: Defenseprofile = {
   defense: 3,
   save: 3,
   saveCritical: 6,
-  wounds: 14,
+  wounds: 12,
   weaponSkill: 3,
   ballisticSkill: 3,
   defensiveWeapon: {
