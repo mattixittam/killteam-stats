@@ -295,15 +295,17 @@ export function calculateMeleeBasics(
   }
 }
 
+type FightStrategy = 'STRIKE' | 'PARRY'
+
 interface CalculateMeleeBlowByBlowProps {
   attackerWeaponProfile: Weapon
   attackerHits: number
   attackerCrits: number
-  attackerStrategy: 'STRIKE' | 'PARRY'
+  attackerStrategy: FightStrategy
   defenderWeaponProfile: Weapon
   defenderHits: number
   defenderCrits: number
-  defenderStrategy: 'STRIKE' | 'PARRY'
+  defenderStrategy: FightStrategy
   defenseProfile: Defenseprofile
   attackProfile: Profile
 }
@@ -322,23 +324,43 @@ function calculateMeleeBlowByBlow({
   defenseProfile,
   attackProfile,
 }: CalculateMeleeBlowByBlowProps) {
-  let aCrits = attackerCrits
-  let aHits = attackerHits
-  const aWounds = attackProfile.wounds
-  let aDamage = 0
+  interface StatBlock {
+    crits: number
+    hits: number
+    damage: number
+    wounds: number
+    weaponProfile: Weapon
+  }
 
-  let dCrits = defenderCrits
-  let dHits = defenderHits
-  const dWounds = defenseProfile.wounds
-  let dDamage = 0
+  interface Stats {
+    attacker: StatBlock
+    defender: StatBlock
+  }
+
+  const stats: Stats = {
+    attacker: {
+      crits: attackerCrits,
+      hits: attackerHits,
+      damage: 0,
+      wounds: attackProfile.wounds,
+      weaponProfile: attackerWeaponProfile,
+    },
+    defender: {
+      crits: defenderCrits,
+      hits: defenderHits,
+      damage: 0,
+      wounds: defenseProfile.wounds,
+      weaponProfile: defenderWeaponProfile,
+    },
+  }
 
   let attackerInitiative = true
   let counter = 0
 
   while (
-    (aHits > 0 || aCrits > 0 || dHits > 0 || dCrits > 0) &&
-    aWounds > aDamage &&
-    dWounds > dDamage &&
+    (stats.attacker.hits > 0 || stats.attacker.crits > 0 || stats.defender.hits > 0 || stats.defender.crits > 0) &&
+    stats.attacker.wounds > stats.attacker.damage &&
+    stats.defender.wounds > stats.defender.damage &&
     counter < 100
   ) {
     resolveDie()
@@ -347,284 +369,156 @@ function calculateMeleeBlowByBlow({
   }
 
   return {
-    attackerDamage: aDamage,
-    defenderDamage: dDamage,
-    attackerDead: aDamage >= aWounds,
-    defenderDead: dDamage >= dWounds,
+    attackerDamage: stats.attacker.damage,
+    defenderDamage: stats.defender.damage,
+    attackerDead: stats.attacker.damage >= stats.attacker.wounds,
+    defenderDead: stats.defender.damage >= stats.defender.wounds,
+    finalStats: stats,
     counter,
-    finalStats: { aCrits, dCrits, aHits, dHits },
   }
 
   function resolveDie() {
-    if (attackerInitiative) {
-      if (attackerStrategy === 'STRIKE') {
-        if (aCrits >= 1) {
-          dDamage += 1 * attackerWeaponProfile.damageCritical
-          aCrits -= 1
-          return
-        } else if (aCrits > 0 && aCrits < 1) {
-          // If a partial crit does more damage than the next hit, do the partial crit
-          if (aCrits * attackerWeaponProfile.damageCritical > attackerWeaponProfile.damage * Math.min(aHits, 1)) {
-            dDamage += attackerWeaponProfile.damageCritical * aCrits
-            aCrits -= aCrits
-            return
-          }
-          // Otherwise fall through to the hits
-        }
+    const strategy = attackerInitiative ? attackerStrategy : defenderStrategy
+    const initiativeActor = attackerInitiative ? 'attacker' : 'defender'
+    const respondingActor = attackerInitiative ? 'defender' : 'attacker'
 
-        if (aHits >= 1) {
-          dDamage += 1 * attackerWeaponProfile.damage
-          aHits -= 1
-          return
-        } else if (aHits > 0 && aHits < 1) {
-          dDamage += attackerWeaponProfile.damage * aHits
-          aHits -= aHits
+    const initiator = stats[initiativeActor]
+    const responder = stats[respondingActor]
+
+    if (strategy === 'STRIKE') {
+      if (initiator.crits >= 1) {
+        responder.damage += 1 * initiator.weaponProfile.damageCritical
+        initiator.crits -= 1
+        return
+      } else if (initiator.crits > 0 && initiator.crits < 1) {
+        // If a partial crit does more damage than the next hit, do the partial crit
+        if (
+          initiator.crits * initiator.weaponProfile.damageCritical >
+          initiator.weaponProfile.damage * Math.min(initiator.hits, 1)
+        ) {
+          responder.damage += initiator.weaponProfile.damageCritical * initiator.crits
+          initiator.crits -= initiator.crits
           return
         }
+        // Otherwise fall through to the hits
       }
-      if (attackerStrategy === 'PARRY') {
-        if (aCrits >= 1) {
-          // One or more full attacker crits left
-          if (dCrits >= 1) {
-            // One or more full defender crits left
-            // => both left over
-            dCrits -= 1
-            aCrits -= 1
-            return
-          } else if (dCrits > 0 && dCrits < 1) {
-            // Partial defender crit left
-            // => defender crit is used up, attacker crit left over
-            aCrits -= dCrits
 
-            // Do damage with leftover crit up to a full die combined with the parry
-            dDamage += Math.min(aCrits, 1 - dCrits) * attackerWeaponProfile.damage
-            aCrits -= Math.min(aCrits, 1 - dCrits)
-
-            // => defender crit is used up
-            dCrits -= dCrits
-            return
-          } else {
-            // Do damage with leftover crit
-            dDamage += Math.min(aCrits, 1) * attackerWeaponProfile.damageCritical
-            aCrits -= Math.min(aCrits, 1)
-            return
-          }
-        } else if (aCrits > 0 && aCrits < 1) {
-          // Partial attacker crit left
-          if (dCrits >= aCrits) {
-            // Enough defender crits left to soak up all attacker crits left
-            // => attacker crit is used up, defender crit left over
-            dCrits -= aCrits
-            aCrits -= aCrits
-            return
-          } else if (dCrits > 0 && dCrits < aCrits) {
-            // Not enough defender crits left to soak up all attacker crits left
-            // => defender crit is used up, attacker crit left over
-            aCrits -= dCrits
-
-            // Do damage with leftover crit up to a full die combined with the parry
-            dDamage += Math.min(aCrits, 1 - dCrits) * attackerWeaponProfile.damage
-            aCrits -= Math.min(aCrits, 1 - dCrits)
-
-            // => defender crit is used up
-            dCrits -= dCrits
-            return
-          } else {
-            // Do damage with leftover crit
-            dDamage += Math.min(aCrits, 1) * attackerWeaponProfile.damageCritical
-            aCrits -= Math.min(aCrits, 1)
-            return
-          }
-        }
-
-        if (aHits >= 1) {
-          // One or more full attacker hits left
-          if (dHits >= 1) {
-            // One or more full defender hits left
-            // => both left over
-            dHits -= 1
-            aHits -= 1
-            return
-          } else if (dHits > 0 && dHits < 1) {
-            // Partial defender hit left
-            // => defender hit is used up, attacker hit left over
-            aHits -= dHits
-
-            // Do damage with leftover hit up to a full die combined with the parry
-            dDamage += Math.min(aHits, 1 - dHits) * attackerWeaponProfile.damage
-            aHits -= Math.min(aHits, 1 - dHits)
-
-            // => defender hit is used up
-            dHits -= dHits
-            return
-          } else {
-            // Do damage with leftover hit
-            dDamage += Math.min(aHits, 1) * attackerWeaponProfile.damage
-            aHits -= Math.min(aHits, 1)
-            return
-          }
-        } else if (aHits > 0 && aHits < 1) {
-          // Partial attacker hit left
-          if (dHits >= aHits) {
-            // Enough defender hits left to soak up all attacker hits left
-            // => attacker hit is used up, defender hit left over
-            dHits -= aHits
-            aHits -= aHits
-            return
-          } else if (dHits > 0 && dHits < aHits) {
-            // Not enough defender hits left to soak up all attacker hits left
-            // => defender hit is used up, attacker hit left over
-            aHits -= dHits
-
-            // Do damage with leftover hit up to a full die combined with the parry
-            dDamage += Math.min(aHits, 1 - dHits) * attackerWeaponProfile.damage
-            aHits -= Math.min(aHits, 1 - dHits)
-
-            // => defender hit is used up
-            dHits -= dHits
-            return
-          } else {
-            // Do damage with leftover hit
-            dDamage += Math.min(aHits, 1) * attackerWeaponProfile.damage
-            aHits -= Math.min(aHits, 1)
-            return
-          }
-        }
+      if (initiator.hits >= 1) {
+        responder.damage += 1 * initiator.weaponProfile.damage
+        initiator.hits -= 1
+        return
+      } else if (initiator.hits > 0 && initiator.hits < 1) {
+        responder.damage += initiator.weaponProfile.damage * initiator.hits
+        initiator.hits -= initiator.hits
+        return
       }
     }
-
-    // DEFENDER has intiative
-    if (!attackerInitiative) {
-      if (defenderStrategy === 'STRIKE') {
-        // FIXME if a partial crit for less damage than the next hit, do the hit
-        if (dCrits >= 1) {
-          aDamage += defenderWeaponProfile.damageCritical
-          dCrits -= 1
+    if (strategy === 'PARRY') {
+      if (initiator.crits >= 1) {
+        // One or more full attacker crits left
+        if (responder.crits >= 1) {
+          // One or more full defender crits left
+          // => both left over
+          responder.crits -= 1
+          initiator.crits -= 1
           return
-        } else if (dCrits > 0 && dCrits < 1) {
-          // If a partial crit does more damage than the next hit, do the partial crit
-          if (dCrits * defenderWeaponProfile.damageCritical > defenderWeaponProfile.damage * Math.min(dHits, 1)) {
-            aDamage += defenderWeaponProfile.damageCritical * dCrits
-            dCrits -= dCrits
-            return
-          }
-          // Otherwise fall through to the hits
+        } else if (responder.crits > 0 && responder.crits < 1) {
+          // Partial defender crit left
+          // => defender crit is used up, attacker crit left over
+          initiator.crits -= responder.crits
+
+          // Do damage with leftover crit up to a full die combined with the parry
+          responder.damage += Math.min(initiator.crits, 1 - responder.crits) * initiator.weaponProfile.damage
+          initiator.crits -= Math.min(initiator.crits, 1 - responder.crits)
+
+          // => defender crit is used up
+          responder.crits -= responder.crits
+          return
+        } else {
+          // Do damage with leftover crit
+          responder.damage += Math.min(initiator.crits, 1) * initiator.weaponProfile.damageCritical
+          initiator.crits -= Math.min(initiator.crits, 1)
+          return
         }
-
-        if (dHits >= 1) {
-          aDamage += defenderWeaponProfile.damage
-          dHits -= 1
+      } else if (initiator.crits > 0 && initiator.crits < 1) {
+        // Partial attacker crit left
+        if (responder.crits >= initiator.crits) {
+          // Enough defender crits left to soak up all attacker crits left
+          // => attacker crit is used up, defender crit left over
+          responder.crits -= initiator.crits
+          initiator.crits -= initiator.crits
           return
-        } else if (dHits > 0 && dHits < 1) {
-          aDamage += dHits * defenderWeaponProfile.damageCritical
-          dHits -= dHits
+        } else if (responder.crits > 0 && responder.crits < initiator.crits) {
+          // Not enough defender crits left to soak up all attacker crits left
+          // => defender crit is used up, attacker crit left over
+          initiator.crits -= responder.crits
+
+          // Do damage with leftover crit up to a full die combined with the parry
+          responder.damage += Math.min(initiator.crits, 1 - responder.crits) * initiator.weaponProfile.damage
+          initiator.crits -= Math.min(initiator.crits, 1 - responder.crits)
+
+          // => defender crit is used up
+          responder.crits -= responder.crits
+          return
+        } else {
+          // Do damage with leftover crit
+          responder.damage += Math.min(initiator.crits, 1) * initiator.weaponProfile.damageCritical
+          initiator.crits -= Math.min(initiator.crits, 1)
           return
         }
       }
-      if (defenderStrategy === 'PARRY') {
-        if (dCrits >= 1) {
-          // One or more full defender crits left
-          if (aCrits >= 1) {
-            // One or more full attacker crits left
-            // => both left over
-            aCrits -= 1
-            dCrits -= 1
-            return
-          } else if (aCrits > 0 && aCrits < 1) {
-            // Partial attacker crit left
-            // => attacker crit is used up, defender crit left over
-            aCrits -= aCrits
-            dCrits -= aCrits
-            // Do damage with leftover crit
-            aDamage += Math.min(dCrits, 1) * defenderWeaponProfile.damageCritical
-            dCrits -= Math.min(dCrits, 1)
-            return
-          } else {
-            // Do damage with leftover crit
-            aDamage += Math.min(dCrits, 1) * defenderWeaponProfile.damageCritical
-            dCrits -= Math.min(dCrits, 1)
-            return
-          }
-        } else if (dCrits > 0 && dCrits < 1) {
-          // Partial defender crit left
-          if (aCrits >= dCrits) {
-            // Enough attacker crits left to soak up all defender crits left
-            // => defender crit is used up, attacker crit left over
-            aCrits -= dCrits
-            dCrits -= dCrits
-            return
-          } else if (aCrits > 0 && aCrits < dCrits) {
-            // Not enough attacker crits left to soak up all defender crits left
-            // => defender crit left over
-            dCrits -= aCrits
 
-            // Do damage with leftover crit up to a full die combined with the parry
-            aDamage += Math.min(dCrits, 1 - aCrits) * defenderWeaponProfile.damageCritical
-            dCrits -= Math.min(dCrits, 1 - aCrits)
-
-            // => attacker crit is used up, defender crit left over
-            aCrits -= aCrits
-            return
-          } else {
-            // Do damage with leftover crit
-            aDamage += Math.min(dCrits, 1) * defenderWeaponProfile.damageCritical
-            dCrits -= Math.min(dCrits, 1)
-            return
-          }
-        }
-
-        if (dHits >= 1) {
+      if (initiator.hits >= 1) {
+        // One or more full attacker hits left
+        if (responder.hits >= 1) {
           // One or more full defender hits left
-          if (aHits >= 1) {
-            // One or more full attacker hits left
-            // => both left over
-            aHits -= 1
-            dHits -= 1
-            return
-          } else if (aHits > 0 && aHits < 1) {
-            // Partial attacker hit left
-            // => defender hit left over
-            dHits -= aHits
-
-            // Do damage with leftover hit up to a full die combined with the parry
-            aDamage += Math.min(dHits, 1 - aHits) * defenderWeaponProfile.damage
-            dHits -= Math.min(dHits, 1 - aHits)
-
-            // => attacker hit is used up
-            aHits -= aHits
-            return
-          } else {
-            // Do damage with leftover hits
-            aDamage += Math.min(dHits, 1) * defenderWeaponProfile.damage
-            dHits -= Math.min(dHits, 1)
-            return
-          }
-        } else if (dHits > 0 && dHits < 1) {
+          // => both left over
+          responder.hits -= 1
+          initiator.hits -= 1
+          return
+        } else if (responder.hits > 0 && responder.hits < 1) {
           // Partial defender hit left
-          if (aHits >= dHits) {
-            // Enough attacker hits left to soak up all defender hits left
-            // => defender hit is used up, attacker hit left over
-            aHits -= dHits
-            dHits -= dHits
-            return
-          } else if (aHits > 0 && aHits < dHits) {
-            // Not enough attacker hits left to soak up all defender hits left
-            // => defender hit left over
-            dHits -= aHits
+          // => defender hit is used up, attacker hit left over
+          initiator.hits -= responder.hits
 
-            // Do damage with leftover hit up to a full die combined with the parry
-            aDamage += Math.min(dHits, 1 - aHits) * defenderWeaponProfile.damage
-            dHits -= Math.min(dHits, 1 - aHits)
+          // Do damage with leftover hit up to a full die combined with the parry
+          responder.damage += Math.min(initiator.hits, 1 - responder.hits) * initiator.weaponProfile.damage
+          initiator.hits -= Math.min(initiator.hits, 1 - responder.hits)
 
-            // => attacker hit is used up
-            aHits -= aHits
-            return
-          } else {
-            // Do damage with leftover hits
-            aDamage += Math.min(dHits, 1) * defenderWeaponProfile.damage
-            dHits -= Math.min(dHits, 1)
-            return
-          }
+          // => defender hit is used up
+          responder.hits -= responder.hits
+          return
+        } else {
+          // Do damage with leftover hit
+          responder.damage += Math.min(initiator.hits, 1) * initiator.weaponProfile.damage
+          initiator.hits -= Math.min(initiator.hits, 1)
+          return
+        }
+      } else if (initiator.hits > 0 && initiator.hits < 1) {
+        // Partial attacker hit left
+        if (responder.hits >= initiator.hits) {
+          // Enough defender hits left to soak up all attacker hits left
+          // => attacker hit is used up, defender hit left over
+          responder.hits -= initiator.hits
+          initiator.hits -= initiator.hits
+          return
+        } else if (responder.hits > 0 && responder.hits < initiator.hits) {
+          // Not enough defender hits left to soak up all attacker hits left
+          // => defender hit is used up, attacker hit left over
+          initiator.hits -= responder.hits
+
+          // Do damage with leftover hit up to a full die combined with the parry
+          responder.damage += Math.min(initiator.hits, 1 - responder.hits) * initiator.weaponProfile.damage
+          initiator.hits -= Math.min(initiator.hits, 1 - responder.hits)
+
+          // => defender hit is used up
+          responder.hits -= responder.hits
+          return
+        } else {
+          // Do damage with leftover hit
+          responder.damage += Math.min(initiator.hits, 1) * initiator.weaponProfile.damage
+          initiator.hits -= Math.min(initiator.hits, 1)
+          return
         }
       }
     }
