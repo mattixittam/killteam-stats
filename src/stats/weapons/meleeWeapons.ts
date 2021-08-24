@@ -150,7 +150,7 @@ export const meleeWeapons: Weapon[] = [
   {
     name: 'Power weapon',
     profile: '',
-    attackDice: 5,
+    attackDice: 4,
     damage: 4,
     damageCritical: 6,
     specialRules: [specialRules.LETHAL5],
