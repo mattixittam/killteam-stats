@@ -15,7 +15,7 @@ import {
 import { Weapon } from './stats/weapons'
 import { adeptusAstartesStats } from './stats/factions/adeptusAstartes'
 import { hereticAstartesStats } from './stats/factions/hereticAstartes'
-import { calculateDamage, calculateMeleeBasics, getAttackerAttackDice } from './calculation'
+import { calculateDamage, getAttackerAttackDice } from './calculation'
 import { specialRules } from './rules'
 import React, { FunctionComponent, useState } from 'react'
 import { forgeWorldStats } from './stats/factions/forgeWorld'

@@ -1,5 +1,4 @@
-import { addEquipmentToProfiles, generateEquipmentProfile, getProfiles, Profile } from '../../helpers'
-import { Weapon } from '../weapons'
+import { addEquipmentToProfiles, getProfiles, Profile } from '../../helpers'
 
 export const hereticAstartesEquipment = {
   GRISLY_TROPHY: {
