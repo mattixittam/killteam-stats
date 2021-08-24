@@ -354,6 +354,7 @@ function calculateMeleeBlowByBlow({
   let attackerInitiative = true
   let counter = 0
 
+  // Main loop, attribute dice until someone dies or the dice run out
   while (
     (stats.attacker.hits > 0 || stats.attacker.crits > 0 || stats.defender.hits > 0 || stats.defender.crits > 0) &&
     stats.attacker.wounds > stats.attacker.damage &&
@@ -374,6 +375,7 @@ function calculateMeleeBlowByBlow({
     counter,
   }
 
+  // Main logic for dice rolling, attributes a single dice based on initiative and strategy
   function resolveDie() {
     const strategy = attackerInitiative ? attackerStrategy : defenderStrategy
     const initiativeActor = attackerInitiative ? 'attacker' : 'defender'
@@ -425,7 +427,7 @@ function calculateMeleeBlowByBlow({
           initiator.crits -= responder.crits
 
           // Do damage with leftover crit up to a full die combined with the parry
-          responder.damage += Math.min(initiator.crits, 1 - responder.crits) * initiator.weaponProfile.damage
+          responder.damage += Math.min(initiator.crits, 1 - responder.crits) * initiator.weaponProfile.damageCritical
           initiator.crits -= Math.min(initiator.crits, 1 - responder.crits)
 
           // => defender crit is used up
@@ -451,7 +453,7 @@ function calculateMeleeBlowByBlow({
           initiator.crits -= responder.crits
 
           // Do damage with leftover crit up to a full die combined with the parry
-          responder.damage += Math.min(initiator.crits, 1 - responder.crits) * initiator.weaponProfile.damage
+          responder.damage += Math.min(initiator.crits, 1 - responder.crits) * initiator.weaponProfile.damageCritical
           initiator.crits -= Math.min(initiator.crits, 1 - responder.crits)
 
           // => defender crit is used up
