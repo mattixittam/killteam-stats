@@ -106,11 +106,11 @@ const geqProfile: Defenseprofile = {
   weaponSkill: 4,
   ballisticSkill: 4,
   defensiveWeapon: {
-    name: 'Fists',
+    name: 'Gun butt',
     profile: '',
-    attackDice: 4,
-    damage: 3,
-    damageCritical: 4,
+    attackDice: 3,
+    damage: 2,
+    damageCritical: 3,
     specialRules: [],
     criticalRules: [],
     equipment: [],
@@ -332,7 +332,7 @@ function generateStatBlock(profile: Profile) {
               <TableCell>SR</TableCell>
               <TableCell>!</TableCell>
               <TableCell>
-                Avg Dmg vs GEQ w/ Fists
+                Avg Dmg vs GEQ w/ Gun butt
                 <br />
                 <div style={{ display: 'inline-flex', width: '100%' }}>
                   <span style={{ flex: 'none', flexBasis: '100px' }}>strategy</span>
