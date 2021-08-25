@@ -126,6 +126,17 @@ export const meleeWeapons: Weapon[] = [
     type: 'MELEE',
   },
   {
+    name: 'Power maul',
+    profile: 'NOSTUN',
+    attackDice: 4,
+    damage: 4,
+    damageCritical: 5,
+    specialRules: [],
+    criticalRules: [],
+    equipment: [],
+    type: 'MELEE',
+  },
+  {
     name: 'Power pick',
     profile: '',
     attackDice: 5,

@@ -328,6 +328,7 @@ function calculateMeleeBlowByBlow({
     damage: number
     wounds: number
     weaponProfile: Weapon
+    stunAmount: number
   }
 
   interface Stats {
@@ -342,6 +343,7 @@ function calculateMeleeBlowByBlow({
       damage: 0,
       wounds: attackProfile.wounds,
       weaponProfile: attackerWeaponProfile,
+      stunAmount: 0,
     },
     defender: {
       crits: defenderCrits,
@@ -349,11 +351,21 @@ function calculateMeleeBlowByBlow({
       damage: 0,
       wounds: defenseProfile.wounds,
       weaponProfile: defenderWeaponProfile,
+      stunAmount: 0,
     },
   }
 
   let attackerInitiative = true
   let counter = 0
+
+  if (stats.attacker.weaponProfile.criticalRules.includes(criticalRules.STUN)) {
+    stats.attacker.stunAmount = 1
+  }
+
+  if (stats.defender.weaponProfile.criticalRules.includes(criticalRules.STUN)) {
+    stats.defender.stunAmount = 1
+  }
+
   // if (
   //   stats.attacker.weaponProfile.specialRules.includes(specialRules.BRUTAL) ||
   //   stats.defender.weaponProfile.specialRules.includes(specialRules.BRUTAL)
@@ -403,10 +415,18 @@ function calculateMeleeBlowByBlow({
       let dieLeft = 1
 
       if (initiator.crits > 0) {
+        // Do critical damage
         const criticalDamageAmount = Math.min(initiator.crits, dieLeft)
         responder.damage += criticalDamageAmount * initiator.weaponProfile.damageCritical
         initiator.crits -= criticalDamageAmount
         dieLeft -= criticalDamageAmount
+
+        // STUN on initiator weapon
+        if (initiator.stunAmount > 0) {
+          const stunDone = Math.min(initiator.stunAmount, responder.hits, criticalDamageAmount)
+          responder.hits -= stunDone
+          initiator.stunAmount -= stunDone
+        }
 
         // if (
         //   initiator.weaponProfile.specialRules.includes(specialRules.BRUTAL) ||
@@ -418,22 +438,6 @@ function calculateMeleeBlowByBlow({
         //     JSON.stringify({ initiator, responder, dieLeft })
         //   )
         // }
-
-        if (dieLeft === 0) return
-
-        const damageAmount = Math.min(initiator.crits, dieLeft)
-        responder.damage += damageAmount * initiator.weaponProfile.damage
-        initiator.crits -= damageAmount
-        dieLeft -= damageAmount
-
-        // if (
-        //   initiator.weaponProfile.specialRules.includes(specialRules.BRUTAL) ||
-        //   responder.weaponProfile.specialRules.includes(specialRules.BRUTAL)
-        // ) {
-        //   console.log('After critical hits as hits', initiativeActor, JSON.stringify({ ...stats, dieLeft }))
-        // }
-
-        if (dieLeft === 0) return
       }
 
       if (initiator.hits > 0 && dieLeft > 0) {
@@ -456,6 +460,7 @@ function calculateMeleeBlowByBlow({
       let dieLeft = 1
 
       if (initiator.crits > 0) {
+        // Critical parry used as critical parry
         const criticalParryUsed = Math.min(initiator.crits, responder.crits, dieLeft)
         const criticalParryDone = initiator.weaponProfile.equipment.includes(adeptusAstartesEquipment.STORM_SHIELD)
           ? Math.min(responder.crits, criticalParryUsed * 2)
@@ -477,6 +482,7 @@ function calculateMeleeBlowByBlow({
         // }
         if (dieLeft === 0) return
 
+        // Critical parry used as normal parry
         const parryUsed = Math.min(initiator.crits, responder.hits, dieLeft)
         const parryDone = initiator.weaponProfile.equipment.includes(adeptusAstartesEquipment.STORM_SHIELD)
           ? Math.min(responder.hits, parryUsed * 2)
@@ -498,10 +504,18 @@ function calculateMeleeBlowByBlow({
         // }
         if (dieLeft === 0) return
 
+        // Critical parry used as damage
         const criticalDamageAmount = Math.min(initiator.crits, dieLeft)
         responder.damage += criticalDamageAmount * initiator.weaponProfile.damageCritical
         initiator.crits -= criticalDamageAmount
         dieLeft -= criticalDamageAmount
+
+        // STUN on initiator weapon
+        if (initiator.stunAmount > 0) {
+          const stunDone = Math.min(initiator.stunAmount, responder.hits, criticalDamageAmount)
+          responder.hits -= stunDone
+          initiator.stunAmount -= stunDone
+        }
 
         // if (
         //   initiator.weaponProfile.specialRules.includes(specialRules.BRUTAL) ||
@@ -516,7 +530,8 @@ function calculateMeleeBlowByBlow({
         if (responder.weaponProfile.specialRules.includes(specialRules.BRUTAL)) {
           // console.log(initiativeActor, 'Skipping normal parries, opponent has BRUTAL', dieLeft)
         } else {
-          const parryUsed = Math.min(initiator.crits, responder.hits, dieLeft)
+          // Parry used as normal parry
+          const parryUsed = Math.min(initiator.hits, responder.hits, dieLeft)
           const parryDone = initiator.weaponProfile.equipment.includes(adeptusAstartesEquipment.STORM_SHIELD)
             ? Math.min(responder.hits, parryUsed * 2)
             : parryUsed
@@ -529,6 +544,7 @@ function calculateMeleeBlowByBlow({
         // console.log('After parries as parries', initiativeActor, JSON.stringify({ ...stats, dieLeft }))
         if (dieLeft === 0) return
 
+        // Parry used as damage
         const damageAmount = Math.min(initiator.hits, dieLeft)
         responder.damage += damageAmount * initiator.weaponProfile.damage
         initiator.hits -= damageAmount
