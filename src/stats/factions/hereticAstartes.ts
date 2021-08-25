@@ -23,8 +23,11 @@ export const chaosSmWarrior: Profile = {
   weapons: [
     ...getProfiles('Boltgun (CSM)'),
     ...getProfiles('Bolt Pistol (CSM)'),
-    ...getProfiles('Chainsword'),
     ...getProfiles('Fists'),
+    ...addEquipmentToProfiles(getProfiles('Chainsword'), [
+      hereticAstartesEquipment.GRISLY_TROPHY,
+      hereticAstartesEquipment.DARK_BLESSING,
+    ]),
   ],
 }
 export const chaosSmGunner: Profile = {
@@ -72,8 +75,11 @@ export const chaosSmIconBearer: Profile = {
   weapons: [
     ...getProfiles('Boltgun (CSM)'),
     ...getProfiles('Bolt Pistol (CSM)'),
-    ...getProfiles('Chainsword'),
     ...getProfiles('Fists'),
+    ...addEquipmentToProfiles(getProfiles('Chainsword'), [
+      hereticAstartesEquipment.GRISLY_TROPHY,
+      hereticAstartesEquipment.DARK_BLESSING,
+    ]),
   ],
 }
 export const chaosSmAspiringChampion: Profile = {
