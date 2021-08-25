@@ -1,10 +1,5 @@
 import { addEquipmentToProfiles, getProfiles, Profile } from '../../helpers'
-
-export const adeptusAstartesEquipment = {
-  STORM_SHIELD: {
-    label: 'Storm shield',
-  },
-}
+import { equipment } from '../equipment'
 
 export const deathwatchVeteranWarrior: Profile = {
   name: 'DEATHWATCH VETERAN (WARRIOR)',
@@ -90,8 +85,8 @@ export const deathwatchVeteranHeavyGunner: Profile = {
   weaponSkill: 3,
   weapons: [
     ...getProfiles('Frag Cannon'),
-    ...getProfiles('Infernus Heavy Bolter'),
-    ...getProfiles('Missile Launcher'),
+    ...getProfiles('Infernus heavy bolter'),
+    ...getProfiles('Missile launcher'),
     ...getProfiles('Fists'),
   ],
 }
@@ -127,27 +122,13 @@ export const deathwatchVeteranWatchSergeant: Profile = {
     ...getProfiles('Fists', { attackDiceAdjustment: 1 }),
     ...getProfiles('Heavy thunder hammer', { attackDiceAdjustment: 1 }),
     ...getProfiles('Lightning claws', { attackDiceAdjustment: 1 }),
-    ...addEquipmentToProfiles(getProfiles('Chainsword', { attackDiceAdjustment: 1 }), [
-      adeptusAstartesEquipment.STORM_SHIELD,
-    ]),
-    ...addEquipmentToProfiles(getProfiles('Lightning claw', { attackDiceAdjustment: 1 }), [
-      adeptusAstartesEquipment.STORM_SHIELD,
-    ]),
-    ...addEquipmentToProfiles(getProfiles('Power fist', { attackDiceAdjustment: 1 }), [
-      adeptusAstartesEquipment.STORM_SHIELD,
-    ]),
-    ...addEquipmentToProfiles(getProfiles('Power maul', { attackDiceAdjustment: 1 }), [
-      adeptusAstartesEquipment.STORM_SHIELD,
-    ]),
-    ...addEquipmentToProfiles(getProfiles('Power weapon', { attackDiceAdjustment: 1 }), [
-      adeptusAstartesEquipment.STORM_SHIELD,
-    ]),
-    ...addEquipmentToProfiles(getProfiles('Thunder hammer', { attackDiceAdjustment: 1 }), [
-      adeptusAstartesEquipment.STORM_SHIELD,
-    ]),
-    ...addEquipmentToProfiles(getProfiles('Xenophase blade', { attackDiceAdjustment: 1 }), [
-      adeptusAstartesEquipment.STORM_SHIELD,
-    ]),
+    ...addEquipmentToProfiles(getProfiles('Chainsword', { attackDiceAdjustment: 1 }), [equipment.STORM_SHIELD]),
+    ...addEquipmentToProfiles(getProfiles('Lightning claw', { attackDiceAdjustment: 1 }), [equipment.STORM_SHIELD]),
+    ...addEquipmentToProfiles(getProfiles('Power fist', { attackDiceAdjustment: 1 }), [equipment.STORM_SHIELD]),
+    ...addEquipmentToProfiles(getProfiles('Power maul', { attackDiceAdjustment: 1 }), [equipment.STORM_SHIELD]),
+    ...addEquipmentToProfiles(getProfiles('Power weapon', { attackDiceAdjustment: 1 }), [equipment.STORM_SHIELD]),
+    ...addEquipmentToProfiles(getProfiles('Thunder hammer', { attackDiceAdjustment: 1 }), [equipment.STORM_SHIELD]),
+    ...addEquipmentToProfiles(getProfiles('Xenophase blade', { attackDiceAdjustment: 1 }), [equipment.STORM_SHIELD]),
   ],
 }
 

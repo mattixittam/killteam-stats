@@ -1,13 +1,11 @@
+import { criticalRules, Rule, specialRules } from './rules'
+import { equipment, EquipmentItem } from './stats/equipment'
 import { Weapon, weapons } from './stats/weapons'
 
 interface Options {
   weaponBallisticSkillAdjustment?: number
   attackDiceAdjustment?: number
   equipmentProfiles?: string[]
-}
-
-interface Equipment {
-  label: string
 }
 
 export interface Profile {
@@ -22,6 +20,24 @@ export interface Profile {
   weaponSkill: number
   ballisticSkill: number
   weapons: Weapon[]
+  defensiveMeleeWeapon?: Weapon
+  abilities?: Rule[]
+}
+
+export interface DefenseProfile {
+  name: string
+  movement: number
+  apl: number
+  groupActivation: number
+  defense: number
+  save: number
+  saveCritical: number
+  wounds: number
+  weaponSkill: number
+  ballisticSkill: number
+  weapons: Weapon[]
+  defensiveMeleeWeapon: Weapon
+  abilities?: Rule[]
 }
 
 export function getProfiles(name: string, options?: Options): Weapon[] {
@@ -37,11 +53,32 @@ export function getProfiles(name: string, options?: Options): Weapon[] {
     }))
 }
 
-export function generateEquipmentProfile(weapon: Weapon, newEquipment: Equipment): Weapon {
-  return { ...weapon, profile: `+ ${newEquipment.label}`, equipment: [...weapon.equipment, newEquipment] }
+export function generateEquipmentProfile(weapon: Weapon, newEquipment: EquipmentItem): Weapon {
+  const additionalSpecialRules = newEquipment.additionalSpecialRules || []
+  const additionalCriticalRules = newEquipment.additionalCriticalRules || []
+  const newCriticalRules = [...weapon.criticalRules]
+
+  // MALEFIC ROUNDS
+  if (newEquipment === equipment.MALEFIC_ROUNDS) {
+    if (weapon.criticalRules.includes(criticalRules.P1)) {
+      const index = newCriticalRules.indexOf(criticalRules.P1)
+      newCriticalRules.splice(index, 1)
+      additionalSpecialRules.push(specialRules.AP1)
+    } else {
+      additionalCriticalRules.push(criticalRules.P1)
+    }
+  }
+
+  return {
+    ...weapon,
+    profile: `+ ${newEquipment.label}`,
+    equipment: [...weapon.equipment, newEquipment],
+    specialRules: [...weapon.specialRules, ...additionalSpecialRules],
+    criticalRules: [...newCriticalRules, ...additionalCriticalRules],
+  }
 }
 
-export function addEquipmentToProfiles(profiles: Weapon[], equipment: Equipment[]) {
+export function addEquipmentToProfiles(profiles: Weapon[], equipment: EquipmentItem[]) {
   return profiles.reduce<Weapon[]>((acc, profile) => {
     const equippedProfiles = equipment.reduce<Weapon[]>((acc, eq) => {
       const newAcc = [...acc, generateEquipmentProfile(profile, eq)]

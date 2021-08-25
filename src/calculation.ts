@@ -1,9 +1,9 @@
 import { Weapon } from './stats/weapons'
 import { specialRules, criticalRules } from './rules'
-import { DamageMelee, DamageRanged, Defenseprofile } from './App'
-import { Profile } from './helpers'
-import { hereticAstartesEquipment } from './stats/factions/hereticAstartes'
-import { adeptusAstartesEquipment } from './stats/factions/adeptusAstartes'
+import { DamageMelee, DamageRanged } from './App'
+import { DefenseProfile, Profile } from './helpers'
+import { equipment } from './stats/equipment'
+import { abilities } from './stats/abilities'
 
 function oneDiceChanceOfSuccess(successFrom: number, critFrom: number = 6) {
   const chanceOfSuccess = (7 - successFrom) * (1 / 6)
@@ -19,7 +19,7 @@ function oneDiceChanceOfCrit(critFrom: number = 6) {
   return (7 - critFrom) * (1 / 6)
 }
 
-export function calculateDamage(weapon: Weapon, defenseProfile: Defenseprofile, attackProfile: Profile) {
+export function calculateDamage(weapon: Weapon, defenseProfile: DefenseProfile, attackProfile: Profile) {
   if (weapon.type === 'MELEE') {
     return calculateDamageMelee(weapon, defenseProfile, attackProfile)
   }
@@ -31,7 +31,7 @@ export function calculateDamage(weapon: Weapon, defenseProfile: Defenseprofile, 
   return calculateDamageMelee(weapon, defenseProfile, attackProfile)
 }
 
-function calculateDamageRanged(weapon: Weapon, defenseProfile: Defenseprofile, attackProfile: Profile): DamageRanged {
+function calculateDamageRanged(weapon: Weapon, defenseProfile: DefenseProfile, attackProfile: Profile): DamageRanged {
   let rolledDefenseDice = defenseProfile.defense
 
   let ballisticSkillCritical = 6
@@ -160,7 +160,7 @@ export function getAttackerAttackDice(weapon: Weapon) {
   let attackDice = weapon.attackDice
 
   // DARK BLESSING on attacker weapon
-  if (weapon.equipment.includes(hereticAstartesEquipment.DARK_BLESSING)) {
+  if (weapon.equipment.includes(equipment.DARK_BLESSING)) {
     attackDice += 1
   }
 
@@ -170,7 +170,7 @@ export function getAttackerAttackDice(weapon: Weapon) {
 export function calculateMeleeBasics(
   attackerWeapon: Weapon,
   attackerWeaponSkill: number,
-  defenseProfile: Defenseprofile
+  defenseProfile: DefenseProfile
 ) {
   /**
    * ATTACKER basic stats
@@ -225,29 +225,29 @@ export function calculateMeleeBasics(
   let defenseWeaponSkillCritical = 6
 
   // LETHAL 5+ on defender weapon
-  if (defenseProfile.defensiveWeapon.specialRules.includes(specialRules.LETHAL5)) {
+  if (defenseProfile.defensiveMeleeWeapon.specialRules.includes(specialRules.LETHAL5)) {
     defenseWeaponSkillCritical = Math.max(5, defenseProfile.weaponSkill)
   }
 
   // LETHAL 4+ on defender weapon
-  if (defenseProfile.defensiveWeapon.specialRules.includes(specialRules.LETHAL4)) {
+  if (defenseProfile.defensiveMeleeWeapon.specialRules.includes(specialRules.LETHAL4)) {
     defenseWeaponSkillCritical = Math.max(4, defenseProfile.weaponSkill)
   }
 
   const defenseAdjustedWeaponSkill = Math.max(
     2,
-    defenseProfile.defensiveWeapon.weaponBallisticSkillAdjustment
-      ? defenseProfile.weaponSkill + defenseProfile.defensiveWeapon.weaponBallisticSkillAdjustment
+    defenseProfile.defensiveMeleeWeapon.weaponBallisticSkillAdjustment
+      ? defenseProfile.weaponSkill + defenseProfile.defensiveMeleeWeapon.weaponBallisticSkillAdjustment
       : defenseProfile.weaponSkill
   )
 
   const defenderHitsPerDie = oneDiceChanceOfSuccess(defenseAdjustedWeaponSkill, defenseWeaponSkillCritical)
   const defenderCritsPerDie = oneDiceChanceOfCrit(defenseWeaponSkillCritical)
 
-  let defenderAttackDice = defenseProfile.defensiveWeapon.attackDice
+  let defenderAttackDice = defenseProfile.defensiveMeleeWeapon.attackDice
 
   // GRISLY TROPHY on attacker weapon
-  if (attackerWeapon.equipment.includes(hereticAstartesEquipment.GRISLY_TROPHY)) {
+  if (attackerWeapon.equipment.includes(equipment.GRISLY_TROPHY)) {
     defenderAttackDice -= 1
   }
 
@@ -260,7 +260,7 @@ export function calculateMeleeBasics(
   }
 
   // RELENTLESS on defender weapon
-  if (defenseProfile.defensiveWeapon.specialRules.includes(specialRules.RELENTLESS)) {
+  if (defenseProfile.defensiveMeleeWeapon.specialRules.includes(specialRules.RELENTLESS)) {
     const expectedMisses = oneDiceChanceOfMiss(attackerAdjustedWeaponSkill) * attackerAttackDice
 
     defenderHits += expectedMisses * oneDiceChanceOfSuccess(attackerAdjustedWeaponSkill, attackerWeaponSkillCritical)
@@ -268,7 +268,7 @@ export function calculateMeleeBasics(
   }
 
   // BALANCED on defender weapon
-  if (defenseProfile.defensiveWeapon.specialRules.includes(specialRules.BALANCED)) {
+  if (defenseProfile.defensiveMeleeWeapon.specialRules.includes(specialRules.BALANCED)) {
     const chanceOfMiss = Math.min(1, oneDiceChanceOfMiss(attackerAdjustedWeaponSkill) * attackerAttackDice)
     defenderHits += oneDiceChanceOfSuccess(attackerAdjustedWeaponSkill, attackerWeaponSkillCritical) * chanceOfMiss
     defenderCrits += oneDiceChanceOfCrit(attackerWeaponSkillCritical) * chanceOfMiss
@@ -277,7 +277,7 @@ export function calculateMeleeBasics(
   const defenderExpectedCriticalHitsMax1 = Math.min(1, defenderCrits)
 
   // STUN on defender weapon
-  if (defenseProfile.defensiveWeapon.criticalRules.includes(criticalRules.STUN)) {
+  if (defenseProfile.defensiveMeleeWeapon.criticalRules.includes(criticalRules.STUN)) {
     attackerHits -= attackerHitsPerDie * defenderExpectedCriticalHitsMax1
   }
 
@@ -306,7 +306,7 @@ interface CalculateMeleeBlowByBlowProps {
   defenderHits: number
   defenderCrits: number
   defenderStrategy: FightStrategy
-  defenseProfile: Defenseprofile
+  defenseProfile: DefenseProfile
   attackProfile: Profile
 }
 
@@ -358,11 +358,17 @@ function calculateMeleeBlowByBlow({
   let attackerInitiative = true
   let counter = 0
 
-  if (stats.attacker.weaponProfile.criticalRules.includes(criticalRules.STUN)) {
+  if (
+    attackerWeaponProfile.criticalRules.includes(criticalRules.STUN) &&
+    !defenseProfile.abilities?.includes(abilities.THE_EMPERORS_CHOSEN)
+  ) {
     stats.attacker.stunAmount = 1
   }
 
-  if (stats.defender.weaponProfile.criticalRules.includes(criticalRules.STUN)) {
+  if (
+    defenderWeaponProfile.criticalRules.includes(criticalRules.STUN) &&
+    !attackProfile.abilities?.includes(abilities.THE_EMPERORS_CHOSEN)
+  ) {
     stats.defender.stunAmount = 1
   }
 
@@ -462,7 +468,7 @@ function calculateMeleeBlowByBlow({
       if (initiator.crits > 0) {
         // Critical parry used as critical parry
         const criticalParryUsed = Math.min(initiator.crits, responder.crits, dieLeft)
-        const criticalParryDone = initiator.weaponProfile.equipment.includes(adeptusAstartesEquipment.STORM_SHIELD)
+        const criticalParryDone = initiator.weaponProfile.equipment.includes(equipment.STORM_SHIELD)
           ? Math.min(responder.crits, criticalParryUsed * 2)
           : criticalParryUsed
 
@@ -484,7 +490,7 @@ function calculateMeleeBlowByBlow({
 
         // Critical parry used as normal parry
         const parryUsed = Math.min(initiator.crits, responder.hits, dieLeft)
-        const parryDone = initiator.weaponProfile.equipment.includes(adeptusAstartesEquipment.STORM_SHIELD)
+        const parryDone = initiator.weaponProfile.equipment.includes(equipment.STORM_SHIELD)
           ? Math.min(responder.hits, parryUsed * 2)
           : parryUsed
 
@@ -532,7 +538,7 @@ function calculateMeleeBlowByBlow({
         } else {
           // Parry used as normal parry
           const parryUsed = Math.min(initiator.hits, responder.hits, dieLeft)
-          const parryDone = initiator.weaponProfile.equipment.includes(adeptusAstartesEquipment.STORM_SHIELD)
+          const parryDone = initiator.weaponProfile.equipment.includes(equipment.STORM_SHIELD)
             ? Math.min(responder.hits, parryUsed * 2)
             : parryUsed
 
@@ -557,7 +563,7 @@ function calculateMeleeBlowByBlow({
   }
 }
 
-function calculateDamageMelee(weapon: Weapon, defenseProfile: Defenseprofile, attackProfile: Profile): DamageMelee {
+function calculateDamageMelee(weapon: Weapon, defenseProfile: DefenseProfile, attackProfile: Profile): DamageMelee {
   const { attackerHits, attackerCrits, defenderHits, defenderCrits } = calculateMeleeBasics(
     weapon,
     attackProfile.weaponSkill,
@@ -574,7 +580,7 @@ function calculateDamageMelee(weapon: Weapon, defenseProfile: Defenseprofile, at
     attackerHits,
     attackerCrits,
     attackerStrategy: 'STRIKE',
-    defenderWeaponProfile: defenseProfile.defensiveWeapon,
+    defenderWeaponProfile: defenseProfile.defensiveMeleeWeapon,
     defenderHits,
     defenderCrits,
     defenderStrategy: 'STRIKE',
@@ -591,7 +597,7 @@ function calculateDamageMelee(weapon: Weapon, defenseProfile: Defenseprofile, at
     attackerHits,
     attackerCrits,
     attackerStrategy: 'STRIKE',
-    defenderWeaponProfile: defenseProfile.defensiveWeapon,
+    defenderWeaponProfile: defenseProfile.defensiveMeleeWeapon,
     defenderHits,
     defenderCrits,
     defenderStrategy: 'PARRY',
@@ -608,7 +614,7 @@ function calculateDamageMelee(weapon: Weapon, defenseProfile: Defenseprofile, at
     attackerHits,
     attackerCrits,
     attackerStrategy: 'PARRY',
-    defenderWeaponProfile: defenseProfile.defensiveWeapon,
+    defenderWeaponProfile: defenseProfile.defensiveMeleeWeapon,
     defenderHits,
     defenderCrits,
     defenderStrategy: 'STRIKE',
@@ -625,7 +631,7 @@ function calculateDamageMelee(weapon: Weapon, defenseProfile: Defenseprofile, at
     attackerHits,
     attackerCrits,
     attackerStrategy: 'PARRY',
-    defenderWeaponProfile: defenseProfile.defensiveWeapon,
+    defenderWeaponProfile: defenseProfile.defensiveMeleeWeapon,
     defenderHits,
     defenderCrits,
     defenderStrategy: 'PARRY',

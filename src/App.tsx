@@ -20,7 +20,8 @@ import { specialRules } from './rules'
 import React, { FunctionComponent, useState } from 'react'
 import { forgeWorldStats } from './stats/factions/forgeWorld'
 import { broodCovenStats } from './stats/factions/broodCoven'
-import { Profile } from './helpers'
+import { DefenseProfile, Profile } from './helpers'
+import { custodianGuardWarrior, talonsOfTheEmperorStats } from './stats/factions/talonsOfTheEmperor'
 
 interface FireTeam {
   name: string
@@ -34,45 +35,18 @@ interface Faction {
 
 type Factions = Faction[]
 
-const factions: Factions = [adeptusAstartesStats, hereticAstartesStats, forgeWorldStats, broodCovenStats]
+const factions: Factions = [
+  adeptusAstartesStats,
+  hereticAstartesStats,
+  forgeWorldStats,
+  broodCovenStats,
+  talonsOfTheEmperorStats,
+]
 
-export interface Defenseprofile {
-  movement: number
-  apl: number
-  groupActivation: number
-  defense: number
-  save: number
-  saveCritical: number
-  wounds: number
-  weaponSkill: number
-  ballisticSkill: number
-  defensiveWeapon: Weapon
-}
+export const custodesProfile = custodianGuardWarrior
 
-const custodesProfile: Defenseprofile = {
-  movement: 6,
-  apl: 4,
-  groupActivation: 1,
-  defense: 3,
-  save: 2,
-  saveCritical: 6,
-  wounds: 18,
-  weaponSkill: 2,
-  ballisticSkill: 2,
-  defensiveWeapon: {
-    name: 'Guardian spear',
-    profile: '',
-    attackDice: 5,
-    damage: 5,
-    damageCritical: 7,
-    specialRules: [specialRules.LETHAL5],
-    criticalRules: [],
-    equipment: [],
-    type: 'MELEE',
-  },
-}
-
-export const meqProfile: Defenseprofile = {
+export const meqProfile: DefenseProfile = {
+  name: 'MEQ',
   movement: 6,
   apl: 3,
   groupActivation: 1,
@@ -82,7 +56,8 @@ export const meqProfile: Defenseprofile = {
   wounds: 12,
   weaponSkill: 3,
   ballisticSkill: 3,
-  defensiveWeapon: {
+  weapons: [],
+  defensiveMeleeWeapon: {
     name: 'Power weapon',
     profile: '',
     attackDice: 4,
@@ -95,7 +70,8 @@ export const meqProfile: Defenseprofile = {
   },
 }
 
-const geqProfile: Defenseprofile = {
+const geqProfile: DefenseProfile = {
+  name: 'GEQ',
   movement: 6,
   apl: 2,
   groupActivation: 1,
@@ -105,7 +81,8 @@ const geqProfile: Defenseprofile = {
   wounds: 8,
   weaponSkill: 4,
   ballisticSkill: 4,
-  defensiveWeapon: {
+  weapons: [],
+  defensiveMeleeWeapon: {
     name: 'Gun butt',
     profile: '',
     attackDice: 3,
@@ -415,6 +392,7 @@ function App() {
 
   const handleChange = (event: any, newValue: any) => {
     setValue(newValue)
+    setLvl2Value(0)
   }
 
   const handleChangeLvl2 = (event: any, newValue: any) => {

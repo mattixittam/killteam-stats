@@ -1,5 +1,6 @@
 import { specialRules, criticalRules } from '../../rules'
 import { Weapon } from '../weapons'
+import { equipment } from '../equipment'
 
 export const meleeWeapons: Weapon[] = [
   {
@@ -290,6 +291,50 @@ export const meleeWeapons: Weapon[] = [
     damageCritical: 6,
     specialRules: [specialRules.BALANCED, specialRules.BRUTAL],
     criticalRules: [criticalRules.RENDING],
+    equipment: [],
+    type: 'MELEE',
+  },
+  {
+    name: 'Guardian spear',
+    profile: '',
+    attackDice: 5,
+    damage: 5,
+    damageCritical: 7,
+    specialRules: [specialRules.LETHAL5],
+    criticalRules: [],
+    equipment: [],
+    type: 'MELEE',
+  },
+  {
+    name: 'Sentinel blade',
+    profile: '+ Storm shield',
+    attackDice: 5,
+    damage: 4,
+    damageCritical: 6,
+    specialRules: [specialRules.LETHAL5],
+    criticalRules: [],
+    equipment: [equipment.STORM_SHIELD],
+    type: 'MELEE',
+  },
+  {
+    name: 'Executioner greatblade',
+    profile: '',
+    attackDice: 4,
+    damage: 4,
+    damageCritical: 6,
+    specialRules: [specialRules.LETHAL5],
+    criticalRules: [],
+    equipment: [],
+    type: 'MELEE',
+  },
+  {
+    name: 'Brutal assault weapon',
+    profile: '',
+    attackDice: 4,
+    damage: 2,
+    damageCritical: 3,
+    specialRules: [],
+    criticalRules: [],
     equipment: [],
     type: 'MELEE',
   },

@@ -1,13 +1,5 @@
 import { addEquipmentToProfiles, getProfiles, Profile } from '../../helpers'
-
-export const hereticAstartesEquipment = {
-  GRISLY_TROPHY: {
-    label: 'Grisly trophy',
-  },
-  DARK_BLESSING: {
-    label: 'Dark blessing',
-  },
-}
+import { equipment } from '../equipment'
 
 export const chaosSmWarrior: Profile = {
   name: 'CHAOS SPACE MARINE (WARRIOR)',
@@ -21,13 +13,10 @@ export const chaosSmWarrior: Profile = {
   ballisticSkill: 3,
   weaponSkill: 3,
   weapons: [
-    ...getProfiles('Boltgun (CSM)'),
-    ...getProfiles('Bolt Pistol (CSM)'),
+    ...addEquipmentToProfiles(getProfiles('Boltgun'), [equipment.BELT_FEED, equipment.MALEFIC_ROUNDS]),
+    ...addEquipmentToProfiles(getProfiles('Bolt Pistol'), [equipment.BELT_FEED, equipment.MALEFIC_ROUNDS]),
     ...getProfiles('Fists', { attackDiceAdjustment: 1 }),
-    ...addEquipmentToProfiles(getProfiles('Chainsword'), [
-      hereticAstartesEquipment.GRISLY_TROPHY,
-      hereticAstartesEquipment.DARK_BLESSING,
-    ]),
+    ...addEquipmentToProfiles(getProfiles('Chainsword'), [equipment.GRISLY_TROPHY, equipment.DARK_BLESSING]),
   ],
 }
 export const chaosSmGunner: Profile = {
@@ -59,7 +48,11 @@ export const chaosSmHeavyGunner: Profile = {
   wounds: 12,
   ballisticSkill: 3,
   weaponSkill: 3,
-  weapons: [...getProfiles('Heavy Bolter (CSM)'), ...getProfiles('Missile Launcher'), ...getProfiles('Fists')],
+  weapons: [
+    ...addEquipmentToProfiles(getProfiles('Heavy bolter'), [equipment.BELT_FEED, equipment.MALEFIC_ROUNDS]),
+    ...getProfiles('Missile launcher'),
+    ...getProfiles('Fists'),
+  ],
 }
 export const chaosSmIconBearer: Profile = {
   name: 'CHAOS SPACE MARINE (ICON BEARER)',
@@ -73,13 +66,10 @@ export const chaosSmIconBearer: Profile = {
   ballisticSkill: 3,
   weaponSkill: 3,
   weapons: [
-    ...getProfiles('Boltgun (CSM)'),
-    ...getProfiles('Bolt Pistol (CSM)'),
+    ...addEquipmentToProfiles(getProfiles('Boltgun'), [equipment.BELT_FEED, equipment.MALEFIC_ROUNDS]),
+    ...addEquipmentToProfiles(getProfiles('Bolt Pistol'), [equipment.BELT_FEED, equipment.MALEFIC_ROUNDS]),
     ...getProfiles('Fists'),
-    ...addEquipmentToProfiles(getProfiles('Chainsword'), [
-      hereticAstartesEquipment.GRISLY_TROPHY,
-      hereticAstartesEquipment.DARK_BLESSING,
-    ]),
+    ...addEquipmentToProfiles(getProfiles('Chainsword'), [equipment.GRISLY_TROPHY, equipment.DARK_BLESSING]),
   ],
 }
 export const chaosSmAspiringChampion: Profile = {
@@ -94,22 +84,72 @@ export const chaosSmAspiringChampion: Profile = {
   ballisticSkill: 2,
   weaponSkill: 2,
   weapons: [
-    ...getProfiles('Boltgun (CSM)'),
-    ...getProfiles('Bolt pistol (CSM)'),
+    ...addEquipmentToProfiles(getProfiles('Boltgun'), [equipment.BELT_FEED, equipment.MALEFIC_ROUNDS]),
+    ...addEquipmentToProfiles(getProfiles('Bolt Pistol'), [equipment.BELT_FEED, equipment.MALEFIC_ROUNDS]),
     ...getProfiles('Plasma pistol'),
     ...getProfiles('Fists', { attackDiceAdjustment: 1 }),
-    ...addEquipmentToProfiles(getProfiles('Chainsword'), [
-      hereticAstartesEquipment.GRISLY_TROPHY,
-      hereticAstartesEquipment.DARK_BLESSING,
-    ]),
+    ...addEquipmentToProfiles(getProfiles('Chainsword'), [equipment.GRISLY_TROPHY, equipment.DARK_BLESSING]),
     ...addEquipmentToProfiles(getProfiles('Power fist', { attackDiceAdjustment: 1 }), [
-      hereticAstartesEquipment.GRISLY_TROPHY,
-      hereticAstartesEquipment.DARK_BLESSING,
+      equipment.GRISLY_TROPHY,
+      equipment.DARK_BLESSING,
     ]),
     ...addEquipmentToProfiles(getProfiles('Power weapon', { attackDiceAdjustment: 1 }), [
-      hereticAstartesEquipment.GRISLY_TROPHY,
-      hereticAstartesEquipment.DARK_BLESSING,
+      equipment.GRISLY_TROPHY,
+      equipment.DARK_BLESSING,
     ]),
+  ],
+}
+
+export const chaosCultistFighter: Profile = {
+  name: 'CHAOS CULTIST (FIGHTER)',
+  movement: 6,
+  apl: 2,
+  groupActivation: 2,
+  defense: 3,
+  save: 5,
+  saveCritical: 6,
+  wounds: 7,
+  ballisticSkill: 4,
+  weaponSkill: 4,
+  weapons: [
+    ...getProfiles('Boltgun'),
+    ...getProfiles('Autogun'),
+    ...getProfiles('Brutal assault weapon'),
+    ...getProfiles('Gun butt'),
+  ],
+}
+
+export const chaosCultistGunner: Profile = {
+  name: 'CHAOS CULTIST (GUNNER)',
+  movement: 6,
+  apl: 2,
+  groupActivation: 1,
+  defense: 3,
+  save: 5,
+  saveCritical: 6,
+  wounds: 7,
+  ballisticSkill: 4,
+  weaponSkill: 4,
+  weapons: [...getProfiles('Flamer'), ...getProfiles('Heavy stubber'), ...getProfiles('Gun butt')],
+}
+
+export const chaosCultistChampion: Profile = {
+  name: 'CHAOS CULTIST CHAMPION',
+  movement: 6,
+  apl: 2,
+  groupActivation: 1,
+  defense: 3,
+  save: 5,
+  saveCritical: 6,
+  wounds: 8,
+  ballisticSkill: 3,
+  weaponSkill: 3,
+  weapons: [
+    ...getProfiles('Autogun'),
+    ...getProfiles('Autopistol'),
+    ...getProfiles('Shotgun'),
+    ...getProfiles('Brutal assault weapon'),
+    ...getProfiles('Gun butt'),
   ],
 }
 
@@ -119,6 +159,10 @@ export const hereticAstartesStats = {
     {
       name: 'Chaos Space Marines',
       dataSheets: [chaosSmWarrior, chaosSmGunner, chaosSmHeavyGunner, chaosSmIconBearer, chaosSmAspiringChampion],
+    },
+    {
+      name: 'Chaos Cultists',
+      dataSheets: [chaosCultistFighter, chaosCultistGunner, chaosCultistChampion],
     },
   ],
 }
