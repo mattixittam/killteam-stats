@@ -22,7 +22,7 @@ export const deathwatchVeteranWarrior: Profile = {
     ...getProfiles('Deathwatch Shotgun'),
     ...getProfiles('Stalker pattern boltgun'),
     ...getProfiles('Storm bolter'),
-    ...getProfiles('Fists'),
+    ...getProfiles('Fists', { attackDiceAdjustment: 1 }),
     ...getProfiles('Power weapon'),
   ],
 }
