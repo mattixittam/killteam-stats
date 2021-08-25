@@ -1,7 +1,7 @@
 import { Weapon } from './stats/weapons'
 import { specialRules, criticalRules } from './rules'
 import { DamageMelee, DamageRanged } from './App'
-import { DefenseProfile, Profile } from './helpers'
+import { DataSheetDefender, DataSheet } from './helpers'
 import { equipment } from './stats/equipment'
 import { abilities } from './stats/abilities'
 
@@ -19,7 +19,7 @@ function oneDiceChanceOfCrit(critFrom: number = 6) {
   return (7 - critFrom) * (1 / 6)
 }
 
-export function calculateDamage(weapon: Weapon, defenseProfile: DefenseProfile, attackProfile: Profile) {
+export function calculateDamage(weapon: Weapon, defenseProfile: DataSheetDefender, attackProfile: DataSheet) {
   if (weapon.type === 'MELEE') {
     return calculateDamageMelee(weapon, defenseProfile, attackProfile)
   }
@@ -31,7 +31,11 @@ export function calculateDamage(weapon: Weapon, defenseProfile: DefenseProfile, 
   return calculateDamageMelee(weapon, defenseProfile, attackProfile)
 }
 
-function calculateDamageRanged(weapon: Weapon, defenseProfile: DefenseProfile, attackProfile: Profile): DamageRanged {
+function calculateDamageRanged(
+  weapon: Weapon,
+  defenseProfile: DataSheetDefender,
+  attackProfile: DataSheet
+): DamageRanged {
   let rolledDefenseDice = defenseProfile.defense
 
   let ballisticSkillCritical = 6
@@ -170,7 +174,7 @@ export function getAttackerAttackDice(weapon: Weapon) {
 export function calculateMeleeBasics(
   attackerWeapon: Weapon,
   attackerWeaponSkill: number,
-  defenseProfile: DefenseProfile
+  defenseProfile: DataSheetDefender
 ) {
   /**
    * ATTACKER basic stats
@@ -306,8 +310,8 @@ interface CalculateMeleeBlowByBlowProps {
   defenderHits: number
   defenderCrits: number
   defenderStrategy: FightStrategy
-  defenseProfile: DefenseProfile
-  attackProfile: Profile
+  defenseProfile: DataSheetDefender
+  attackProfile: DataSheet
 }
 
 function calculateMeleeBlowByBlow({
@@ -563,7 +567,11 @@ function calculateMeleeBlowByBlow({
   }
 }
 
-function calculateDamageMelee(weapon: Weapon, defenseProfile: DefenseProfile, attackProfile: Profile): DamageMelee {
+function calculateDamageMelee(
+  weapon: Weapon,
+  defenseProfile: DataSheetDefender,
+  attackProfile: DataSheet
+): DamageMelee {
   const { attackerHits, attackerCrits, defenderHits, defenderCrits } = calculateMeleeBasics(
     weapon,
     attackProfile.weaponSkill,

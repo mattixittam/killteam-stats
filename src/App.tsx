@@ -20,7 +20,7 @@ import { specialRules } from './rules'
 import React, { FunctionComponent, useState } from 'react'
 import { forgeWorldStats } from './stats/factions/forgeWorld'
 import { broodCovenStats } from './stats/factions/broodCoven'
-import { DefenseProfile, Profile } from './helpers'
+import { DataSheetDefender, DataSheet } from './helpers'
 import { custodianGuardWarrior, talonsOfTheEmperorStats } from './stats/factions/talonsOfTheEmperor'
 
 interface FireTeam {
@@ -45,7 +45,7 @@ const factions: Factions = [
 
 export const custodesProfile = custodianGuardWarrior
 
-export const meqProfile: DefenseProfile = {
+export const meqProfile: DataSheetDefender = {
   name: 'MEQ',
   movement: 6,
   apl: 3,
@@ -70,7 +70,7 @@ export const meqProfile: DefenseProfile = {
   },
 }
 
-const geqProfile: DefenseProfile = {
+const geqProfile: DataSheetDefender = {
   name: 'GEQ',
   movement: 6,
   apl: 2,
@@ -189,7 +189,7 @@ function formatMeleeDamage(damage: DamageMelee) {
 
 function generateWeaponRow(
   weapon: Weapon,
-  attackProfile: Profile,
+  attackProfile: DataSheet,
   {
     isProfile,
     nextIsProfile,
@@ -242,7 +242,7 @@ function generateWeaponRow(
   )
 }
 
-function generateStatBlock(profile: Profile) {
+function generateStatBlock(profile: DataSheet) {
   let rowColor = 'rgba(1,1,1,0.1)'
 
   function switchRowColor() {

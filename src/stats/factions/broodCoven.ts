@@ -1,6 +1,6 @@
-import { getProfiles, Profile } from '../../helpers'
+import { getWeaponProfiles, DataSheet } from '../../helpers'
 
-export const neophyteHybridTrooper: Profile = {
+export const neophyteHybridTrooper: DataSheet = {
   name: 'NEOPHYTE HYBRID (TROOPER)',
   movement: 6,
   apl: 2,
@@ -11,10 +11,10 @@ export const neophyteHybridTrooper: Profile = {
   wounds: 7,
   ballisticSkill: 4,
   weaponSkill: 4,
-  weapons: [...getProfiles('Autogun'), ...getProfiles('Shotgun'), ...getProfiles('Gun butt')],
+  weapons: [...getWeaponProfiles('Autogun'), ...getWeaponProfiles('Shotgun'), ...getWeaponProfiles('Gun butt')],
 }
 
-export const neophyteHybridGunner: Profile = {
+export const neophyteHybridGunner: DataSheet = {
   name: 'NEOPHYTE HYBRID (GUNNER)',
   movement: 6,
   apl: 2,
@@ -26,14 +26,14 @@ export const neophyteHybridGunner: Profile = {
   ballisticSkill: 4,
   weaponSkill: 4,
   weapons: [
-    ...getProfiles('Flamer'),
-    ...getProfiles('Grenade launcher'),
-    ...getProfiles('Webber'),
-    ...getProfiles('Gun butt'),
+    ...getWeaponProfiles('Flamer'),
+    ...getWeaponProfiles('Grenade launcher'),
+    ...getWeaponProfiles('Webber'),
+    ...getWeaponProfiles('Gun butt'),
   ],
 }
 
-export const neophyteHybridHeavyGunner: Profile = {
+export const neophyteHybridHeavyGunner: DataSheet = {
   name: 'NEOPHYTE HYBRID (HEAVY GUNNER)',
   movement: 6,
   apl: 2,
@@ -45,14 +45,14 @@ export const neophyteHybridHeavyGunner: Profile = {
   ballisticSkill: 4,
   weaponSkill: 4,
   weapons: [
-    ...getProfiles('Heavy stubber'),
-    ...getProfiles('Mining laser'),
-    ...getProfiles('Seismic cannon'),
-    ...getProfiles('Gun butt'),
+    ...getWeaponProfiles('Heavy stubber'),
+    ...getWeaponProfiles('Mining laser'),
+    ...getWeaponProfiles('Seismic cannon'),
+    ...getWeaponProfiles('Gun butt'),
   ],
 }
 
-export const neophyteHybridIconBearer: Profile = {
+export const neophyteHybridIconBearer: DataSheet = {
   name: 'NEOPHYTE HYBRID (ICON BEARER)',
   movement: 6,
   apl: 2,
@@ -63,10 +63,10 @@ export const neophyteHybridIconBearer: Profile = {
   wounds: 7,
   ballisticSkill: 4,
   weaponSkill: 4,
-  weapons: [...getProfiles('Autogun'), ...getProfiles('Shotgun'), ...getProfiles('Gun butt')],
+  weapons: [...getWeaponProfiles('Autogun'), ...getWeaponProfiles('Shotgun'), ...getWeaponProfiles('Gun butt')],
 }
 
-export const neophyteHybridLeader: Profile = {
+export const neophyteHybridLeader: DataSheet = {
   name: 'NEOPHYTE HYBRID (LEADER)',
   movement: 6,
   apl: 2,
@@ -78,19 +78,19 @@ export const neophyteHybridLeader: Profile = {
   ballisticSkill: 3,
   weaponSkill: 3,
   weapons: [
-    ...getProfiles('Autogun'),
-    ...getProfiles('Shotgun'),
-    ...getProfiles('Autopistol'),
-    ...getProfiles('Bolt pistol'),
-    ...getProfiles('Web pistol'),
-    ...getProfiles('Chainsword'),
-    ...getProfiles('Gun butt', { weaponBallisticSkillAdjustment: 1 }),
-    ...getProfiles('Power maul'),
-    ...getProfiles('Power pick'),
+    ...getWeaponProfiles('Autogun'),
+    ...getWeaponProfiles('Shotgun'),
+    ...getWeaponProfiles('Autopistol'),
+    ...getWeaponProfiles('Bolt pistol'),
+    ...getWeaponProfiles('Web pistol'),
+    ...getWeaponProfiles('Chainsword'),
+    ...getWeaponProfiles('Gun butt', { weaponBallisticSkillAdjustment: 1 }),
+    ...getWeaponProfiles('Power maul'),
+    ...getWeaponProfiles('Power pick'),
   ],
 }
 
-export const acolyteHybridTrooper: Profile = {
+export const acolyteHybridTrooper: DataSheet = {
   name: 'NEOPHYTE HYBRID (TROOPER)',
   movement: 6,
   apl: 2,
@@ -101,10 +101,10 @@ export const acolyteHybridTrooper: Profile = {
   wounds: 8,
   ballisticSkill: 4,
   weaponSkill: 3,
-  weapons: [...getProfiles('Autopistol'), ...getProfiles('Cult knife and claw')],
+  weapons: [...getWeaponProfiles('Autopistol'), ...getWeaponProfiles('Cult knife and claw')],
 }
 
-export const acolyteHybridGunner: Profile = {
+export const acolyteHybridGunner: DataSheet = {
   name: 'NEOPHYTE HYBRID (GUNNER)',
   movement: 6,
   apl: 2,
@@ -115,10 +115,10 @@ export const acolyteHybridGunner: Profile = {
   wounds: 8,
   ballisticSkill: 4,
   weaponSkill: 3,
-  weapons: [...getProfiles('Hand flamer'), ...getProfiles('Cult knife and claw')],
+  weapons: [...getWeaponProfiles('Hand flamer'), ...getWeaponProfiles('Cult knife and claw')],
 }
 
-export const acolyteHybridFighter: Profile = {
+export const acolyteHybridFighter: DataSheet = {
   name: 'NEOPHYTE HYBRID (FIGHTER)',
   movement: 6,
   apl: 2,
@@ -130,14 +130,14 @@ export const acolyteHybridFighter: Profile = {
   ballisticSkill: 4,
   weaponSkill: 3,
   weapons: [
-    ...getProfiles('Autopistol'),
-    ...getProfiles('Heavy rock cutter'),
-    ...getProfiles('Heavy rock drill'),
-    ...getProfiles('Heavy rock saw'),
+    ...getWeaponProfiles('Autopistol'),
+    ...getWeaponProfiles('Heavy rock cutter'),
+    ...getWeaponProfiles('Heavy rock drill'),
+    ...getWeaponProfiles('Heavy rock saw'),
   ],
 }
 
-export const acolyteHybridIconBearer: Profile = {
+export const acolyteHybridIconBearer: DataSheet = {
   name: 'NEOPHYTE HYBRID (ICON BEARER)',
   movement: 6,
   apl: 2,
@@ -148,10 +148,10 @@ export const acolyteHybridIconBearer: Profile = {
   wounds: 8,
   ballisticSkill: 4,
   weaponSkill: 3,
-  weapons: [...getProfiles('Autopistol'), ...getProfiles('Cult knife and claw')],
+  weapons: [...getWeaponProfiles('Autopistol'), ...getWeaponProfiles('Cult knife and claw')],
 }
 
-export const acolyteHybridLeader: Profile = {
+export const acolyteHybridLeader: DataSheet = {
   name: 'NEOPHYTE HYBRID (LEADER)',
   movement: 6,
   apl: 2,
@@ -163,15 +163,15 @@ export const acolyteHybridLeader: Profile = {
   ballisticSkill: 3,
   weaponSkill: 2,
   weapons: [
-    ...getProfiles('Autopistol'),
-    ...getProfiles('Hand flamer'),
-    ...getProfiles('Lash whip'),
-    ...getProfiles('Cult bonesword and claw'),
-    ...getProfiles('Cult knife and claw'),
+    ...getWeaponProfiles('Autopistol'),
+    ...getWeaponProfiles('Hand flamer'),
+    ...getWeaponProfiles('Lash whip'),
+    ...getWeaponProfiles('Cult bonesword and claw'),
+    ...getWeaponProfiles('Cult knife and claw'),
   ],
 }
 
-export const hybridMetamorphFighter: Profile = {
+export const hybridMetamorphFighter: DataSheet = {
   name: 'HYBRID METAMORPH (FIGHTER)',
   movement: 6,
   apl: 2,
@@ -182,10 +182,10 @@ export const hybridMetamorphFighter: Profile = {
   wounds: 8,
   ballisticSkill: 4,
   weaponSkill: 3,
-  weapons: [...getProfiles('Autopistol'), ...getProfiles('Metamorph mutations')],
+  weapons: [...getWeaponProfiles('Autopistol'), ...getWeaponProfiles('Metamorph mutations')],
 }
 
-export const hybridMetamorphGunner: Profile = {
+export const hybridMetamorphGunner: DataSheet = {
   name: 'HYBRID METAMORPH (GUNNER)',
   movement: 6,
   apl: 2,
@@ -196,10 +196,10 @@ export const hybridMetamorphGunner: Profile = {
   wounds: 8,
   ballisticSkill: 4,
   weaponSkill: 3,
-  weapons: [...getProfiles('Hand flamer'), ...getProfiles('Metamorph mutations')],
+  weapons: [...getWeaponProfiles('Hand flamer'), ...getWeaponProfiles('Metamorph mutations')],
 }
 
-export const hybridMetamorphIconBearer: Profile = {
+export const hybridMetamorphIconBearer: DataSheet = {
   name: 'HYBRID METAMORPH (ICON BEARER)',
   movement: 6,
   apl: 2,
@@ -210,10 +210,10 @@ export const hybridMetamorphIconBearer: Profile = {
   wounds: 8,
   ballisticSkill: 4,
   weaponSkill: 3,
-  weapons: [...getProfiles('Autopistol'), ...getProfiles('Metamorph mutations')],
+  weapons: [...getWeaponProfiles('Autopistol'), ...getWeaponProfiles('Metamorph mutations')],
 }
 
-export const hybridMetamorphLeader: Profile = {
+export const hybridMetamorphLeader: DataSheet = {
   name: 'HYBRID METAMORPH (LEADER)',
   movement: 6,
   apl: 2,
@@ -225,10 +225,10 @@ export const hybridMetamorphLeader: Profile = {
   ballisticSkill: 2,
   weaponSkill: 2,
   weapons: [
-    ...getProfiles('Autopistol'),
-    ...getProfiles('Hand flamer'),
-    ...getProfiles('Cult bonesword and metamorph mutations'),
-    ...getProfiles('Metamorph mutations'),
+    ...getWeaponProfiles('Autopistol'),
+    ...getWeaponProfiles('Hand flamer'),
+    ...getWeaponProfiles('Cult bonesword and metamorph mutations'),
+    ...getWeaponProfiles('Metamorph mutations'),
   ],
 }
 

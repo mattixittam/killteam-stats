@@ -1,4 +1,4 @@
-import { getProfiles } from '../../helpers'
+import { getWeaponProfiles } from '../../helpers'
 
 export const skitariiRangerTrooper = {
   name: 'SKITARII RANGER (TROOPER)',
@@ -11,7 +11,7 @@ export const skitariiRangerTrooper = {
   wounds: 7,
   ballisticSkill: 3,
   weaponSkill: 4,
-  weapons: [...getProfiles('Galvanic rifle'), ...getProfiles('Gun butt')],
+  weapons: [...getWeaponProfiles('Galvanic rifle'), ...getWeaponProfiles('Gun butt')],
 }
 
 export const skitariiRangerGunner = {
@@ -26,10 +26,10 @@ export const skitariiRangerGunner = {
   ballisticSkill: 3,
   weaponSkill: 4,
   weapons: [
-    ...getProfiles('Arc rifle'),
-    ...getProfiles('Plasma caliver'),
-    ...getProfiles('Transuranic arquebus'),
-    ...getProfiles('Gun butt'),
+    ...getWeaponProfiles('Arc rifle'),
+    ...getWeaponProfiles('Plasma caliver'),
+    ...getWeaponProfiles('Transuranic arquebus'),
+    ...getWeaponProfiles('Gun butt'),
   ],
 }
 
@@ -45,14 +45,14 @@ export const skitariiRangerAlpha = {
   ballisticSkill: 2,
   weaponSkill: 4,
   weapons: [
-    ...getProfiles('Arc rifle'),
-    ...getProfiles('Galvanic rifle'),
-    ...getProfiles('Phosphor blast pistol'),
-    ...getProfiles('Radium pistol'),
-    ...getProfiles('Arc maul'),
-    ...getProfiles('Gun butt'),
-    ...getProfiles('Power weapon'),
-    ...getProfiles('Taser goad'),
+    ...getWeaponProfiles('Arc rifle'),
+    ...getWeaponProfiles('Galvanic rifle'),
+    ...getWeaponProfiles('Phosphor blast pistol'),
+    ...getWeaponProfiles('Radium pistol'),
+    ...getWeaponProfiles('Arc maul'),
+    ...getWeaponProfiles('Gun butt'),
+    ...getWeaponProfiles('Power weapon'),
+    ...getWeaponProfiles('Taser goad'),
   ],
 }
 
@@ -67,7 +67,7 @@ export const skitariiVanguardTrooper = {
   wounds: 7,
   ballisticSkill: 3,
   weaponSkill: 4,
-  weapons: [...getProfiles('Radium carbine'), ...getProfiles('Gun butt')],
+  weapons: [...getWeaponProfiles('Radium carbine'), ...getWeaponProfiles('Gun butt')],
 }
 
 export const skitariiVanguardGunner = {
@@ -82,10 +82,10 @@ export const skitariiVanguardGunner = {
   ballisticSkill: 3,
   weaponSkill: 4,
   weapons: [
-    ...getProfiles('Arc rifle'),
-    ...getProfiles('Plasma caliver'),
-    ...getProfiles('Transuranic arquebus'),
-    ...getProfiles('Gun butt'),
+    ...getWeaponProfiles('Arc rifle'),
+    ...getWeaponProfiles('Plasma caliver'),
+    ...getWeaponProfiles('Transuranic arquebus'),
+    ...getWeaponProfiles('Gun butt'),
   ],
 }
 
@@ -101,14 +101,14 @@ export const skitariiVanguardAlpha = {
   ballisticSkill: 2,
   weaponSkill: 4,
   weapons: [
-    ...getProfiles('Arc pistol'),
-    ...getProfiles('Phosphor blast pistol'),
-    ...getProfiles('Radium carbine'),
-    ...getProfiles('Radium pistol'),
-    ...getProfiles('Arc maul'),
-    ...getProfiles('Gun butt'),
-    ...getProfiles('Power weapon'),
-    ...getProfiles('Taser goad'),
+    ...getWeaponProfiles('Arc pistol'),
+    ...getWeaponProfiles('Phosphor blast pistol'),
+    ...getWeaponProfiles('Radium carbine'),
+    ...getWeaponProfiles('Radium pistol'),
+    ...getWeaponProfiles('Arc maul'),
+    ...getWeaponProfiles('Gun butt'),
+    ...getWeaponProfiles('Power weapon'),
+    ...getWeaponProfiles('Taser goad'),
   ],
 }
 
@@ -123,7 +123,7 @@ export const sicarianRuststalkerTrooper = {
   wounds: 10,
   ballisticSkill: 3,
   weaponSkill: 3,
-  weapons: [...getProfiles('Chordclaw and transonic razor'), ...getProfiles('Transonic blades')],
+  weapons: [...getWeaponProfiles('Chordclaw and transonic razor'), ...getWeaponProfiles('Transonic blades')],
 }
 
 export const sicarianRuststalkerPrinceps = {
@@ -137,7 +137,7 @@ export const sicarianRuststalkerPrinceps = {
   wounds: 11,
   ballisticSkill: 2,
   weaponSkill: 2,
-  weapons: [...getProfiles('Chordclaw and transonic razor'), ...getProfiles('Transonic blades')],
+  weapons: [...getWeaponProfiles('Chordclaw and transonic razor'), ...getWeaponProfiles('Transonic blades')],
 }
 
 export const sicarianInfiltratorTrooper = {
@@ -152,10 +152,10 @@ export const sicarianInfiltratorTrooper = {
   ballisticSkill: 3,
   weaponSkill: 3,
   weapons: [
-    ...getProfiles('Flechette blaster'),
-    ...getProfiles('Stubcarbine'),
-    ...getProfiles('Power weapon'),
-    ...getProfiles('Taser goad'),
+    ...getWeaponProfiles('Flechette blaster'),
+    ...getWeaponProfiles('Stubcarbine'),
+    ...getWeaponProfiles('Power weapon'),
+    ...getWeaponProfiles('Taser goad'),
   ],
 }
 
@@ -171,10 +171,10 @@ export const sicarianInfiltratorPrinceps = {
   ballisticSkill: 2,
   weaponSkill: 3,
   weapons: [
-    ...getProfiles('Flechette blaster'),
-    ...getProfiles('Stubcarbine'),
-    ...getProfiles('Power weapon'),
-    ...getProfiles('Taser goad'),
+    ...getWeaponProfiles('Flechette blaster'),
+    ...getWeaponProfiles('Stubcarbine'),
+    ...getWeaponProfiles('Power weapon'),
+    ...getWeaponProfiles('Taser goad'),
   ],
 }
 

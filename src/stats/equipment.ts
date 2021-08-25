@@ -1,16 +1,16 @@
 import { criticalRules, Rule, specialRules } from '../rules'
 
-export interface EquipmentItem {
+export interface Equipment {
   label: string
   additionalSpecialRules?: Rule[]
   additionalCriticalRules?: Rule[]
 }
 
-export interface Equipment {
-  [x: string]: EquipmentItem
+export interface EquipmentCollection {
+  [x: string]: Equipment
 }
 
-export const equipment: Equipment = {
+export const equipment: EquipmentCollection = {
   STORM_SHIELD: {
     label: 'Storm shield',
   },

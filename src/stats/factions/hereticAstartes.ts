@@ -1,7 +1,7 @@
-import { addEquipmentToProfiles, getProfiles, Profile } from '../../helpers'
+import { generateEquipmentVariantProfiles, getWeaponProfiles, DataSheet } from '../../helpers'
 import { equipment } from '../equipment'
 
-export const chaosSmWarrior: Profile = {
+export const chaosSmWarrior: DataSheet = {
   name: 'CHAOS SPACE MARINE (WARRIOR)',
   movement: 6,
   apl: 3,
@@ -13,13 +13,19 @@ export const chaosSmWarrior: Profile = {
   ballisticSkill: 3,
   weaponSkill: 3,
   weapons: [
-    ...addEquipmentToProfiles(getProfiles('Boltgun'), [equipment.BELT_FEED, equipment.MALEFIC_ROUNDS]),
-    ...addEquipmentToProfiles(getProfiles('Bolt Pistol'), [equipment.BELT_FEED, equipment.MALEFIC_ROUNDS]),
-    ...getProfiles('Fists', { attackDiceAdjustment: 1 }),
-    ...addEquipmentToProfiles(getProfiles('Chainsword'), [equipment.GRISLY_TROPHY, equipment.DARK_BLESSING]),
+    ...generateEquipmentVariantProfiles(getWeaponProfiles('Boltgun'), [equipment.BELT_FEED, equipment.MALEFIC_ROUNDS]),
+    ...generateEquipmentVariantProfiles(getWeaponProfiles('Bolt Pistol'), [
+      equipment.BELT_FEED,
+      equipment.MALEFIC_ROUNDS,
+    ]),
+    ...getWeaponProfiles('Fists', { attackDiceAdjustment: 1 }),
+    ...generateEquipmentVariantProfiles(getWeaponProfiles('Chainsword'), [
+      equipment.GRISLY_TROPHY,
+      equipment.DARK_BLESSING,
+    ]),
   ],
 }
-export const chaosSmGunner: Profile = {
+export const chaosSmGunner: DataSheet = {
   name: 'CHAOS SPACE MARINE (GUNNER)',
   movement: 6,
   apl: 3,
@@ -31,13 +37,13 @@ export const chaosSmGunner: Profile = {
   ballisticSkill: 3,
   weaponSkill: 3,
   weapons: [
-    ...getProfiles('Flamer'),
-    ...getProfiles('Meltagun'),
-    ...getProfiles('Plasma gun'),
-    ...getProfiles('Fists'),
+    ...getWeaponProfiles('Flamer'),
+    ...getWeaponProfiles('Meltagun'),
+    ...getWeaponProfiles('Plasma gun'),
+    ...getWeaponProfiles('Fists'),
   ],
 }
-export const chaosSmHeavyGunner: Profile = {
+export const chaosSmHeavyGunner: DataSheet = {
   name: 'CHAOS SPACE MARINE (HEAVY GUNNER)',
   movement: 6,
   apl: 3,
@@ -49,12 +55,15 @@ export const chaosSmHeavyGunner: Profile = {
   ballisticSkill: 3,
   weaponSkill: 3,
   weapons: [
-    ...addEquipmentToProfiles(getProfiles('Heavy bolter'), [equipment.BELT_FEED, equipment.MALEFIC_ROUNDS]),
-    ...getProfiles('Missile launcher'),
-    ...getProfiles('Fists'),
+    ...generateEquipmentVariantProfiles(getWeaponProfiles('Heavy bolter'), [
+      equipment.BELT_FEED,
+      equipment.MALEFIC_ROUNDS,
+    ]),
+    ...getWeaponProfiles('Missile launcher'),
+    ...getWeaponProfiles('Fists'),
   ],
 }
-export const chaosSmIconBearer: Profile = {
+export const chaosSmIconBearer: DataSheet = {
   name: 'CHAOS SPACE MARINE (ICON BEARER)',
   movement: 6,
   apl: 3,
@@ -66,13 +75,19 @@ export const chaosSmIconBearer: Profile = {
   ballisticSkill: 3,
   weaponSkill: 3,
   weapons: [
-    ...addEquipmentToProfiles(getProfiles('Boltgun'), [equipment.BELT_FEED, equipment.MALEFIC_ROUNDS]),
-    ...addEquipmentToProfiles(getProfiles('Bolt Pistol'), [equipment.BELT_FEED, equipment.MALEFIC_ROUNDS]),
-    ...getProfiles('Fists'),
-    ...addEquipmentToProfiles(getProfiles('Chainsword'), [equipment.GRISLY_TROPHY, equipment.DARK_BLESSING]),
+    ...generateEquipmentVariantProfiles(getWeaponProfiles('Boltgun'), [equipment.BELT_FEED, equipment.MALEFIC_ROUNDS]),
+    ...generateEquipmentVariantProfiles(getWeaponProfiles('Bolt Pistol'), [
+      equipment.BELT_FEED,
+      equipment.MALEFIC_ROUNDS,
+    ]),
+    ...getWeaponProfiles('Fists'),
+    ...generateEquipmentVariantProfiles(getWeaponProfiles('Chainsword'), [
+      equipment.GRISLY_TROPHY,
+      equipment.DARK_BLESSING,
+    ]),
   ],
 }
-export const chaosSmAspiringChampion: Profile = {
+export const chaosSmAspiringChampion: DataSheet = {
   name: 'CHAOS SPACE MARINE ASPIRING CHAMPION',
   movement: 6,
   apl: 3,
@@ -84,23 +99,29 @@ export const chaosSmAspiringChampion: Profile = {
   ballisticSkill: 2,
   weaponSkill: 2,
   weapons: [
-    ...addEquipmentToProfiles(getProfiles('Boltgun'), [equipment.BELT_FEED, equipment.MALEFIC_ROUNDS]),
-    ...addEquipmentToProfiles(getProfiles('Bolt Pistol'), [equipment.BELT_FEED, equipment.MALEFIC_ROUNDS]),
-    ...getProfiles('Plasma pistol'),
-    ...getProfiles('Fists', { attackDiceAdjustment: 1 }),
-    ...addEquipmentToProfiles(getProfiles('Chainsword'), [equipment.GRISLY_TROPHY, equipment.DARK_BLESSING]),
-    ...addEquipmentToProfiles(getProfiles('Power fist', { attackDiceAdjustment: 1 }), [
+    ...generateEquipmentVariantProfiles(getWeaponProfiles('Boltgun'), [equipment.BELT_FEED, equipment.MALEFIC_ROUNDS]),
+    ...generateEquipmentVariantProfiles(getWeaponProfiles('Bolt Pistol'), [
+      equipment.BELT_FEED,
+      equipment.MALEFIC_ROUNDS,
+    ]),
+    ...getWeaponProfiles('Plasma pistol'),
+    ...getWeaponProfiles('Fists', { attackDiceAdjustment: 1 }),
+    ...generateEquipmentVariantProfiles(getWeaponProfiles('Chainsword'), [
       equipment.GRISLY_TROPHY,
       equipment.DARK_BLESSING,
     ]),
-    ...addEquipmentToProfiles(getProfiles('Power weapon', { attackDiceAdjustment: 1 }), [
+    ...generateEquipmentVariantProfiles(getWeaponProfiles('Power fist', { attackDiceAdjustment: 1 }), [
+      equipment.GRISLY_TROPHY,
+      equipment.DARK_BLESSING,
+    ]),
+    ...generateEquipmentVariantProfiles(getWeaponProfiles('Power weapon', { attackDiceAdjustment: 1 }), [
       equipment.GRISLY_TROPHY,
       equipment.DARK_BLESSING,
     ]),
   ],
 }
 
-export const chaosCultistFighter: Profile = {
+export const chaosCultistFighter: DataSheet = {
   name: 'CHAOS CULTIST (FIGHTER)',
   movement: 6,
   apl: 2,
@@ -112,14 +133,14 @@ export const chaosCultistFighter: Profile = {
   ballisticSkill: 4,
   weaponSkill: 4,
   weapons: [
-    ...getProfiles('Boltgun'),
-    ...getProfiles('Autogun'),
-    ...getProfiles('Brutal assault weapon'),
-    ...getProfiles('Gun butt'),
+    ...getWeaponProfiles('Boltgun'),
+    ...getWeaponProfiles('Autogun'),
+    ...getWeaponProfiles('Brutal assault weapon'),
+    ...getWeaponProfiles('Gun butt'),
   ],
 }
 
-export const chaosCultistGunner: Profile = {
+export const chaosCultistGunner: DataSheet = {
   name: 'CHAOS CULTIST (GUNNER)',
   movement: 6,
   apl: 2,
@@ -130,10 +151,10 @@ export const chaosCultistGunner: Profile = {
   wounds: 7,
   ballisticSkill: 4,
   weaponSkill: 4,
-  weapons: [...getProfiles('Flamer'), ...getProfiles('Heavy stubber'), ...getProfiles('Gun butt')],
+  weapons: [...getWeaponProfiles('Flamer'), ...getWeaponProfiles('Heavy stubber'), ...getWeaponProfiles('Gun butt')],
 }
 
-export const chaosCultistChampion: Profile = {
+export const chaosCultistChampion: DataSheet = {
   name: 'CHAOS CULTIST CHAMPION',
   movement: 6,
   apl: 2,
@@ -145,11 +166,11 @@ export const chaosCultistChampion: Profile = {
   ballisticSkill: 3,
   weaponSkill: 3,
   weapons: [
-    ...getProfiles('Autogun'),
-    ...getProfiles('Autopistol'),
-    ...getProfiles('Shotgun'),
-    ...getProfiles('Brutal assault weapon'),
-    ...getProfiles('Gun butt'),
+    ...getWeaponProfiles('Autogun'),
+    ...getWeaponProfiles('Autopistol'),
+    ...getWeaponProfiles('Shotgun'),
+    ...getWeaponProfiles('Brutal assault weapon'),
+    ...getWeaponProfiles('Gun butt'),
   ],
 }
 

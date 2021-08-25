@@ -1,7 +1,7 @@
-import { addEquipmentToProfiles, DefenseProfile, getProfiles, Profile } from '../../helpers'
+import { DataSheetDefender, getWeaponProfiles, DataSheet } from '../../helpers'
 import { abilities } from '../abilities'
 
-export const custodianGuardLeader: DefenseProfile = {
+export const custodianGuardLeader: DataSheetDefender = {
   name: 'CUSTODIAN GUARD (LEADER)',
   movement: 6,
   apl: 4,
@@ -12,12 +12,12 @@ export const custodianGuardLeader: DefenseProfile = {
   wounds: 19,
   ballisticSkill: 2,
   weaponSkill: 2,
-  weapons: [...getProfiles('Guardian spear'), ...getProfiles('Sentinel blade')],
-  defensiveMeleeWeapon: getProfiles('Guardian spear')[0],
+  weapons: [...getWeaponProfiles('Guardian spear'), ...getWeaponProfiles('Sentinel blade')],
+  defensiveMeleeWeapon: getWeaponProfiles('Guardian spear')[0],
   abilities: [abilities.THE_EMPERORS_CHOSEN],
 }
 
-export const custodianGuardWarrior: DefenseProfile = {
+export const custodianGuardWarrior: DataSheetDefender = {
   name: 'CUSTODIAN GUARD (WARRIOR)',
   movement: 6,
   apl: 4,
@@ -28,12 +28,12 @@ export const custodianGuardWarrior: DefenseProfile = {
   wounds: 18,
   ballisticSkill: 2,
   weaponSkill: 2,
-  weapons: [...getProfiles('Guardian spear'), ...getProfiles('Sentinel blade')],
-  defensiveMeleeWeapon: getProfiles('Guardian spear')[0],
+  weapons: [...getWeaponProfiles('Guardian spear'), ...getWeaponProfiles('Sentinel blade')],
+  defensiveMeleeWeapon: getWeaponProfiles('Guardian spear')[0],
   abilities: [abilities.THE_EMPERORS_CHOSEN],
 }
 
-export const sisterOfSilenceProsecutor: Profile = {
+export const sisterOfSilenceProsecutor: DataSheet = {
   name: 'SISTER OF SILENCE PROSECUTOR',
   movement: 6,
   apl: 2,
@@ -44,11 +44,11 @@ export const sisterOfSilenceProsecutor: Profile = {
   wounds: 8,
   ballisticSkill: 3,
   weaponSkill: 3,
-  weapons: [...getProfiles('Boltgun'), ...getProfiles('Gun butt', { attackDiceAdjustment: 1 })],
+  weapons: [...getWeaponProfiles('Boltgun'), ...getWeaponProfiles('Gun butt', { attackDiceAdjustment: 1 })],
   abilities: [],
 }
 
-export const sisterOfSilenceWitchSeeker: Profile = {
+export const sisterOfSilenceWitchSeeker: DataSheet = {
   name: 'SISTER OF SILENCE WITCHSEEKER',
   movement: 6,
   apl: 2,
@@ -59,11 +59,11 @@ export const sisterOfSilenceWitchSeeker: Profile = {
   wounds: 8,
   ballisticSkill: 3,
   weaponSkill: 3,
-  weapons: [...getProfiles('Flamer'), ...getProfiles('Gun butt', { attackDiceAdjustment: 1 })],
+  weapons: [...getWeaponProfiles('Flamer'), ...getWeaponProfiles('Gun butt', { attackDiceAdjustment: 1 })],
   abilities: [],
 }
 
-export const sisterOfSilenceVigilator: Profile = {
+export const sisterOfSilenceVigilator: DataSheet = {
   name: 'SISTER OF SILENCE VIGILATOR',
   movement: 6,
   apl: 2,
@@ -74,11 +74,11 @@ export const sisterOfSilenceVigilator: Profile = {
   wounds: 8,
   ballisticSkill: 3,
   weaponSkill: 3,
-  weapons: [...getProfiles('Executioner greatblade')],
+  weapons: [...getWeaponProfiles('Executioner greatblade')],
   abilities: [],
 }
 
-export const sisterOfSilenceSuperior: Profile = {
+export const sisterOfSilenceSuperior: DataSheet = {
   name: 'SISTER OF SILENCE SUPERIOR',
   movement: 6,
   apl: 2,
@@ -90,10 +90,10 @@ export const sisterOfSilenceSuperior: Profile = {
   ballisticSkill: 2,
   weaponSkill: 2,
   weapons: [
-    ...getProfiles('Boltgun'),
-    ...getProfiles('Flamer'),
-    ...getProfiles('Executioner greatblade'),
-    ...getProfiles('Gun butt', { attackDiceAdjustment: 1 }),
+    ...getWeaponProfiles('Boltgun'),
+    ...getWeaponProfiles('Flamer'),
+    ...getWeaponProfiles('Executioner greatblade'),
+    ...getWeaponProfiles('Gun butt', { attackDiceAdjustment: 1 }),
   ],
   abilities: [],
 }

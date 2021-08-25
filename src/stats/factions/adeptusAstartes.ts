@@ -1,7 +1,7 @@
-import { addEquipmentToProfiles, getProfiles, Profile } from '../../helpers'
+import { generateEquipmentVariantProfiles, getWeaponProfiles, DataSheet } from '../../helpers'
 import { equipment } from '../equipment'
 
-export const deathwatchVeteranWarrior: Profile = {
+export const deathwatchVeteranWarrior: DataSheet = {
   name: 'DEATHWATCH VETERAN (WARRIOR)',
   movement: 6,
   apl: 3,
@@ -13,15 +13,15 @@ export const deathwatchVeteranWarrior: Profile = {
   ballisticSkill: 3,
   weaponSkill: 3,
   weapons: [
-    ...getProfiles('Deathwatch Boltgun'),
-    ...getProfiles('Deathwatch Shotgun'),
-    ...getProfiles('Stalker pattern boltgun'),
-    ...getProfiles('Storm bolter'),
-    ...getProfiles('Fists', { attackDiceAdjustment: 1 }),
-    ...getProfiles('Power weapon'),
+    ...getWeaponProfiles('Deathwatch Boltgun'),
+    ...getWeaponProfiles('Deathwatch Shotgun'),
+    ...getWeaponProfiles('Stalker pattern boltgun'),
+    ...getWeaponProfiles('Storm bolter'),
+    ...getWeaponProfiles('Fists', { attackDiceAdjustment: 1 }),
+    ...getWeaponProfiles('Power weapon'),
   ],
 }
-export const deathwatchVeteranFighter: Profile = {
+export const deathwatchVeteranFighter: DataSheet = {
   name: 'DEATHWATCH VETERAN (FIGHTER)',
   movement: 6,
   apl: 3,
@@ -33,34 +33,34 @@ export const deathwatchVeteranFighter: Profile = {
   ballisticSkill: 3,
   weaponSkill: 3,
   weapons: [
-    ...getProfiles('Bolt pistol'),
-    ...getProfiles('Grav-pistol'),
-    ...getProfiles('Hand flamer'),
-    ...getProfiles('Inferno pistol'),
-    ...getProfiles('Plasma pistol'),
-    ...getProfiles('Heavy thunder hammer', { attackDiceAdjustment: 1 }),
-    ...getProfiles('Lightning claws', { attackDiceAdjustment: 1 }),
-    ...addEquipmentToProfiles(getProfiles('Chainsword', { attackDiceAdjustment: 1 }), [
-      adeptusAstartesEquipment.STORM_SHIELD,
+    ...getWeaponProfiles('Bolt pistol'),
+    ...getWeaponProfiles('Grav-pistol'),
+    ...getWeaponProfiles('Hand flamer'),
+    ...getWeaponProfiles('Inferno pistol'),
+    ...getWeaponProfiles('Plasma pistol'),
+    ...getWeaponProfiles('Heavy thunder hammer', { attackDiceAdjustment: 1 }),
+    ...getWeaponProfiles('Lightning claws', { attackDiceAdjustment: 1 }),
+    ...generateEquipmentVariantProfiles(getWeaponProfiles('Chainsword', { attackDiceAdjustment: 1 }), [
+      equipment.STORM_SHIELD,
     ]),
-    ...addEquipmentToProfiles(getProfiles('Lightning claw', { attackDiceAdjustment: 1 }), [
-      adeptusAstartesEquipment.STORM_SHIELD,
+    ...generateEquipmentVariantProfiles(getWeaponProfiles('Lightning claw', { attackDiceAdjustment: 1 }), [
+      equipment.STORM_SHIELD,
     ]),
-    ...addEquipmentToProfiles(getProfiles('Power fist', { attackDiceAdjustment: 1 }), [
-      adeptusAstartesEquipment.STORM_SHIELD,
+    ...generateEquipmentVariantProfiles(getWeaponProfiles('Power fist', { attackDiceAdjustment: 1 }), [
+      equipment.STORM_SHIELD,
     ]),
-    ...addEquipmentToProfiles(getProfiles('Power maul', { attackDiceAdjustment: 1 }), [
-      adeptusAstartesEquipment.STORM_SHIELD,
+    ...generateEquipmentVariantProfiles(getWeaponProfiles('Power maul', { attackDiceAdjustment: 1 }), [
+      equipment.STORM_SHIELD,
     ]),
-    ...addEquipmentToProfiles(getProfiles('Power weapon', { attackDiceAdjustment: 1 }), [
-      adeptusAstartesEquipment.STORM_SHIELD,
+    ...generateEquipmentVariantProfiles(getWeaponProfiles('Power weapon', { attackDiceAdjustment: 1 }), [
+      equipment.STORM_SHIELD,
     ]),
-    ...addEquipmentToProfiles(getProfiles('Thunder hammer', { attackDiceAdjustment: 1 }), [
-      adeptusAstartesEquipment.STORM_SHIELD,
+    ...generateEquipmentVariantProfiles(getWeaponProfiles('Thunder hammer', { attackDiceAdjustment: 1 }), [
+      equipment.STORM_SHIELD,
     ]),
   ],
 }
-export const deathwatchVeteranGunner: Profile = {
+export const deathwatchVeteranGunner: DataSheet = {
   name: 'DEATHWATCH VETERAN (GUNNER)',
   movement: 6,
   apl: 3,
@@ -72,19 +72,19 @@ export const deathwatchVeteranGunner: Profile = {
   ballisticSkill: 3,
   weaponSkill: 3,
   weapons: [
-    ...getProfiles('Combi-flamer'),
-    ...getProfiles('Combi-grav'),
-    ...getProfiles('Combi-melta'),
-    ...getProfiles('Combi-plasma'),
-    ...getProfiles('Deathwatch Boltgun'),
-    ...getProfiles('Flamer'),
-    ...getProfiles('Grav-gun'),
-    ...getProfiles('Meltagun'),
-    ...getProfiles('Plasma gun'),
-    ...getProfiles('Fists'),
+    ...getWeaponProfiles('Combi-flamer'),
+    ...getWeaponProfiles('Combi-grav'),
+    ...getWeaponProfiles('Combi-melta'),
+    ...getWeaponProfiles('Combi-plasma'),
+    ...getWeaponProfiles('Deathwatch Boltgun'),
+    ...getWeaponProfiles('Flamer'),
+    ...getWeaponProfiles('Grav-gun'),
+    ...getWeaponProfiles('Meltagun'),
+    ...getWeaponProfiles('Plasma gun'),
+    ...getWeaponProfiles('Fists'),
   ],
 }
-export const deathwatchVeteranHeavyGunner: Profile = {
+export const deathwatchVeteranHeavyGunner: DataSheet = {
   name: 'DEATHWATCH VETERAN (HEAVY GUNNER)',
   movement: 6,
   apl: 3,
@@ -96,13 +96,13 @@ export const deathwatchVeteranHeavyGunner: Profile = {
   ballisticSkill: 3,
   weaponSkill: 3,
   weapons: [
-    ...getProfiles('Frag Cannon'),
-    ...getProfiles('Infernus heavy bolter'),
-    ...getProfiles('Missile launcher'),
-    ...getProfiles('Fists'),
+    ...getWeaponProfiles('Frag Cannon'),
+    ...getWeaponProfiles('Infernus heavy bolter'),
+    ...getWeaponProfiles('Missile launcher'),
+    ...getWeaponProfiles('Fists'),
   ],
 }
-export const deathwatchVeteranWatchSergeant: Profile = {
+export const deathwatchVeteranWatchSergeant: DataSheet = {
   name: 'DEATHWATCH VETERAN WATCH SERGEANT',
   movement: 6,
   apl: 3,
@@ -114,33 +114,47 @@ export const deathwatchVeteranWatchSergeant: Profile = {
   ballisticSkill: 2,
   weaponSkill: 2,
   weapons: [
-    ...getProfiles('Deathwatch Boltgun'),
-    ...getProfiles('Deathwatch Shotgun'),
-    ...getProfiles('Combi-flamer'),
-    ...getProfiles('Combi-grav'),
-    ...getProfiles('Combi-melta'),
-    ...getProfiles('Combi-plasma'),
-    ...getProfiles('Flamer'),
-    ...getProfiles('Grav-gun'),
-    ...getProfiles('Meltagun'),
-    ...getProfiles('Plasma gun'),
-    ...getProfiles('Stalker pattern boltgun'),
-    ...getProfiles('Storm bolter'),
-    ...getProfiles('Bolt pistol'),
-    ...getProfiles('Grav-pistol'),
-    ...getProfiles('Hand flamer'),
-    ...getProfiles('Inferno pistol'),
-    ...getProfiles('Plasma pistol'),
-    ...getProfiles('Fists', { attackDiceAdjustment: 1 }),
-    ...getProfiles('Heavy thunder hammer', { attackDiceAdjustment: 1 }),
-    ...getProfiles('Lightning claws', { attackDiceAdjustment: 1 }),
-    ...addEquipmentToProfiles(getProfiles('Chainsword', { attackDiceAdjustment: 1 }), [equipment.STORM_SHIELD]),
-    ...addEquipmentToProfiles(getProfiles('Lightning claw', { attackDiceAdjustment: 1 }), [equipment.STORM_SHIELD]),
-    ...addEquipmentToProfiles(getProfiles('Power fist', { attackDiceAdjustment: 1 }), [equipment.STORM_SHIELD]),
-    ...addEquipmentToProfiles(getProfiles('Power maul', { attackDiceAdjustment: 1 }), [equipment.STORM_SHIELD]),
-    ...addEquipmentToProfiles(getProfiles('Power weapon', { attackDiceAdjustment: 1 }), [equipment.STORM_SHIELD]),
-    ...addEquipmentToProfiles(getProfiles('Thunder hammer', { attackDiceAdjustment: 1 }), [equipment.STORM_SHIELD]),
-    ...addEquipmentToProfiles(getProfiles('Xenophase blade', { attackDiceAdjustment: 1 }), [equipment.STORM_SHIELD]),
+    ...getWeaponProfiles('Deathwatch Boltgun'),
+    ...getWeaponProfiles('Deathwatch Shotgun'),
+    ...getWeaponProfiles('Combi-flamer'),
+    ...getWeaponProfiles('Combi-grav'),
+    ...getWeaponProfiles('Combi-melta'),
+    ...getWeaponProfiles('Combi-plasma'),
+    ...getWeaponProfiles('Flamer'),
+    ...getWeaponProfiles('Grav-gun'),
+    ...getWeaponProfiles('Meltagun'),
+    ...getWeaponProfiles('Plasma gun'),
+    ...getWeaponProfiles('Stalker pattern boltgun'),
+    ...getWeaponProfiles('Storm bolter'),
+    ...getWeaponProfiles('Bolt pistol'),
+    ...getWeaponProfiles('Grav-pistol'),
+    ...getWeaponProfiles('Hand flamer'),
+    ...getWeaponProfiles('Inferno pistol'),
+    ...getWeaponProfiles('Plasma pistol'),
+    ...getWeaponProfiles('Fists', { attackDiceAdjustment: 1 }),
+    ...getWeaponProfiles('Heavy thunder hammer', { attackDiceAdjustment: 1 }),
+    ...getWeaponProfiles('Lightning claws', { attackDiceAdjustment: 1 }),
+    ...generateEquipmentVariantProfiles(getWeaponProfiles('Chainsword', { attackDiceAdjustment: 1 }), [
+      equipment.STORM_SHIELD,
+    ]),
+    ...generateEquipmentVariantProfiles(getWeaponProfiles('Lightning claw', { attackDiceAdjustment: 1 }), [
+      equipment.STORM_SHIELD,
+    ]),
+    ...generateEquipmentVariantProfiles(getWeaponProfiles('Power fist', { attackDiceAdjustment: 1 }), [
+      equipment.STORM_SHIELD,
+    ]),
+    ...generateEquipmentVariantProfiles(getWeaponProfiles('Power maul', { attackDiceAdjustment: 1 }), [
+      equipment.STORM_SHIELD,
+    ]),
+    ...generateEquipmentVariantProfiles(getWeaponProfiles('Power weapon', { attackDiceAdjustment: 1 }), [
+      equipment.STORM_SHIELD,
+    ]),
+    ...generateEquipmentVariantProfiles(getWeaponProfiles('Thunder hammer', { attackDiceAdjustment: 1 }), [
+      equipment.STORM_SHIELD,
+    ]),
+    ...generateEquipmentVariantProfiles(getWeaponProfiles('Xenophase blade', { attackDiceAdjustment: 1 }), [
+      equipment.STORM_SHIELD,
+    ]),
   ],
 }
 

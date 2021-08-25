@@ -1,5 +1,5 @@
 import { criticalRules, Rule, specialRules } from './rules'
-import { equipment, EquipmentItem } from './stats/equipment'
+import { equipment, Equipment } from './stats/equipment'
 import { Weapon, weapons } from './stats/weapons'
 
 interface Options {
@@ -8,7 +8,7 @@ interface Options {
   equipmentProfiles?: string[]
 }
 
-export interface Profile {
+export interface DataSheet {
   name: string
   movement: number
   apl: number
@@ -24,23 +24,11 @@ export interface Profile {
   abilities?: Rule[]
 }
 
-export interface DefenseProfile {
-  name: string
-  movement: number
-  apl: number
-  groupActivation: number
-  defense: number
-  save: number
-  saveCritical: number
-  wounds: number
-  weaponSkill: number
-  ballisticSkill: number
-  weapons: Weapon[]
+export interface DataSheetDefender extends DataSheet {
   defensiveMeleeWeapon: Weapon
-  abilities?: Rule[]
 }
 
-export function getProfiles(name: string, options?: Options): Weapon[] {
+export function getWeaponProfiles(name: string, options?: Options): Weapon[] {
   const modifiedSkill = options?.weaponBallisticSkillAdjustment
   const attackDiceAdjustment = options?.attackDiceAdjustment
 
@@ -53,7 +41,7 @@ export function getProfiles(name: string, options?: Options): Weapon[] {
     }))
 }
 
-export function generateEquipmentProfile(weapon: Weapon, newEquipment: EquipmentItem): Weapon {
+export function generateEquipmentVariantProfile(weapon: Weapon, newEquipment: Equipment): Weapon {
   const additionalSpecialRules = newEquipment.additionalSpecialRules || []
   const additionalCriticalRules = newEquipment.additionalCriticalRules || []
   const newCriticalRules = [...weapon.criticalRules]
@@ -78,10 +66,10 @@ export function generateEquipmentProfile(weapon: Weapon, newEquipment: Equipment
   }
 }
 
-export function addEquipmentToProfiles(profiles: Weapon[], equipment: EquipmentItem[]) {
+export function generateEquipmentVariantProfiles(profiles: Weapon[], equipment: Equipment[]) {
   return profiles.reduce<Weapon[]>((acc, profile) => {
     const equippedProfiles = equipment.reduce<Weapon[]>((acc, eq) => {
-      const newAcc = [...acc, generateEquipmentProfile(profile, eq)]
+      const newAcc = [...acc, generateEquipmentVariantProfile(profile, eq)]
       return newAcc
     }, [])
     const newAcc = [...acc, profile, ...equippedProfiles]
