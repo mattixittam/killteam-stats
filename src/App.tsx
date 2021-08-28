@@ -11,6 +11,7 @@ import {
   Tabs,
   Tab,
   Box,
+  Drawer,
 } from '@material-ui/core'
 import { Weapon } from './stats/weapons'
 import { adeptusAstartesStats } from './stats/factions/adeptusAstartes'
@@ -367,6 +368,15 @@ const TabPanel: FunctionComponent<TabPanelProps> = (props) => {
 function App() {
   const [value, setValue] = useState(0)
   const [lvl2Value, setLvl2Value] = useState(0)
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false)
+
+  const handleCloseDrawer = () => {
+    setIsDrawerOpen(false)
+  }
+
+  const handleOpenDrawer = () => {
+    setIsDrawerOpen(true)
+  }
 
   const handleChange = (event: any, newValue: any) => {
     setValue(newValue)
@@ -379,11 +389,21 @@ function App() {
 
   return (
     <div>
+      <Drawer
+        variant="temporary"
+        open={isDrawerOpen}
+        anchor="right"
+        onClose={handleCloseDrawer}
+        style={{ minWidth: '500px' }}
+      >
+        <Typography variant="h6">Roster</Typography>
+      </Drawer>
       <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
         <Tabs value={value} onChange={handleChange}>
           {factions.map((faction) => (
             <Tab label={faction.name} />
           ))}
+          <Tab label="Roster" onClick={handleOpenDrawer} />
         </Tabs>
       </Box>
       {factions.map((faction, index) => (

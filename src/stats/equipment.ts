@@ -1,4 +1,4 @@
-import { criticalRules, Rule, specialRules } from '../rules'
+import { Rule, specialRules } from '../rules'
 
 export interface Equipment {
   label: string
