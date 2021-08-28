@@ -220,7 +220,7 @@ function generateWeaponRow(
   )
 }
 
-function generateStatBlock(profile: DataSheet) {
+function generateStatBlock(dataSheet: DataSheet) {
   let rowColor = 'rgba(1,1,1,0.1)'
 
   function switchRowColor() {
@@ -231,17 +231,17 @@ function generateStatBlock(profile: DataSheet) {
     }
   }
 
-  const rangedWeapons = profile.weapons.filter((weapon) => weapon.type === 'RANGED')
-  const meleeWeapons = profile.weapons.filter((weapon) => weapon.type === 'MELEE')
+  const rangedWeapons = dataSheet.weapons.filter((weapon) => weapon.type === 'RANGED')
+  const meleeWeapons = dataSheet.weapons.filter((weapon) => weapon.type === 'MELEE')
 
   return (
-    <TableContainer component={Paper} style={{ margin: '20px' }} key={profile.name}>
+    <TableContainer component={Paper} style={{ margin: '20px' }} key={dataSheet.name}>
       <Table size="small">
         <TableHead>
           <TableRow style={{ backgroundColor: 'rgba(1,1,1,0.3)' }}>
             <TableCell colSpan={10}>
               <Typography variant="h5" fontWeight="700">
-                {profile.name}
+                {dataSheet.name}
               </Typography>
             </TableCell>
           </TableRow>
@@ -269,7 +269,7 @@ function generateStatBlock(profile: DataSheet) {
               switchRowColor()
             }
 
-            return generateWeaponRow(weapon, profile, {
+            return generateWeaponRow(weapon, dataSheet, {
               isProfile: sameNameAsPrevious,
               nextIsProfile: sameNameAsNext,
               backgroundColor: rowColor,
@@ -331,7 +331,7 @@ function generateStatBlock(profile: DataSheet) {
               switchRowColor()
             }
 
-            return generateWeaponRow(weapon, profile, {
+            return generateWeaponRow(weapon, dataSheet, {
               isProfile: sameNameAsPrevious,
               nextIsProfile: sameNameAsNext,
               backgroundColor: rowColor,
