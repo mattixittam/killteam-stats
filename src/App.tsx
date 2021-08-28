@@ -15,12 +15,12 @@ import {
 import { Weapon } from './stats/weapons'
 import { adeptusAstartesStats } from './stats/factions/adeptusAstartes'
 import { hereticAstartesStats } from './stats/factions/hereticAstartes'
-import { calculateDamage, getAttackerAttackDice } from './calculation'
+import { calculateDamage, DamageMelee, getAttackerAttackDice } from './calculation'
 import { specialRules } from './rules'
 import React, { FunctionComponent, useState } from 'react'
 import { forgeWorldStats } from './stats/factions/forgeWorld'
 import { broodCovenStats } from './stats/factions/broodCoven'
-import { DataSheetDefender, DataSheet } from './helpers'
+import { DataSheet } from './helpers'
 import { custodianGuardWarrior, talonsOfTheEmperorStats } from './stats/factions/talonsOfTheEmperor'
 
 interface FireTeam {
@@ -45,7 +45,7 @@ const factions: Factions = [
 
 export const custodesProfile = custodianGuardWarrior
 
-export const meqProfile: DataSheetDefender = {
+export const meqProfile: DataSheet = {
   name: 'MEQ',
   movement: 6,
   apl: 3,
@@ -56,21 +56,22 @@ export const meqProfile: DataSheetDefender = {
   wounds: 12,
   weaponSkill: 3,
   ballisticSkill: 3,
-  weapons: [],
-  defensiveMeleeWeapon: {
-    name: 'Power weapon',
-    profile: '',
-    attackDice: 4,
-    damage: 4,
-    damageCritical: 6,
-    specialRules: [specialRules.LETHAL5],
-    criticalRules: [],
-    equipment: [],
-    type: 'MELEE',
-  },
+  weapons: [
+    {
+      name: 'Power weapon',
+      profile: '',
+      attackDice: 4,
+      damage: 4,
+      damageCritical: 6,
+      specialRules: [specialRules.LETHAL5],
+      criticalRules: [],
+      equipment: [],
+      type: 'MELEE',
+    },
+  ],
 }
 
-const geqProfile: DataSheetDefender = {
+const geqProfile: DataSheet = {
   name: 'GEQ',
   movement: 6,
   apl: 2,
@@ -81,56 +82,19 @@ const geqProfile: DataSheetDefender = {
   wounds: 8,
   weaponSkill: 4,
   ballisticSkill: 4,
-  weapons: [],
-  defensiveMeleeWeapon: {
-    name: 'Gun butt',
-    profile: '',
-    attackDice: 3,
-    damage: 2,
-    damageCritical: 3,
-    specialRules: [],
-    criticalRules: [],
-    equipment: [],
-    type: 'MELEE',
-  },
-}
-
-export interface DamageMelee {
-  type: 'melee'
-  total: {
-    maxDamage: {
-      attackerDamage: number
-      attackerDead: boolean
-      defenderDamage: number
-      defenderDead: boolean
-    }
-    parryDefender: {
-      attackerDamage: number
-      attackerDead: boolean
-      defenderDamage: number
-      defenderDead: boolean
-    }
-    parryAttacker: {
-      attackerDamage: number
-      attackerDead: boolean
-      defenderDamage: number
-      defenderDead: boolean
-    }
-    parryBoth: {
-      attackerDamage: number
-      attackerDead: boolean
-      defenderDamage: number
-      defenderDead: boolean
-    }
-  }
-}
-
-export interface DamageRanged {
-  type: 'ranged'
-  total: number
-  hit: number
-  crit: number
-  mw?: number
+  weapons: [
+    {
+      name: 'Gun butt',
+      profile: '',
+      attackDice: 3,
+      damage: 2,
+      damageCritical: 3,
+      specialRules: [],
+      criticalRules: [],
+      equipment: [],
+      type: 'MELEE',
+    },
+  ],
 }
 
 function formatMeleeDamage(damage: DamageMelee) {
@@ -196,9 +160,23 @@ function generateWeaponRow(
     backgroundColor = 'transparent',
   }: { isProfile: boolean; nextIsProfile: boolean; backgroundColor: string }
 ) {
-  const geqDamage = calculateDamage(weapon, geqProfile, attackProfile)
-  const meqDamage = calculateDamage(weapon, meqProfile, attackProfile)
-  const custodesDamage = calculateDamage(weapon, custodesProfile, attackProfile)
+  const geqDamage = calculateDamage({
+    attacker: { profile: attackProfile, weapon: weapon },
+    defender: { profile: geqProfile, weapon: geqProfile.weapons[0] },
+  })
+  const meqDamage = calculateDamage({
+    attacker: { profile: attackProfile, weapon: weapon },
+    defender: { profile: meqProfile, weapon: meqProfile.weapons[0] },
+  })
+  const custodesDamage = calculateDamage({
+    attacker: { profile: attackProfile, weapon: weapon },
+    defender: {
+      profile: custodesProfile,
+      weapon: custodesProfile.weapons.find(
+        (weapon) => weapon.name === 'Guardian spear' && weapon.type === 'MELEE'
+      ) as Weapon,
+    },
+  })
 
   const styles: { backgroundColor: string; borderBottomWidth?: number } = {
     backgroundColor,

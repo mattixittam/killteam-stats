@@ -1,9 +1,56 @@
 import { Weapon } from './stats/weapons'
 import { specialRules, criticalRules } from './rules'
-import { DamageMelee, DamageRanged } from './App'
-import { DataSheetDefender, DataSheet } from './helpers'
+import { DataSheet } from './helpers'
 import { equipment } from './stats/equipment'
 import { abilities } from './stats/abilities'
+
+export interface DamageMelee {
+  type: 'melee'
+  total: {
+    maxDamage: {
+      attackerDamage: number
+      attackerDead: boolean
+      defenderDamage: number
+      defenderDead: boolean
+    }
+    parryDefender: {
+      attackerDamage: number
+      attackerDead: boolean
+      defenderDamage: number
+      defenderDead: boolean
+    }
+    parryAttacker: {
+      attackerDamage: number
+      attackerDead: boolean
+      defenderDamage: number
+      defenderDead: boolean
+    }
+    parryBoth: {
+      attackerDamage: number
+      attackerDead: boolean
+      defenderDamage: number
+      defenderDead: boolean
+    }
+  }
+}
+
+export interface DamageRanged {
+  type: 'ranged'
+  total: number
+  hit: number
+  crit: number
+  mw?: number
+}
+
+interface ProfileWeaponPair {
+  profile: DataSheet
+  weapon: Weapon
+}
+
+export interface AttackerDefenderPair {
+  attacker: ProfileWeaponPair
+  defender: ProfileWeaponPair
+}
 
 function oneDiceChanceOfSuccess(successFrom: number, critFrom: number = 6) {
   const chanceOfSuccess = (7 - successFrom) * (1 / 6)
@@ -19,62 +66,59 @@ function oneDiceChanceOfCrit(critFrom: number = 6) {
   return (7 - critFrom) * (1 / 6)
 }
 
-export function calculateDamage(weapon: Weapon, defenseProfile: DataSheetDefender, attackProfile: DataSheet) {
-  if (weapon.type === 'MELEE') {
-    return calculateDamageMelee(weapon, defenseProfile, attackProfile)
+export function calculateDamage({ attacker, defender }: AttackerDefenderPair) {
+  if (attacker.weapon.type === 'MELEE') {
+    return calculateDamageMelee({ attacker, defender })
   }
 
-  if (weapon.type === 'RANGED') {
-    return calculateDamageRanged(weapon, defenseProfile, attackProfile)
+  if (attacker.weapon.type === 'RANGED') {
+    return calculateDamageRanged({ attacker, defender })
   }
 
-  return calculateDamageMelee(weapon, defenseProfile, attackProfile)
+  return calculateDamageMelee({ attacker, defender })
 }
 
-function calculateDamageRanged(
-  weapon: Weapon,
-  defenseProfile: DataSheetDefender,
-  attackProfile: DataSheet
-): DamageRanged {
-  let rolledDefenseDice = defenseProfile.defense
+function calculateDamageRanged({ attacker, defender }: AttackerDefenderPair): DamageRanged {
+  let rolledDefenseDice = defender.profile.defense
 
   let ballisticSkillCritical = 6
 
   // LETHAL 5+
-  if (weapon.specialRules.includes(specialRules.LETHAL5)) {
-    ballisticSkillCritical = Math.max(5, attackProfile.ballisticSkill)
+  if (attacker.weapon.specialRules.includes(specialRules.LETHAL5)) {
+    ballisticSkillCritical = Math.max(5, attacker.profile.ballisticSkill)
   }
 
   // LETHAL 4+
-  if (weapon.specialRules.includes(specialRules.LETHAL4)) {
-    ballisticSkillCritical = Math.max(4, attackProfile.ballisticSkill)
+  if (attacker.weapon.specialRules.includes(specialRules.LETHAL4)) {
+    ballisticSkillCritical = Math.max(4, attacker.profile.ballisticSkill)
   }
 
   // GRAV
-  if (weapon.specialRules.includes(specialRules.GRAV) && defenseProfile.save <= 3) {
-    ballisticSkillCritical = Math.max(4, attackProfile.ballisticSkill)
+  if (attacker.weapon.specialRules.includes(specialRules.GRAV) && defender.profile.save <= 3) {
+    ballisticSkillCritical = Math.max(4, attacker.profile.ballisticSkill)
   }
 
   // AP1
-  if (weapon.specialRules.includes(specialRules.AP1)) {
+  if (attacker.weapon.specialRules.includes(specialRules.AP1)) {
     rolledDefenseDice -= 1
   }
 
   // AP2
-  if (weapon.specialRules.includes(specialRules.AP2)) {
+  if (attacker.weapon.specialRules.includes(specialRules.AP2)) {
     rolledDefenseDice -= 2
   }
   const weaponBallisticSkill =
-    weapon.fixedWeaponBallisticSkill || attackProfile.ballisticSkill + (weapon.weaponBallisticSkillAdjustment || 0)
+    attacker.weapon.fixedWeaponBallisticSkill ||
+    attacker.profile.ballisticSkill + (attacker.weapon.weaponBallisticSkillAdjustment || 0)
 
   const adjustedballisticSkill = Math.max(2, weaponBallisticSkill)
 
-  let expectedHits = oneDiceChanceOfSuccess(adjustedballisticSkill, ballisticSkillCritical) * weapon.attackDice
-  let expectedCriticalHits = oneDiceChanceOfCrit(ballisticSkillCritical) * weapon.attackDice
+  let expectedHits = oneDiceChanceOfSuccess(adjustedballisticSkill, ballisticSkillCritical) * attacker.weapon.attackDice
+  let expectedCriticalHits = oneDiceChanceOfCrit(ballisticSkillCritical) * attacker.weapon.attackDice
 
   // BALANCED
-  if (weapon.specialRules.includes(specialRules.BALANCED)) {
-    const chanceOfMiss = Math.min(1, oneDiceChanceOfMiss(adjustedballisticSkill) * weapon.attackDice)
+  if (attacker.weapon.specialRules.includes(specialRules.BALANCED)) {
+    const chanceOfMiss = Math.min(1, oneDiceChanceOfMiss(adjustedballisticSkill) * attacker.weapon.attackDice)
     expectedHits += oneDiceChanceOfSuccess(adjustedballisticSkill, ballisticSkillCritical) * chanceOfMiss
     expectedCriticalHits += oneDiceChanceOfCrit(ballisticSkillCritical) * chanceOfMiss
   }
@@ -82,14 +126,14 @@ function calculateDamageRanged(
   const chanceOfAtLeastOneCrit = Math.min(expectedCriticalHits, 1)
 
   // Normal
-  const chanceOfSave = oneDiceChanceOfSuccess(defenseProfile.save, defenseProfile.saveCritical)
-  const chanceOfSaveCritical = oneDiceChanceOfCrit(defenseProfile.saveCritical)
+  const chanceOfSave = oneDiceChanceOfSuccess(defender.profile.save, defender.profile.saveCritical)
+  const chanceOfSaveCritical = oneDiceChanceOfCrit(defender.profile.saveCritical)
 
   let expectedSaves = chanceOfSave * rolledDefenseDice
   let expectedCriticalSaves = chanceOfSaveCritical * rolledDefenseDice
 
   // Critical P1
-  if (weapon.criticalRules.includes(criticalRules.P1)) {
+  if (attacker.weapon.criticalRules.includes(criticalRules.P1)) {
     const chanceOfNoCrit = 1 - chanceOfAtLeastOneCrit
 
     const p1Saves = chanceOfAtLeastOneCrit * (rolledDefenseDice - 1) * chanceOfSave
@@ -102,43 +146,44 @@ function calculateDamageRanged(
   }
 
   // RENDING
-  if (weapon.criticalRules.includes(criticalRules.RENDING)) {
-    expectedHits -= chanceOfAtLeastOneCrit / weapon.attackDice
-    expectedCriticalHits += chanceOfAtLeastOneCrit / weapon.attackDice
+  if (attacker.weapon.criticalRules.includes(criticalRules.RENDING)) {
+    expectedHits -= chanceOfAtLeastOneCrit / attacker.weapon.attackDice
+    expectedCriticalHits += chanceOfAtLeastOneCrit / attacker.weapon.attackDice
   }
 
   // CEASELESS
-  if (weapon.specialRules.includes(specialRules.CEASELESS)) {
-    const expectedNaturalOnes = (1 / 6) * weapon.attackDice
+  if (attacker.weapon.specialRules.includes(specialRules.CEASELESS)) {
+    const expectedNaturalOnes = (1 / 6) * attacker.weapon.attackDice
 
-    expectedHits += expectedNaturalOnes * oneDiceChanceOfSuccess(attackProfile.ballisticSkill, ballisticSkillCritical)
+    expectedHits +=
+      expectedNaturalOnes * oneDiceChanceOfSuccess(attacker.profile.ballisticSkill, ballisticSkillCritical)
     expectedCriticalHits += expectedNaturalOnes * oneDiceChanceOfCrit(ballisticSkillCritical)
   }
 
   // RELENTLESS
-  if (weapon.specialRules.includes(specialRules.RELENTLESS)) {
-    const expectedMisses = oneDiceChanceOfMiss(attackProfile.ballisticSkill) * weapon.attackDice
+  if (attacker.weapon.specialRules.includes(specialRules.RELENTLESS)) {
+    const expectedMisses = oneDiceChanceOfMiss(attacker.profile.ballisticSkill) * attacker.weapon.attackDice
 
-    expectedHits += expectedMisses * oneDiceChanceOfSuccess(attackProfile.ballisticSkill, ballisticSkillCritical)
+    expectedHits += expectedMisses * oneDiceChanceOfSuccess(attacker.profile.ballisticSkill, ballisticSkillCritical)
     expectedCriticalHits += expectedMisses * oneDiceChanceOfCrit(ballisticSkillCritical)
   }
 
-  const expectedHitDamage = Math.max(0, expectedHits - expectedSaves) * weapon.damage
+  const expectedHitDamage = Math.max(0, expectedHits - expectedSaves) * attacker.weapon.damage
 
-  const expectedCritDamage = Math.max(0, expectedCriticalHits - expectedCriticalSaves) * weapon.damageCritical
+  const expectedCritDamage = Math.max(0, expectedCriticalHits - expectedCriticalSaves) * attacker.weapon.damageCritical
 
   // MWx
   let mw = 0
 
-  if (weapon.criticalRules.includes(criticalRules.MW2)) {
+  if (attacker.weapon.criticalRules.includes(criticalRules.MW2)) {
     mw = 2
   }
 
-  if (weapon.criticalRules.includes(criticalRules.MW3)) {
+  if (attacker.weapon.criticalRules.includes(criticalRules.MW3)) {
     mw = 3
   }
 
-  if (weapon.criticalRules.includes(criticalRules.MW4)) {
+  if (attacker.weapon.criticalRules.includes(criticalRules.MW4)) {
     mw = 4
   }
 
@@ -171,43 +216,39 @@ export function getAttackerAttackDice(weapon: Weapon) {
   return attackDice
 }
 
-export function calculateMeleeBasics(
-  attackerWeapon: Weapon,
-  attackerWeaponSkill: number,
-  defenseProfile: DataSheetDefender
-) {
+export function calculateMeleeBasics({ attacker, defender }: AttackerDefenderPair) {
   /**
    * ATTACKER basic stats
    * */
   let attackerWeaponSkillCritical = 6
 
   // LETHAL 5+ on attacker weapon
-  if (attackerWeapon.specialRules.includes(specialRules.LETHAL5)) {
-    attackerWeaponSkillCritical = Math.max(5, attackerWeaponSkill)
+  if (attacker.weapon.specialRules.includes(specialRules.LETHAL5)) {
+    attackerWeaponSkillCritical = Math.max(5, attacker.profile.weaponSkill)
   }
 
   // LETHAL 4+ on attacker weapon
-  if (attackerWeapon.specialRules.includes(specialRules.LETHAL4)) {
-    attackerWeaponSkillCritical = Math.max(4, attackerWeaponSkill)
+  if (attacker.weapon.specialRules.includes(specialRules.LETHAL4)) {
+    attackerWeaponSkillCritical = Math.max(4, attacker.profile.weaponSkill)
   }
 
   const attackerAdjustedWeaponSkill = Math.max(
     2,
-    attackerWeapon.weaponBallisticSkillAdjustment
-      ? attackerWeaponSkill + attackerWeapon.weaponBallisticSkillAdjustment
-      : attackerWeaponSkill
+    attacker.weapon.weaponBallisticSkillAdjustment
+      ? attacker.profile.weaponSkill + attacker.weapon.weaponBallisticSkillAdjustment
+      : attacker.profile.weaponSkill
   )
 
   const attackerHitsPerDie = oneDiceChanceOfSuccess(attackerAdjustedWeaponSkill, attackerWeaponSkillCritical)
   const attackerCritsPerDie = oneDiceChanceOfCrit(attackerWeaponSkillCritical)
 
-  const attackerAttackDice = getAttackerAttackDice(attackerWeapon)
+  const attackerAttackDice = getAttackerAttackDice(attacker.weapon)
 
   let attackerHits = attackerHitsPerDie * attackerAttackDice
   let attackerCrits = attackerCritsPerDie * attackerAttackDice
 
   // RELENTLESS on attacker weapon
-  if (attackerWeapon.specialRules.includes(specialRules.RELENTLESS)) {
+  if (attacker.weapon.specialRules.includes(specialRules.RELENTLESS)) {
     const expectedMisses = oneDiceChanceOfMiss(attackerAdjustedWeaponSkill) * attackerAttackDice
 
     attackerHits += expectedMisses * oneDiceChanceOfSuccess(attackerAdjustedWeaponSkill, attackerWeaponSkillCritical)
@@ -215,7 +256,7 @@ export function calculateMeleeBasics(
   }
 
   // BALANCED on attacker weapon
-  if (attackerWeapon.specialRules.includes(specialRules.BALANCED)) {
+  if (attacker.weapon.specialRules.includes(specialRules.BALANCED)) {
     const chanceOfMiss = Math.min(1, oneDiceChanceOfMiss(attackerAdjustedWeaponSkill) * attackerAttackDice)
     attackerHits += oneDiceChanceOfSuccess(attackerAdjustedWeaponSkill, attackerWeaponSkillCritical) * chanceOfMiss
     attackerCrits += oneDiceChanceOfCrit(attackerWeaponSkillCritical) * chanceOfMiss
@@ -229,29 +270,29 @@ export function calculateMeleeBasics(
   let defenseWeaponSkillCritical = 6
 
   // LETHAL 5+ on defender weapon
-  if (defenseProfile.defensiveMeleeWeapon.specialRules.includes(specialRules.LETHAL5)) {
-    defenseWeaponSkillCritical = Math.max(5, defenseProfile.weaponSkill)
+  if (defender.weapon.specialRules.includes(specialRules.LETHAL5)) {
+    defenseWeaponSkillCritical = Math.max(5, defender.profile.weaponSkill)
   }
 
   // LETHAL 4+ on defender weapon
-  if (defenseProfile.defensiveMeleeWeapon.specialRules.includes(specialRules.LETHAL4)) {
-    defenseWeaponSkillCritical = Math.max(4, defenseProfile.weaponSkill)
+  if (defender.weapon.specialRules.includes(specialRules.LETHAL4)) {
+    defenseWeaponSkillCritical = Math.max(4, defender.profile.weaponSkill)
   }
 
   const defenseAdjustedWeaponSkill = Math.max(
     2,
-    defenseProfile.defensiveMeleeWeapon.weaponBallisticSkillAdjustment
-      ? defenseProfile.weaponSkill + defenseProfile.defensiveMeleeWeapon.weaponBallisticSkillAdjustment
-      : defenseProfile.weaponSkill
+    defender.weapon.weaponBallisticSkillAdjustment
+      ? defender.profile.weaponSkill + defender.weapon.weaponBallisticSkillAdjustment
+      : defender.profile.weaponSkill
   )
 
   const defenderHitsPerDie = oneDiceChanceOfSuccess(defenseAdjustedWeaponSkill, defenseWeaponSkillCritical)
   const defenderCritsPerDie = oneDiceChanceOfCrit(defenseWeaponSkillCritical)
 
-  let defenderAttackDice = defenseProfile.defensiveMeleeWeapon.attackDice
+  let defenderAttackDice = defender.weapon.attackDice
 
   // GRISLY TROPHY on attacker weapon
-  if (attackerWeapon.equipment.includes(equipment.GRISLY_TROPHY)) {
+  if (attacker.weapon.equipment.includes(equipment.GRISLY_TROPHY)) {
     defenderAttackDice -= 1
   }
 
@@ -259,12 +300,12 @@ export function calculateMeleeBasics(
   let defenderCrits = defenderCritsPerDie * defenderAttackDice
 
   // STUN on attacker weapon
-  if (attackerWeapon.criticalRules.includes(criticalRules.STUN)) {
+  if (attacker.weapon.criticalRules.includes(criticalRules.STUN)) {
     defenderHits -= defenderHitsPerDie * attackerExpectedCriticalHitsMax1
   }
 
   // RELENTLESS on defender weapon
-  if (defenseProfile.defensiveMeleeWeapon.specialRules.includes(specialRules.RELENTLESS)) {
+  if (defender.weapon.specialRules.includes(specialRules.RELENTLESS)) {
     const expectedMisses = oneDiceChanceOfMiss(attackerAdjustedWeaponSkill) * attackerAttackDice
 
     defenderHits += expectedMisses * oneDiceChanceOfSuccess(attackerAdjustedWeaponSkill, attackerWeaponSkillCritical)
@@ -272,7 +313,7 @@ export function calculateMeleeBasics(
   }
 
   // BALANCED on defender weapon
-  if (defenseProfile.defensiveMeleeWeapon.specialRules.includes(specialRules.BALANCED)) {
+  if (defender.weapon.specialRules.includes(specialRules.BALANCED)) {
     const chanceOfMiss = Math.min(1, oneDiceChanceOfMiss(attackerAdjustedWeaponSkill) * attackerAttackDice)
     defenderHits += oneDiceChanceOfSuccess(attackerAdjustedWeaponSkill, attackerWeaponSkillCritical) * chanceOfMiss
     defenderCrits += oneDiceChanceOfCrit(attackerWeaponSkillCritical) * chanceOfMiss
@@ -281,7 +322,7 @@ export function calculateMeleeBasics(
   const defenderExpectedCriticalHitsMax1 = Math.min(1, defenderCrits)
 
   // STUN on defender weapon
-  if (defenseProfile.defensiveMeleeWeapon.criticalRules.includes(criticalRules.STUN)) {
+  if (defender.weapon.criticalRules.includes(criticalRules.STUN)) {
     attackerHits -= attackerHitsPerDie * defenderExpectedCriticalHitsMax1
   }
 
@@ -310,7 +351,7 @@ interface CalculateMeleeBlowByBlowProps {
   defenderHits: number
   defenderCrits: number
   defenderStrategy: FightStrategy
-  defenseProfile: DataSheetDefender
+  defenseProfile: DataSheet
   attackProfile: DataSheet
 }
 
@@ -567,16 +608,8 @@ function calculateMeleeBlowByBlow({
   }
 }
 
-function calculateDamageMelee(
-  weapon: Weapon,
-  defenseProfile: DataSheetDefender,
-  attackProfile: DataSheet
-): DamageMelee {
-  const { attackerHits, attackerCrits, defenderHits, defenderCrits } = calculateMeleeBasics(
-    weapon,
-    attackProfile.weaponSkill,
-    defenseProfile
-  )
+function calculateDamageMelee({ attacker, defender }: AttackerDefenderPair): DamageMelee {
+  const { attackerHits, attackerCrits, defenderHits, defenderCrits } = calculateMeleeBasics({ attacker, defender })
 
   /** STRATEGY 1
    * Goal: attacker & defender => max damage done
@@ -584,16 +617,16 @@ function calculateDamageMelee(
    * */
   // eslint-disable-next-line
   const maxDamageOutput = calculateMeleeBlowByBlow({
-    attackerWeaponProfile: weapon,
+    attackerWeaponProfile: attacker.weapon,
     attackerHits,
     attackerCrits,
     attackerStrategy: 'STRIKE',
-    defenderWeaponProfile: defenseProfile.defensiveMeleeWeapon,
+    defenderWeaponProfile: defender.weapon,
     defenderHits,
     defenderCrits,
     defenderStrategy: 'STRIKE',
-    defenseProfile,
-    attackProfile,
+    defenseProfile: defender.profile,
+    attackProfile: attacker.profile,
   })
 
   /** STRATEGY 2
@@ -601,16 +634,16 @@ function calculateDamageMelee(
    * Strategy: attacker does maximum damage, defender parries whenever possible
    * */
   const parryDefenderOutput = calculateMeleeBlowByBlow({
-    attackerWeaponProfile: weapon,
+    attackerWeaponProfile: attacker.weapon,
     attackerHits,
     attackerCrits,
     attackerStrategy: 'STRIKE',
-    defenderWeaponProfile: defenseProfile.defensiveMeleeWeapon,
+    defenderWeaponProfile: defender.weapon,
     defenderHits,
     defenderCrits,
     defenderStrategy: 'PARRY',
-    defenseProfile,
-    attackProfile,
+    defenseProfile: defender.profile,
+    attackProfile: attacker.profile,
   })
 
   /** STRATEGY 3
@@ -618,16 +651,16 @@ function calculateDamageMelee(
    * Strategy: attacker parries when possible, defender does maximum damage
    * */
   const parryAttackerOutput = calculateMeleeBlowByBlow({
-    attackerWeaponProfile: weapon,
+    attackerWeaponProfile: attacker.weapon,
     attackerHits,
     attackerCrits,
     attackerStrategy: 'PARRY',
-    defenderWeaponProfile: defenseProfile.defensiveMeleeWeapon,
+    defenderWeaponProfile: defender.weapon,
     defenderHits,
     defenderCrits,
     defenderStrategy: 'STRIKE',
-    defenseProfile,
-    attackProfile,
+    defenseProfile: defender.profile,
+    attackProfile: attacker.profile,
   })
 
   /** STRATEGY 4
@@ -635,16 +668,16 @@ function calculateDamageMelee(
    * Strategy: attacker and defender parry when possible
    * */
   const parryBothOutput = calculateMeleeBlowByBlow({
-    attackerWeaponProfile: weapon,
+    attackerWeaponProfile: attacker.weapon,
     attackerHits,
     attackerCrits,
     attackerStrategy: 'PARRY',
-    defenderWeaponProfile: defenseProfile.defensiveMeleeWeapon,
+    defenderWeaponProfile: defender.weapon,
     defenderHits,
     defenderCrits,
     defenderStrategy: 'PARRY',
-    defenseProfile,
-    attackProfile,
+    defenseProfile: defender.profile,
+    attackProfile: attacker.profile,
   })
 
   return {

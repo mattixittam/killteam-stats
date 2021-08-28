@@ -1,7 +1,7 @@
-import { DataSheetDefender, getWeaponProfiles, DataSheet } from '../../helpers'
+import { getWeaponProfiles, DataSheet } from '../../helpers'
 import { abilities } from '../abilities'
 
-export const custodianGuardLeader: DataSheetDefender = {
+export const custodianGuardLeader: DataSheet = {
   name: 'CUSTODIAN GUARD (LEADER)',
   movement: 6,
   apl: 4,
@@ -17,7 +17,7 @@ export const custodianGuardLeader: DataSheetDefender = {
   abilities: [abilities.THE_EMPERORS_CHOSEN],
 }
 
-export const custodianGuardWarrior: DataSheetDefender = {
+export const custodianGuardWarrior: DataSheet = {
   name: 'CUSTODIAN GUARD (WARRIOR)',
   movement: 6,
   apl: 4,
