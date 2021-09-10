@@ -189,17 +189,17 @@ function generateWeaponRow(
 
   const neededSkill = weapon.type === 'MELEE' ? attackProfile.weaponSkill : attackProfile.ballisticSkill
 
-  const weaponBallisticSkill =
+  const weaponOrBallisticSkill =
     weapon.fixedWeaponBallisticSkill || neededSkill + (weapon.weaponBallisticSkillAdjustment || 0)
 
-  const adjustedballisticSkill = Math.max(2, weaponBallisticSkill)
+  const adjustedWsOrBs = Math.max(2, weaponOrBallisticSkill)
 
   return (
     <TableRow key={weapon.name + weapon.profile}>
       <TableCell style={styles}>{isProfile ? '' : weapon.name}</TableCell>
       <TableCell style={styles}>{weapon.profile}</TableCell>
       <TableCell style={styles}>{getAttackerAttackDice(weapon)}</TableCell>
-      <TableCell style={styles}>{adjustedballisticSkill}</TableCell>
+      <TableCell style={styles}>{adjustedWsOrBs}+</TableCell>
       <TableCell style={styles}>
         {weapon.damage}/{weapon.damageCritical}
       </TableCell>
@@ -239,13 +239,35 @@ function generateStatBlock(dataSheet: DataSheet) {
     <TableContainer component={Paper} style={{ margin: '20px' }} key={dataSheet.name}>
       <Table size="small">
         <TableHead>
-          <TableRow style={{ backgroundColor: 'rgba(1,1,1,0.3)' }}>
-            <TableCell colSpan={10}>
+          <TableRow style={{ backgroundColor: 'rgb(255, 102, 0)' }}>
+            <TableCell rowSpan={4} style={{ width: '50%', backgroundColor: 'rgb(40,40,40)', color: 'white' }}>
               <Typography variant="h5" fontWeight="700">
                 {dataSheet.name}
               </Typography>
             </TableCell>
+            <TableCell style={{ textAlign: 'center', fontWeight: 700 }}>M</TableCell>
+            <TableCell style={{ textAlign: 'center', fontWeight: 700 }}>APL</TableCell>
+            <TableCell style={{ textAlign: 'center', fontWeight: 700 }}>GA</TableCell>
           </TableRow>
+          <TableRow style={{ backgroundColor: 'rgba(1,1,1,0.1)' }}>
+            <TableCell style={{ borderBottom: 0, textAlign: 'center' }}>{dataSheet.movement}</TableCell>
+            <TableCell style={{ borderBottom: 0, textAlign: 'center' }}>{dataSheet.apl}</TableCell>
+            <TableCell style={{ borderBottom: 0, textAlign: 'center' }}>{dataSheet.groupActivation}</TableCell>
+          </TableRow>
+          <TableRow style={{ backgroundColor: 'rgb(255, 102, 0)' }}>
+            <TableCell style={{ textAlign: 'center', fontWeight: 700 }}>DF</TableCell>
+            <TableCell style={{ textAlign: 'center', fontWeight: 700 }}>SV</TableCell>
+            <TableCell style={{ textAlign: 'center', fontWeight: 700 }}>W</TableCell>
+          </TableRow>
+          <TableRow style={{ backgroundColor: 'rgba(1,1,1,0.1)' }}>
+            <TableCell style={{ textAlign: 'center' }}>{dataSheet.defense}</TableCell>
+            <TableCell style={{ textAlign: 'center' }}>{dataSheet.save}+</TableCell>
+            <TableCell style={{ textAlign: 'center' }}>{dataSheet.wounds}</TableCell>
+          </TableRow>
+        </TableHead>
+      </Table>
+      <Table>
+        <TableHead>
           {rangedWeapons.length > 0 && (
             <TableRow>
               <TableCell>Name</TableCell>
@@ -403,7 +425,7 @@ function App() {
           {factions.map((faction) => (
             <Tab label={faction.name} />
           ))}
-          <Tab label="Roster" onClick={handleOpenDrawer} />
+          {/* <Tab label="Roster" onClick={handleOpenDrawer} /> */}
         </Tabs>
       </Box>
       {factions.map((faction, index) => (

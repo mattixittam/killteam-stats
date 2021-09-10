@@ -15,6 +15,17 @@ export const meleeWeapons: Weapon[] = [
     type: 'MELEE',
   },
   {
+    name: 'Combat knife',
+    profile: '',
+    attackDice: 5,
+    damage: 3,
+    damageCritical: 4,
+    specialRules: [],
+    criticalRules: [],
+    equipment: [],
+    type: 'MELEE',
+  },
+  {
     name: 'Fists',
     profile: '',
     attackDice: 3,

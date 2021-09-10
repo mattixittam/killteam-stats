@@ -158,9 +158,108 @@ export const deathwatchVeteranWatchSergeant: DataSheet = {
   ],
 }
 
+/**
+ * REIVERS
+ */
+
+export const reiverWarrior: DataSheet = {
+  name: 'REIVER (WARRIOR)',
+  movement: 6,
+  apl: 3,
+  groupActivation: 1,
+  defense: 3,
+  save: 3,
+  saveCritical: 6,
+  wounds: 12,
+  ballisticSkill: 3,
+  weaponSkill: 3,
+  weapons: [
+    ...getWeaponProfiles('Bolt carbine'),
+    ...getWeaponProfiles('Special issue bolt pistol'),
+    ...getWeaponProfiles('Combat knife'),
+    ...getWeaponProfiles('Fists', { attackDiceAdjustment: 1 }),
+  ],
+}
+
+export const reiverSergeant: DataSheet = {
+  name: 'REIVER SERGEANT',
+  movement: 6,
+  apl: 3,
+  groupActivation: 1,
+  defense: 3,
+  save: 3,
+  saveCritical: 6,
+  wounds: 13,
+  ballisticSkill: 2,
+  weaponSkill: 2,
+  weapons: [
+    ...getWeaponProfiles('Bolt carbine'),
+    ...getWeaponProfiles('Special issue bolt pistol'),
+    ...getWeaponProfiles('Combat knife'),
+    ...getWeaponProfiles('Fists', { attackDiceAdjustment: 1 }),
+  ],
+}
+
+/**
+ * INTERCESSORS
+ */
+export const intercessorWarrior: DataSheet = {
+  name: 'INTERCESSOR (WARRIOR)',
+  movement: 6,
+  apl: 3,
+  groupActivation: 1,
+  defense: 3,
+  save: 3,
+  saveCritical: 6,
+  wounds: 13,
+  ballisticSkill: 3,
+  weaponSkill: 3,
+  weapons: [
+    ...getWeaponProfiles('Auto bolt rifle'),
+    ...getWeaponProfiles('Bolt rifle'),
+    ...getWeaponProfiles('Stalker bolt rifle'),
+    ...getWeaponProfiles('Fists', { attackDiceAdjustment: 1 }),
+  ],
+}
+
+export const intercessorSergeant: DataSheet = {
+  name: 'INTERCESSOR SERGEANT',
+  movement: 6,
+  apl: 3,
+  groupActivation: 1,
+  defense: 3,
+  save: 3,
+  saveCritical: 6,
+  wounds: 14,
+  ballisticSkill: 2,
+  weaponSkill: 3,
+  weapons: [
+    ...getWeaponProfiles('Auto bolt rifle'),
+    ...getWeaponProfiles('Bolt pistol'),
+    ...getWeaponProfiles('Bolt rifle'),
+    ...getWeaponProfiles('Hand flamer'),
+    ...getWeaponProfiles('Plasma pistol'),
+    ...getWeaponProfiles('Stalker bolt rifle'),
+    ...getWeaponProfiles('Chainsword'),
+    ...getWeaponProfiles('Chainsword'),
+    ...getWeaponProfiles('Fists', { attackDiceAdjustment: 1 }),
+    ...getWeaponProfiles('Power fist'),
+    ...getWeaponProfiles('Power weapon'),
+    ...getWeaponProfiles('Thunder hammer'),
+  ],
+}
+
 export const adeptusAstartesStats = {
   name: 'Adeptus Astartes',
   fireTeams: [
+    {
+      name: 'Intercessors',
+      dataSheets: [intercessorWarrior, intercessorSergeant],
+    },
+    {
+      name: 'Reivers',
+      dataSheets: [reiverWarrior, reiverSergeant],
+    },
     {
       name: 'Deathwatch Veterans',
       dataSheets: [

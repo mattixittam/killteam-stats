@@ -54,7 +54,7 @@ export interface AttackerDefenderPair {
 
 function oneDiceChanceOfSuccess(successFrom: number, critFrom: number = 6) {
   const chanceOfSuccess = (7 - successFrom) * (1 / 6)
-  const chanceOfCrit = (7 - critFrom) * (1 / 6)
+  const chanceOfCrit = oneDiceChanceOfCrit(critFrom)
   return chanceOfSuccess - chanceOfCrit
 }
 

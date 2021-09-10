@@ -25,6 +25,17 @@ export const pistols: Weapon[] = [
     type: 'RANGED',
   },
   {
+    name: 'Special issue bolt pistol',
+    profile: '',
+    attackDice: 4,
+    damage: 3,
+    damageCritical: 4,
+    specialRules: [specialRules.RNG6, specialRules.AP1],
+    criticalRules: [],
+    equipment: [],
+    type: 'RANGED',
+  },
+  {
     name: 'Grav-pistol',
     profile: '',
     attackDice: 4,
