@@ -1,6 +1,6 @@
 import { criticalRules, Rule, specialRules } from './rules'
 import { equipment, Equipment } from './stats/equipment'
-import { Weapon, weapons } from './stats/weapons'
+import { Weapon, WeaponName, weapons } from './stats/weapons'
 
 interface Options {
   weaponBallisticSkillAdjustment?: number
@@ -8,6 +8,7 @@ interface Options {
   equipmentProfiles?: string[]
 }
 
+type WeaponOption = WeaponOption[] | WeaponName[]
 export interface DataSheet {
   name: string
   movement: number
@@ -22,13 +23,14 @@ export interface DataSheet {
   weapons: Weapon[]
   defensiveMeleeWeapon?: Weapon
   abilities?: Rule[]
+  weaponOptions?: WeaponOption[]
 }
 
 export interface DataSheetDefender extends DataSheet {
   defensiveMeleeWeapon: Weapon
 }
 
-export function getWeaponProfiles(name: string, options?: Options): Weapon[] {
+export function getWeaponProfiles(name: WeaponName, options?: Options): Weapon[] {
   const modifiedSkill = options?.weaponBallisticSkillAdjustment
   const attackDiceAdjustment = options?.attackDiceAdjustment
 

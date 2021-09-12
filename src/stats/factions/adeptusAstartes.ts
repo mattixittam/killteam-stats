@@ -13,12 +13,16 @@ export const deathwatchVeteranWarrior: DataSheet = {
   ballisticSkill: 3,
   weaponSkill: 3,
   weapons: [
-    ...getWeaponProfiles('Deathwatch Boltgun'),
-    ...getWeaponProfiles('Deathwatch Shotgun'),
+    ...getWeaponProfiles('Deathwatch boltgun'),
+    ...getWeaponProfiles('Deathwatch shotgun'),
     ...getWeaponProfiles('Stalker pattern boltgun'),
     ...getWeaponProfiles('Storm bolter'),
     ...getWeaponProfiles('Fists', { attackDiceAdjustment: 1 }),
     ...getWeaponProfiles('Power weapon'),
+  ],
+  weaponOptions: [
+    ['Deathwatch boltgun', 'Power weapon'],
+    [['Deathwatch shotgun', 'Stalker pattern boltgun', 'Storm bolter'], ['Fists']],
   ],
 }
 export const deathwatchVeteranFighter: DataSheet = {
@@ -76,7 +80,7 @@ export const deathwatchVeteranGunner: DataSheet = {
     ...getWeaponProfiles('Combi-grav'),
     ...getWeaponProfiles('Combi-melta'),
     ...getWeaponProfiles('Combi-plasma'),
-    ...getWeaponProfiles('Deathwatch Boltgun'),
+    ...getWeaponProfiles('Deathwatch boltgun'),
     ...getWeaponProfiles('Flamer'),
     ...getWeaponProfiles('Grav-gun'),
     ...getWeaponProfiles('Meltagun'),
@@ -114,8 +118,8 @@ export const deathwatchVeteranWatchSergeant: DataSheet = {
   ballisticSkill: 2,
   weaponSkill: 2,
   weapons: [
-    ...getWeaponProfiles('Deathwatch Boltgun'),
-    ...getWeaponProfiles('Deathwatch Shotgun'),
+    ...getWeaponProfiles('Deathwatch boltgun'),
+    ...getWeaponProfiles('Deathwatch shotgun'),
     ...getWeaponProfiles('Combi-flamer'),
     ...getWeaponProfiles('Combi-grav'),
     ...getWeaponProfiles('Combi-melta'),

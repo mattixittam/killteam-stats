@@ -26,7 +26,7 @@ export const nonHeavyRangedWeapons: Weapon[] = [
     type: 'RANGED',
   },
   {
-    name: 'Deathwatch Boltgun',
+    name: 'Deathwatch boltgun',
     profile: 'Dragonfire',
     attackDice: 4,
     damage: 3,
@@ -37,7 +37,7 @@ export const nonHeavyRangedWeapons: Weapon[] = [
     type: 'RANGED',
   },
   {
-    name: 'Deathwatch Boltgun',
+    name: 'Deathwatch boltgun',
     profile: 'Hellfire',
     attackDice: 4,
     damage: 3,
@@ -48,7 +48,7 @@ export const nonHeavyRangedWeapons: Weapon[] = [
     type: 'RANGED',
   },
   {
-    name: 'Deathwatch Boltgun',
+    name: 'Deathwatch boltgun',
     profile: 'Kraken',
     attackDice: 4,
     damage: 3,
@@ -59,7 +59,7 @@ export const nonHeavyRangedWeapons: Weapon[] = [
     type: 'RANGED',
   },
   {
-    name: 'Deathwatch Boltgun',
+    name: 'Deathwatch boltgun',
     profile: 'Vengeance',
     attackDice: 4,
     damage: 4,
@@ -70,7 +70,7 @@ export const nonHeavyRangedWeapons: Weapon[] = [
     type: 'RANGED',
   },
   {
-    name: 'Deathwatch Shotgun',
+    name: 'Deathwatch shotgun',
     profile: 'Cryptclearer',
     attackDice: 4,
     damage: 4,
@@ -81,7 +81,7 @@ export const nonHeavyRangedWeapons: Weapon[] = [
     type: 'RANGED',
   },
   {
-    name: 'Deathwatch Shotgun',
+    name: 'Deathwatch shotgun',
     profile: 'Wyrmsbreath',
     attackDice: 5,
     weaponBallisticSkillAdjustment: -1,
@@ -93,7 +93,7 @@ export const nonHeavyRangedWeapons: Weapon[] = [
     type: 'RANGED',
   },
   {
-    name: 'Deathwatch Shotgun',
+    name: 'Deathwatch shotgun',
     profile: 'Xenopurge',
     attackDice: 4,
     weaponBallisticSkillAdjustment: -1,

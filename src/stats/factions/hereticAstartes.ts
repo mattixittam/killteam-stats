@@ -14,7 +14,7 @@ export const chaosSmWarrior: DataSheet = {
   weaponSkill: 3,
   weapons: [
     ...generateEquipmentVariantProfiles(getWeaponProfiles('Boltgun'), [equipment.BELT_FEED, equipment.MALEFIC_ROUNDS]),
-    ...generateEquipmentVariantProfiles(getWeaponProfiles('Bolt Pistol'), [
+    ...generateEquipmentVariantProfiles(getWeaponProfiles('Bolt pistol'), [
       equipment.BELT_FEED,
       equipment.MALEFIC_ROUNDS,
     ]),
@@ -76,7 +76,7 @@ export const chaosSmIconBearer: DataSheet = {
   weaponSkill: 3,
   weapons: [
     ...generateEquipmentVariantProfiles(getWeaponProfiles('Boltgun'), [equipment.BELT_FEED, equipment.MALEFIC_ROUNDS]),
-    ...generateEquipmentVariantProfiles(getWeaponProfiles('Bolt Pistol'), [
+    ...generateEquipmentVariantProfiles(getWeaponProfiles('Bolt pistol'), [
       equipment.BELT_FEED,
       equipment.MALEFIC_ROUNDS,
     ]),
@@ -100,7 +100,7 @@ export const chaosSmAspiringChampion: DataSheet = {
   weaponSkill: 2,
   weapons: [
     ...generateEquipmentVariantProfiles(getWeaponProfiles('Boltgun'), [equipment.BELT_FEED, equipment.MALEFIC_ROUNDS]),
-    ...generateEquipmentVariantProfiles(getWeaponProfiles('Bolt Pistol'), [
+    ...generateEquipmentVariantProfiles(getWeaponProfiles('Bolt pistol'), [
       equipment.BELT_FEED,
       equipment.MALEFIC_ROUNDS,
     ]),
