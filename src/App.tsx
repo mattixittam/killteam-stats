@@ -12,17 +12,19 @@ import {
   Tab,
   Box,
   Drawer,
+  Button,
 } from '@material-ui/core'
-import { Weapon } from './stats/weapons'
+import { Weapon, WeaponName } from './stats/weapons'
 import { adeptusAstartesStats } from './stats/factions/adeptusAstartes'
 import { hereticAstartesStats } from './stats/factions/hereticAstartes'
 import { calculateDamage, DamageMelee, getAttackerAttackDice } from './calculation'
 import { specialRules } from './rules'
-import React, { FunctionComponent, useState } from 'react'
+import React, { Dispatch, FunctionComponent, SetStateAction, useState } from 'react'
 import { forgeWorldStats } from './stats/factions/forgeWorld'
 import { broodCovenStats } from './stats/factions/broodCoven'
-import { DataSheet } from './helpers'
+import { DataSheet, WeaponOptions } from './helpers'
 import { custodianGuardWarrior, talonsOfTheEmperorStats } from './stats/factions/talonsOfTheEmperor'
+import classNames from 'classnames'
 
 interface FireTeam {
   name: string
@@ -152,9 +154,118 @@ function formatMeleeDamage(damage: DamageMelee) {
   )
 }
 
+function handleSelectWeapon(profile: DataSheet, name: WeaponName, setDatasheet: Dispatch<SetStateAction<DataSheet>>) {
+  if (Array.isArray(profile.selectedWeapons)) {
+    if (profile.selectedWeapons.includes(name)) {
+      console.warn('Duplicate weapon')
+      return
+    }
+
+    setDatasheet({
+      ...profile,
+      selectedWeapons: [...profile.selectedWeapons, name],
+    })
+
+    return
+  }
+
+  setDatasheet({
+    ...profile,
+    selectedWeapons: [name],
+  })
+}
+
+function handleDeselectWeapon(profile: DataSheet, name: WeaponName, setDatasheet: Dispatch<SetStateAction<DataSheet>>) {
+  if (Array.isArray(profile.selectedWeapons)) {
+    if (!profile.selectedWeapons.includes(name)) {
+      console.warn('Unable to deselect, weapon not selected')
+      return
+    }
+
+    setDatasheet({
+      ...profile,
+      selectedWeapons: [...profile.selectedWeapons.filter((weapon) => weapon !== name)],
+    })
+
+    return
+  }
+
+  console.warn('Unable to deselect, no selected weapons')
+}
+
+function isWeaponInOptions(name: WeaponName, options: WeaponOptions): boolean {
+  return options.some((optionItem) => {
+    if (Array.isArray(optionItem)) {
+      console.log('Deeper', optionItem)
+      return isWeaponInOptions(name, optionItem)
+    }
+    console.log('Deepest', name, optionItem)
+    return name === optionItem
+  })
+}
+
+function isOptionComplete(selectedWeapons: WeaponName[], options: WeaponOptions): boolean {
+  return (options as Array<WeaponOptions[] | WeaponName[]>).every((optionItem) => {
+    return selectedWeapons.some((selectedWeapon) => {
+      if (typeof optionItem === 'string') {
+        return optionItem === selectedWeapon
+      }
+
+      return isWeaponInOptions(selectedWeapon, optionItem)
+    })
+  })
+}
+
+function isWeaponSelectable(weaponName: WeaponName, profile: DataSheet) {
+  // For profiles without options set
+  if (!profile.weaponOptions) {
+    return true
+  }
+
+  let viableOptions = [...profile.weaponOptions]
+
+  profile.selectedWeapons?.forEach((selectedWeapon) => {
+    viableOptions = viableOptions.filter((option) => isWeaponInOptions(selectedWeapon, option))
+  })
+
+  if (Array.isArray(profile.selectedWeapons) && profile.selectedWeapons.length > 0) {
+    viableOptions = viableOptions.filter((option) => {
+      if (profile.selectedWeapons) {
+        return !isOptionComplete(profile.selectedWeapons, option)
+      }
+
+      return true
+    })
+  }
+
+  return isWeaponInOptions(weaponName, viableOptions)
+}
+
+function isWeaponInCompleteOption(weaponName: WeaponName, profile: DataSheet) {
+  // For profiles without options set
+  if (!profile.weaponOptions) {
+    return false
+  }
+
+  let viableOptions = [...profile.weaponOptions]
+
+  if (Array.isArray(profile.selectedWeapons) && profile.selectedWeapons.length > 0) {
+    viableOptions = viableOptions.filter((option) => {
+      if (profile.selectedWeapons) {
+        return isOptionComplete(profile.selectedWeapons, option)
+      }
+
+      return false
+    })
+  }
+
+  return isWeaponInOptions(weaponName, viableOptions)
+}
+
 function generateWeaponRow(
   weapon: Weapon,
   attackProfile: DataSheet,
+  setDatasheet: Dispatch<SetStateAction<DataSheet>>,
   {
     isProfile,
     nextIsProfile,
@@ -194,9 +305,43 @@ function generateWeaponRow(
 
   const adjustedWsOrBs = Math.max(2, weaponOrBallisticSkill)
 
+  const isSelected = attackProfile.selectedWeapons?.some((selectedName) => selectedName === weapon.name)
+  const isSelectable = isWeaponSelectable(weapon.name, attackProfile)
+  const isInCompleteOption = isWeaponInCompleteOption(weapon.name, attackProfile)
+
   return (
-    <TableRow key={weapon.name + weapon.profile}>
-      <TableCell style={styles}>{isProfile ? '' : weapon.name}</TableCell>
+    <TableRow
+      key={weapon.name + weapon.profile}
+      className={classNames({
+        'weapon-selected': isSelected,
+        'weapon-disabled': !isSelectable,
+      })}
+    >
+      <TableCell style={styles}>
+        {isSelectable && !isSelected && (
+          <>
+            <Button
+              size="small"
+              color="primary"
+              variant="contained"
+              onClick={() => handleSelectWeapon(attackProfile, weapon.name, setDatasheet)}
+            >
+              +
+            </Button>
+          </>
+        )}
+        {(isSelectable || (isInCompleteOption && isSelected)) && (
+          <Button
+            size="small"
+            color="secondary"
+            variant="contained"
+            onClick={() => handleDeselectWeapon(attackProfile, weapon.name, setDatasheet)}
+          >
+            -
+          </Button>
+        )}
+        {isProfile ? '' : weapon.name}
+      </TableCell>
       <TableCell style={styles}>{weapon.profile}</TableCell>
       <TableCell style={styles}>{getAttackerAttackDice(weapon)}</TableCell>
       <TableCell style={styles}>{adjustedWsOrBs}+</TableCell>
@@ -221,7 +366,8 @@ function generateWeaponRow(
   )
 }
 
-function generateStatBlock(dataSheet: DataSheet) {
+function StatBlock(dataSheet: DataSheet) {
+  const [dataSheetLocal, setDataSheetLocal] = useState<DataSheet>(dataSheet)
   let rowColor = 'rgba(1,1,1,0.1)'
 
   function switchRowColor() {
@@ -232,17 +378,17 @@ function generateStatBlock(dataSheet: DataSheet) {
     }
   }
 
-  const rangedWeapons = dataSheet.weapons.filter((weapon) => weapon.type === 'RANGED')
-  const meleeWeapons = dataSheet.weapons.filter((weapon) => weapon.type === 'MELEE')
+  const rangedWeapons = dataSheetLocal.weapons.filter((weapon) => weapon.type === 'RANGED')
+  const meleeWeapons = dataSheetLocal.weapons.filter((weapon) => weapon.type === 'MELEE')
 
   return (
-    <TableContainer component={Paper} style={{ margin: '20px' }} key={dataSheet.name}>
+    <TableContainer component={Paper} style={{ margin: '20px' }} key={dataSheetLocal.name}>
       <Table size="small">
         <TableHead>
           <TableRow style={{ backgroundColor: 'rgb(255, 102, 0)' }}>
             <TableCell rowSpan={4} style={{ width: '50%', backgroundColor: 'rgb(40,40,40)', color: 'white' }}>
               <Typography variant="h5" fontWeight="700">
-                {dataSheet.name}
+                {dataSheetLocal.name}
               </Typography>
             </TableCell>
             <TableCell style={{ textAlign: 'center', fontWeight: 700 }}>M</TableCell>
@@ -250,9 +396,9 @@ function generateStatBlock(dataSheet: DataSheet) {
             <TableCell style={{ textAlign: 'center', fontWeight: 700 }}>GA</TableCell>
           </TableRow>
           <TableRow style={{ backgroundColor: 'rgba(1,1,1,0.1)' }}>
-            <TableCell style={{ borderBottom: 0, textAlign: 'center' }}>{dataSheet.movement}</TableCell>
-            <TableCell style={{ borderBottom: 0, textAlign: 'center' }}>{dataSheet.apl}</TableCell>
-            <TableCell style={{ borderBottom: 0, textAlign: 'center' }}>{dataSheet.groupActivation}</TableCell>
+            <TableCell style={{ borderBottom: 0, textAlign: 'center' }}>{dataSheetLocal.movement}</TableCell>
+            <TableCell style={{ borderBottom: 0, textAlign: 'center' }}>{dataSheetLocal.apl}</TableCell>
+            <TableCell style={{ borderBottom: 0, textAlign: 'center' }}>{dataSheetLocal.groupActivation}</TableCell>
           </TableRow>
           <TableRow style={{ backgroundColor: 'rgb(255, 102, 0)' }}>
             <TableCell style={{ textAlign: 'center', fontWeight: 700 }}>DF</TableCell>
@@ -260,9 +406,9 @@ function generateStatBlock(dataSheet: DataSheet) {
             <TableCell style={{ textAlign: 'center', fontWeight: 700 }}>W</TableCell>
           </TableRow>
           <TableRow style={{ backgroundColor: 'rgba(1,1,1,0.1)' }}>
-            <TableCell style={{ textAlign: 'center' }}>{dataSheet.defense}</TableCell>
-            <TableCell style={{ textAlign: 'center' }}>{dataSheet.save}+</TableCell>
-            <TableCell style={{ textAlign: 'center' }}>{dataSheet.wounds}</TableCell>
+            <TableCell style={{ textAlign: 'center' }}>{dataSheetLocal.defense}</TableCell>
+            <TableCell style={{ textAlign: 'center' }}>{dataSheetLocal.save}+</TableCell>
+            <TableCell style={{ textAlign: 'center' }}>{dataSheetLocal.wounds}</TableCell>
           </TableRow>
         </TableHead>
       </Table>
@@ -292,7 +438,7 @@ function generateStatBlock(dataSheet: DataSheet) {
               switchRowColor()
             }
 
-            return generateWeaponRow(weapon, dataSheet, {
+            return generateWeaponRow(weapon, dataSheetLocal, setDataSheetLocal, {
               isProfile: sameNameAsPrevious,
               nextIsProfile: sameNameAsNext,
               backgroundColor: rowColor,
@@ -354,7 +500,7 @@ function generateStatBlock(dataSheet: DataSheet) {
               switchRowColor()
             }
 
-            return generateWeaponRow(weapon, dataSheet, {
+            return generateWeaponRow(weapon, dataSheetLocal, setDataSheetLocal, {
               isProfile: sameNameAsPrevious,
               nextIsProfile: sameNameAsNext,
               backgroundColor: rowColor,
@@ -440,7 +586,7 @@ function App() {
             </Box>
             {factions[index].fireTeams.map((fireTeam, fireTeamIndex) => (
               <TabPanel index={fireTeamIndex} value={lvl2Value}>
-                {fireTeam.dataSheets.map((dataSheet) => generateStatBlock(dataSheet))}
+                {fireTeam.dataSheets.map((dataSheet) => StatBlock(dataSheet))}
               </TabPanel>
             ))}
           </TabPanel>

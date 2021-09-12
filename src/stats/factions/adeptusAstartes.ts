@@ -245,7 +245,6 @@ export const intercessorSergeant: DataSheet = {
     ...getWeaponProfiles('Plasma pistol'),
     ...getWeaponProfiles('Stalker bolt rifle'),
     ...getWeaponProfiles('Chainsword'),
-    ...getWeaponProfiles('Chainsword'),
     ...getWeaponProfiles('Fists', { attackDiceAdjustment: 1 }),
     ...getWeaponProfiles('Power fist'),
     ...getWeaponProfiles('Power weapon'),
