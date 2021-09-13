@@ -22,7 +22,7 @@ import { specialRules } from './rules'
 import React, { Dispatch, FunctionComponent, SetStateAction, useState } from 'react'
 import { forgeWorldStats } from './stats/factions/forgeWorld'
 import { broodCovenStats } from './stats/factions/broodCoven'
-import { DataSheet, WeaponOptions } from './helpers'
+import { DataSheet, WeaponOption, WeaponOptions } from './helpers'
 import { custodianGuardWarrior, talonsOfTheEmperorStats } from './stats/factions/talonsOfTheEmperor'
 import classNames from 'classnames'
 
@@ -193,30 +193,37 @@ function handleDeselectWeapon(profile: DataSheet, name: WeaponName, setDatasheet
   console.warn('Unable to deselect, no selected weapons')
 }
 
-function isWeaponInOptions(name: WeaponName, options: WeaponOptions): boolean {
-  return options.some((optionItem) => {
-    if (Array.isArray(optionItem)) {
-      console.log('Deeper', optionItem)
-      return isWeaponInOptions(name, optionItem)
-    }
-    console.log('Deepest', name, optionItem)
-    return name === optionItem
+function isWeaponInOption(name: WeaponName, option: WeaponOption): boolean {
+  return option.some((optionItem) => {
+    return optionItem.includes(name)
   })
 }
 
-function isOptionComplete(selectedWeapons: WeaponName[], options: WeaponOptions): boolean {
-  return (options as Array<WeaponOptions[] | WeaponName[]>).every((optionItem) => {
-    return selectedWeapons.some((selectedWeapon) => {
-      if (typeof optionItem === 'string') {
-        return optionItem === selectedWeapon
-      }
+function isWeaponInOptions(name: WeaponName, options: WeaponOptions): boolean {
+  return options.some((option) => {
+    return isWeaponInOption(name, option)
+  })
+}
 
-      return isWeaponInOptions(selectedWeapon, optionItem)
+function isOptionComplete(selectedWeapons: WeaponName[], option: WeaponOption): boolean {
+  return option.every((weaponsArray) => {
+    return selectedWeapons.some((selectedWeapon) => {
+      return weaponsArray.includes(selectedWeapon)
     })
   })
 }
 
-function isWeaponSelectable(weaponName: WeaponName, profile: DataSheet) {
+function areWeaponsInSameSuboption(weapon1: WeaponName, weapon2: WeaponName, option: WeaponOption): boolean {
+  if (weapon1 === weapon2) {
+    return false
+  }
+
+  return option.some((weaponsArray) => {
+    return weaponsArray.includes(weapon1) && weaponsArray.includes(weapon2)
+  })
+}
+
+function isWeaponAddable(weaponName: WeaponName, profile: DataSheet) {
   // For profiles without options set
   if (!profile.weaponOptions) {
     return true
@@ -224,38 +231,26 @@ function isWeaponSelectable(weaponName: WeaponName, profile: DataSheet) {
 
   let viableOptions = [...profile.weaponOptions]
 
-  profile.selectedWeapons?.forEach((selectedWeapon) => {
-    viableOptions = viableOptions.filter((option) => isWeaponInOptions(selectedWeapon, option))
-  })
-
+  // If there are selected weapons:
   if (Array.isArray(profile.selectedWeapons) && profile.selectedWeapons.length > 0) {
+    // Use only options that have at least 1 selected weapon in them
+    profile.selectedWeapons.forEach((selectedWeapon) => {
+      viableOptions = viableOptions.filter((option) => isWeaponInOption(selectedWeapon, option))
+    })
+
+    // Use only options that are not complete AND
+    // ...which do not already have the suboption this weapon is in, filled
     viableOptions = viableOptions.filter((option) => {
+      // Needed for typescript for some reason
       if (profile.selectedWeapons) {
-        return !isOptionComplete(profile.selectedWeapons, option)
+        const isWeaponInSuboptionWithSelectedWeapons = profile.selectedWeapons.some((selectedWeapon) =>
+          areWeaponsInSameSuboption(selectedWeapon, weaponName, option)
+        )
+
+        return !isOptionComplete(profile.selectedWeapons, option) && !isWeaponInSuboptionWithSelectedWeapons
       }
 
       return true
-    })
-  }
-
-  return isWeaponInOptions(weaponName, viableOptions)
-}
-
-function isWeaponInCompleteOption(weaponName: WeaponName, profile: DataSheet) {
-  // For profiles without options set
-  if (!profile.weaponOptions) {
-    return false
-  }
-
-  let viableOptions = [...profile.weaponOptions]
-
-  if (Array.isArray(profile.selectedWeapons) && profile.selectedWeapons.length > 0) {
-    viableOptions = viableOptions.filter((option) => {
-      if (profile.selectedWeapons) {
-        return isOptionComplete(profile.selectedWeapons, option)
-      }
-
-      return false
     })
   }
 
@@ -306,8 +301,7 @@ function generateWeaponRow(
   const adjustedWsOrBs = Math.max(2, weaponOrBallisticSkill)
 
   const isSelected = attackProfile.selectedWeapons?.some((selectedName) => selectedName === weapon.name)
-  const isSelectable = isWeaponSelectable(weapon.name, attackProfile)
-  const isInCompleteOption = isWeaponInCompleteOption(weapon.name, attackProfile)
+  const isSelectable = isWeaponAddable(weapon.name, attackProfile)
 
   return (
     <TableRow
@@ -318,7 +312,7 @@ function generateWeaponRow(
       })}
     >
       <TableCell style={styles}>
-        {isSelectable && !isSelected && (
+        {isSelectable && !isSelected && !isProfile && (
           <>
             <Button
               size="small"
@@ -330,7 +324,7 @@ function generateWeaponRow(
             </Button>
           </>
         )}
-        {(isSelectable || (isInCompleteOption && isSelected)) && (
+        {isSelected && !isProfile && (
           <Button
             size="small"
             color="secondary"
@@ -340,8 +334,8 @@ function generateWeaponRow(
             -
           </Button>
         )}
-        {isProfile ? '' : weapon.name}
       </TableCell>
+      <TableCell style={styles}>{isProfile ? '' : weapon.name}</TableCell>
       <TableCell style={styles}>{weapon.profile}</TableCell>
       <TableCell style={styles}>{getAttackerAttackDice(weapon)}</TableCell>
       <TableCell style={styles}>{adjustedWsOrBs}+</TableCell>
@@ -416,6 +410,7 @@ function StatBlock(dataSheet: DataSheet) {
         <TableHead>
           {rangedWeapons.length > 0 && (
             <TableRow>
+              <TableCell></TableCell>
               <TableCell>Name</TableCell>
               <TableCell>Profile</TableCell>
               <TableCell>A</TableCell>
@@ -448,6 +443,7 @@ function StatBlock(dataSheet: DataSheet) {
         {meleeWeapons.length > 0 && (
           <TableHead>
             <TableRow>
+              <TableCell></TableCell>
               <TableCell>Name</TableCell>
               <TableCell>Profile</TableCell>
               <TableCell>A</TableCell>

@@ -8,7 +8,9 @@ interface Options {
   equipmentProfiles?: string[]
 }
 
-export type WeaponOptions = WeaponOptions[] | WeaponName[]
+export type WeaponOptions = WeaponOption[]
+export type WeaponOption = WeaponName[][]
+
 export interface DataSheet {
   name: string
   movement: number
@@ -23,7 +25,7 @@ export interface DataSheet {
   weapons: Weapon[]
   defensiveMeleeWeapon?: Weapon
   abilities?: Rule[]
-  weaponOptions?: WeaponOptions[]
+  weaponOptions?: WeaponOptions
   selectedWeapons?: WeaponName[]
 }
 

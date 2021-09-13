@@ -38,5 +38,9 @@
 }
 
 .weapon-selected {
-  border: 2px solid red;
+  background: rgb(255, 102, 0);
+}
+
+.weapon-selected td {
+  color: white;
 }

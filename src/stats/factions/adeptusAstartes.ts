@@ -21,7 +21,7 @@ export const deathwatchVeteranWarrior: DataSheet = {
     ...getWeaponProfiles('Power weapon'),
   ],
   weaponOptions: [
-    ['Deathwatch boltgun', 'Power weapon'],
+    [['Deathwatch boltgun'], ['Power weapon']],
     [['Deathwatch shotgun', 'Stalker pattern boltgun', 'Storm bolter'], ['Fists']],
   ],
 }
