@@ -317,9 +317,12 @@ function generateWeaponRow(
       className={classNames({
         'weapon-selected': isSelected,
         'weapon-disabled': !isSelectable,
+        'default-weapon': isDefaultWeapon,
+        'is-profile': isProfile,
+        'next-is-profile': nextIsProfile,
       })}
     >
-      <TableCell style={buttonCellStyles} className={isDefaultWeapon ? 'default-weapon' : ''}>
+      <TableCell style={buttonCellStyles}>
         {isSelectable && !isSelected && !isProfile && (
           <>
             <Button
