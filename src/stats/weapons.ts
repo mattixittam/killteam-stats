@@ -5,6 +5,7 @@ import { meleeWeapons } from './weapons/meleeWeapons'
 import { pistols } from './weapons/pistols'
 
 export type WeaponName =
+  | 'Storm shield'
   | 'Xenophase blade'
   | 'Combat knife'
   | 'Fists'
@@ -37,7 +38,7 @@ export type WeaponName =
   | 'Deathwatch shotgun'
   | 'Storm bolter'
   | 'Bolt carbine'
-  | 'Frag Cannon'
+  | 'Frag cannon'
   | 'Auto bolt rifle'
   | 'Bolt rifle'
   | 'Stalker bolt rifle'

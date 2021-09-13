@@ -62,6 +62,15 @@ export const deathwatchVeteranFighter: DataSheet = {
     ...generateEquipmentVariantProfiles(getWeaponProfiles('Thunder hammer', { attackDiceAdjustment: 1 }), [
       equipment.STORM_SHIELD,
     ]),
+    ...getWeaponProfiles('Storm shield'),
+  ],
+  weaponOptions: [
+    [['Heavy thunder hammer']],
+    [['Lightning claws']],
+    [
+      ['Bolt pistol', 'Grav-pistol', 'Hand flamer', 'Inferno pistol', 'Plasma pistol', 'Storm shield'],
+      ['Chainsword', 'Lightning claw', 'Power fist', 'Power maul', 'Power weapon', 'Thunder hammer'],
+    ],
   ],
 }
 export const deathwatchVeteranGunner: DataSheet = {
@@ -87,6 +96,12 @@ export const deathwatchVeteranGunner: DataSheet = {
     ...getWeaponProfiles('Plasma gun'),
     ...getWeaponProfiles('Fists'),
   ],
+  weaponOptions: [
+    [
+      ['Fists'],
+      ['Combi-flamer', 'Combi-melta', 'Combi-grav', 'Combi-plasma', 'Flamer', 'Meltagun', 'Grav-gun', 'Plasma gun'],
+    ],
+  ],
 }
 export const deathwatchVeteranHeavyGunner: DataSheet = {
   name: 'DEATHWATCH VETERAN (HEAVY GUNNER)',
@@ -100,11 +115,12 @@ export const deathwatchVeteranHeavyGunner: DataSheet = {
   ballisticSkill: 3,
   weaponSkill: 3,
   weapons: [
-    ...getWeaponProfiles('Frag Cannon'),
+    ...getWeaponProfiles('Frag cannon'),
     ...getWeaponProfiles('Infernus heavy bolter'),
     ...getWeaponProfiles('Missile launcher'),
     ...getWeaponProfiles('Fists'),
   ],
+  weaponOptions: [[['Fists'], ['Frag cannon', 'Infernus heavy bolter', 'Missile launcher']]],
 }
 export const deathwatchVeteranWatchSergeant: DataSheet = {
   name: 'DEATHWATCH VETERAN WATCH SERGEANT',
@@ -159,6 +175,32 @@ export const deathwatchVeteranWatchSergeant: DataSheet = {
     ...generateEquipmentVariantProfiles(getWeaponProfiles('Xenophase blade', { attackDiceAdjustment: 1 }), [
       equipment.STORM_SHIELD,
     ]),
+    ...getWeaponProfiles('Storm shield'),
+  ],
+  weaponOptions: [
+    [['Heavy thunder hammer']],
+    [['Lightning claws']],
+    [
+      ['Fists'],
+      [
+        'Deathwatch boltgun',
+        'Deathwatch shotgun',
+        'Stalker pattern boltgun',
+        'Storm bolter',
+        'Combi-flamer',
+        'Combi-melta',
+        'Combi-grav',
+        'Combi-plasma',
+        'Flamer',
+        'Meltagun',
+        'Grav-gun',
+        'Plasma gun',
+      ],
+    ],
+    [
+      ['Bolt pistol', 'Grav-pistol', 'Hand flamer', 'Inferno pistol', 'Plasma pistol', 'Storm shield'],
+      ['Chainsword', 'Lightning claw', 'Power fist', 'Power maul', 'Power weapon', 'Thunder hammer'],
+    ],
   ],
 }
 
@@ -183,6 +225,8 @@ export const reiverWarrior: DataSheet = {
     ...getWeaponProfiles('Combat knife'),
     ...getWeaponProfiles('Fists', { attackDiceAdjustment: 1 }),
   ],
+  defaultWeapons: ['Special issue bolt pistol'],
+  weaponOptions: [[['Bolt carbine'], ['Fists']], [['Combat knife']]],
 }
 
 export const reiverSergeant: DataSheet = {
@@ -201,6 +245,11 @@ export const reiverSergeant: DataSheet = {
     ...getWeaponProfiles('Special issue bolt pistol'),
     ...getWeaponProfiles('Combat knife'),
     ...getWeaponProfiles('Fists', { attackDiceAdjustment: 1 }),
+  ],
+  defaultWeapons: ['Special issue bolt pistol'],
+  weaponOptions: [
+    [['Bolt carbine'], ['Combat knife']],
+    [['Bolt carbine'], ['Fists']],
   ],
 }
 
@@ -224,6 +273,8 @@ export const intercessorWarrior: DataSheet = {
     ...getWeaponProfiles('Stalker bolt rifle'),
     ...getWeaponProfiles('Fists', { attackDiceAdjustment: 1 }),
   ],
+  defaultWeapons: ['Fists'],
+  weaponOptions: [[['Auto bolt rifle', 'Stalker bolt rifle', 'Bolt rifle']]],
 }
 
 export const intercessorSergeant: DataSheet = {
@@ -249,6 +300,12 @@ export const intercessorSergeant: DataSheet = {
     ...getWeaponProfiles('Power fist'),
     ...getWeaponProfiles('Power weapon'),
     ...getWeaponProfiles('Thunder hammer'),
+  ],
+  weaponOptions: [
+    [
+      ['Auto bolt rifle', 'Stalker bolt rifle', 'Bolt rifle', 'Bolt pistol', 'Hand flamer', 'Plasma pistol'],
+      ['Chainsword', 'Fists', 'Power fist', 'Power weapon', 'Thunder hammer'],
+    ],
   ],
 }
 

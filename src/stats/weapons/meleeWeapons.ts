@@ -4,6 +4,17 @@ import { equipment } from '../equipment'
 
 export const meleeWeapons: Weapon[] = [
   {
+    name: 'Storm shield',
+    profile: '',
+    attackDice: 0,
+    damage: 0,
+    damageCritical: 0,
+    specialRules: [],
+    criticalRules: [],
+    equipment: [],
+    type: 'MELEE',
+  },
+  {
     name: 'Xenophase blade',
     profile: '',
     attackDice: 4,

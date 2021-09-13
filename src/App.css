@@ -44,3 +44,9 @@
 .weapon-selected td {
   color: white;
 }
+
+.default-weapon {
+  background: rgb(255, 102, 0) !important;
+  color: white !important;
+  text-align: center !important;
+}

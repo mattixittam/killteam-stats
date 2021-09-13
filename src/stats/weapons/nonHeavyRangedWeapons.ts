@@ -127,7 +127,7 @@ export const nonHeavyRangedWeapons: Weapon[] = [
     type: 'RANGED',
   },
   {
-    name: 'Frag Cannon',
+    name: 'Frag cannon',
     profile: 'Frag',
     attackDice: 4,
     damage: 4,
@@ -138,7 +138,7 @@ export const nonHeavyRangedWeapons: Weapon[] = [
     type: 'RANGED',
   },
   {
-    name: 'Frag Cannon',
+    name: 'Frag cannon',
     profile: 'Shell',
     attackDice: 4,
     damage: 5,

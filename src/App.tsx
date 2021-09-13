@@ -25,6 +25,7 @@ import { broodCovenStats } from './stats/factions/broodCoven'
 import { DataSheet, WeaponOption, WeaponOptions } from './helpers'
 import { custodianGuardWarrior, talonsOfTheEmperorStats } from './stats/factions/talonsOfTheEmperor'
 import classNames from 'classnames'
+import { CSSProperties } from 'react'
 
 interface FireTeam {
   name: string
@@ -285,12 +286,18 @@ function generateWeaponRow(
     },
   })
 
-  const styles: { backgroundColor: string; borderBottomWidth?: number } = {
+  const styles: CSSProperties = {
     backgroundColor,
+  }
+
+  const buttonCellStyles: CSSProperties = {
+    backgroundColor,
+    textAlign: 'center',
   }
 
   if (nextIsProfile) {
     styles.borderBottomWidth = 0
+    buttonCellStyles.borderBottomWidth = 0
   }
 
   const neededSkill = weapon.type === 'MELEE' ? attackProfile.weaponSkill : attackProfile.ballisticSkill
@@ -302,6 +309,7 @@ function generateWeaponRow(
 
   const isSelected = attackProfile.selectedWeapons?.some((selectedName) => selectedName === weapon.name)
   const isSelectable = isWeaponAddable(weapon.name, attackProfile)
+  const isDefaultWeapon = attackProfile.defaultWeapons?.includes(weapon.name)
 
   return (
     <TableRow
@@ -311,7 +319,7 @@ function generateWeaponRow(
         'weapon-disabled': !isSelectable,
       })}
     >
-      <TableCell style={styles}>
+      <TableCell style={buttonCellStyles} className={isDefaultWeapon ? 'default-weapon' : ''}>
         {isSelectable && !isSelected && !isProfile && (
           <>
             <Button
@@ -334,28 +342,43 @@ function generateWeaponRow(
             -
           </Button>
         )}
+        {isDefaultWeapon && (
+          <span>
+            Always
+            <br />
+            Equipped
+          </span>
+        )}
       </TableCell>
       <TableCell style={styles}>{isProfile ? '' : weapon.name}</TableCell>
       <TableCell style={styles}>{weapon.profile}</TableCell>
-      <TableCell style={styles}>{getAttackerAttackDice(weapon)}</TableCell>
-      <TableCell style={styles}>{adjustedWsOrBs}+</TableCell>
-      <TableCell style={styles}>
-        {weapon.damage}/{weapon.damageCritical}
-      </TableCell>
-      <TableCell style={styles}>{weapon.specialRules.map((rule) => rule.label).join(', ')}</TableCell>
-      <TableCell style={styles}>{weapon.criticalRules.map((rule) => rule.label).join(', ')}</TableCell>
-      <TableCell style={styles}>
-        <strong>{geqDamage.type === 'melee' ? formatMeleeDamage(geqDamage) : geqDamage.total}</strong>
-        {/* (hit: {geqDamage.hit}, crit: {geqDamage.crit}, mw: {geqDamage.mw}, data: {JSON.stringify(geqDamage.data)}) */}
-      </TableCell>
-      <TableCell style={styles}>
-        <strong>{meqDamage.type === 'melee' ? formatMeleeDamage(meqDamage) : meqDamage.total}</strong>
-        {/* (hit: {meqDamage.hit}, crit: {meqDamage.crit}, mw: {meqDamage.mw}) */}
-      </TableCell>
-      <TableCell style={styles}>
-        <strong>{custodesDamage.type === 'melee' ? formatMeleeDamage(custodesDamage) : custodesDamage.total}</strong>
-        {/* (hit: {custodesDamage.hit}, crit: {custodesDamage.crit}, mw: {custodesDamage.mw}) */}
-      </TableCell>
+      {weapon.name === 'Storm shield' ? (
+        [1, 2, 3, 4, 5, 6, 7, 8].map((item) => <TableCell style={styles} key={item}></TableCell>)
+      ) : (
+        <>
+          <TableCell style={styles}>{getAttackerAttackDice(weapon)}</TableCell>
+          <TableCell style={styles}>{adjustedWsOrBs}+</TableCell>
+          <TableCell style={styles}>
+            {weapon.damage}/{weapon.damageCritical}
+          </TableCell>
+          <TableCell style={styles}>{weapon.specialRules.map((rule) => rule.label).join(', ')}</TableCell>
+          <TableCell style={styles}>{weapon.criticalRules.map((rule) => rule.label).join(', ')}</TableCell>
+          <TableCell style={styles}>
+            <strong>{geqDamage.type === 'melee' ? formatMeleeDamage(geqDamage) : geqDamage.total}</strong>
+            {/* (hit: {geqDamage.hit}, crit: {geqDamage.crit}, mw: {geqDamage.mw}, data: {JSON.stringify(geqDamage.data)}) */}
+          </TableCell>
+          <TableCell style={styles}>
+            <strong>{meqDamage.type === 'melee' ? formatMeleeDamage(meqDamage) : meqDamage.total}</strong>
+            {/* (hit: {meqDamage.hit}, crit: {meqDamage.crit}, mw: {meqDamage.mw}) */}
+          </TableCell>
+          <TableCell style={styles}>
+            <strong>
+              {custodesDamage.type === 'melee' ? formatMeleeDamage(custodesDamage) : custodesDamage.total}
+            </strong>
+            {/* (hit: {custodesDamage.hit}, crit: {custodesDamage.crit}, mw: {custodesDamage.mw}) */}
+          </TableCell>
+        </>
+      )}
     </TableRow>
   )
 }

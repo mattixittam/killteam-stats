@@ -27,6 +27,7 @@ export interface DataSheet {
   abilities?: Rule[]
   weaponOptions?: WeaponOptions
   selectedWeapons?: WeaponName[]
+  defaultWeapons?: WeaponName[]
 }
 
 export interface DataSheetDefender extends DataSheet {
