@@ -24,6 +24,10 @@ export const chaosSmWarrior: DataSheet = {
       equipment.DARK_BLESSING,
     ]),
   ],
+  weaponOptions: [
+    [['Boltgun'], ['Fists']],
+    [['Bolt pistol'], ['Chainsword']],
+  ],
 }
 export const chaosSmGunner: DataSheet = {
   name: 'CHAOS SPACE MARINE (GUNNER)',
@@ -42,6 +46,8 @@ export const chaosSmGunner: DataSheet = {
     ...getWeaponProfiles('Plasma gun'),
     ...getWeaponProfiles('Fists'),
   ],
+  defaultWeapons: ['Fists'],
+  weaponOptions: [[['Flamer', 'Meltagun', 'Plasma gun']]],
 }
 export const chaosSmHeavyGunner: DataSheet = {
   name: 'CHAOS SPACE MARINE (HEAVY GUNNER)',
@@ -62,6 +68,8 @@ export const chaosSmHeavyGunner: DataSheet = {
     ...getWeaponProfiles('Missile launcher'),
     ...getWeaponProfiles('Fists'),
   ],
+  defaultWeapons: ['Fists'],
+  weaponOptions: [[['Missile launcher', 'Heavy bolter']]],
 }
 export const chaosSmIconBearer: DataSheet = {
   name: 'CHAOS SPACE MARINE (ICON BEARER)',
@@ -85,6 +93,10 @@ export const chaosSmIconBearer: DataSheet = {
       equipment.GRISLY_TROPHY,
       equipment.DARK_BLESSING,
     ]),
+  ],
+  weaponOptions: [
+    [['Boltgun'], ['Fists']],
+    [['Bolt pistol'], ['Chainsword']],
   ],
 }
 export const chaosSmAspiringChampion: DataSheet = {
@@ -119,6 +131,12 @@ export const chaosSmAspiringChampion: DataSheet = {
       equipment.DARK_BLESSING,
     ]),
   ],
+  weaponOptions: [
+    [
+      ['Bolt pistol', 'Plasma pistol'],
+      ['Chainsword', 'Power fist', 'Power weapon'],
+    ],
+  ],
 }
 
 export const chaosCultistFighter: DataSheet = {
@@ -138,6 +156,10 @@ export const chaosCultistFighter: DataSheet = {
     ...getWeaponProfiles('Brutal assault weapon'),
     ...getWeaponProfiles('Gun butt'),
   ],
+  weaponOptions: [
+    [['Autogun'], ['Gun butt']],
+    [['Autopistol'], ['Brutal assault weapon']],
+  ],
 }
 
 export const chaosCultistGunner: DataSheet = {
@@ -152,6 +174,8 @@ export const chaosCultistGunner: DataSheet = {
   ballisticSkill: 4,
   weaponSkill: 4,
   weapons: [...getWeaponProfiles('Flamer'), ...getWeaponProfiles('Heavy stubber'), ...getWeaponProfiles('Gun butt')],
+  defaultWeapons: ['Gun butt'],
+  weaponOptions: [[['Flamer', 'Heavy stubber']]],
 }
 
 export const chaosCultistChampion: DataSheet = {
@@ -172,10 +196,15 @@ export const chaosCultistChampion: DataSheet = {
     ...getWeaponProfiles('Brutal assault weapon'),
     ...getWeaponProfiles('Gun butt'),
   ],
+  weaponOptions: [
+    [['Autogun'], ['Gun butt']],
+    [['Autopistol'], ['Brutal assault weapon']],
+    [['Shotgun'], ['Brutal assault weapon']],
+  ],
 }
 
-export const hereticAstartesStats = {
-  name: 'Heretic Astartes',
+export const traitorSpaceMarineStats = {
+  name: 'Traitor Space Marines',
   fireTeams: [
     {
       name: 'Chaos Space Marines',

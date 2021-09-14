@@ -12,6 +12,8 @@ export const neophyteHybridTrooper: DataSheet = {
   ballisticSkill: 4,
   weaponSkill: 4,
   weapons: [...getWeaponProfiles('Autogun'), ...getWeaponProfiles('Shotgun'), ...getWeaponProfiles('Gun butt')],
+  defaultWeapons: ['Gun butt', 'Autogun', 'Shotgun'],
+  weaponOptions: [],
 }
 
 export const neophyteHybridGunner: DataSheet = {
@@ -31,6 +33,8 @@ export const neophyteHybridGunner: DataSheet = {
     ...getWeaponProfiles('Webber'),
     ...getWeaponProfiles('Gun butt'),
   ],
+  defaultWeapons: ['Gun butt'],
+  weaponOptions: [[['Flamer', 'Grenade launcher', 'Webber']]],
 }
 
 export const neophyteHybridHeavyGunner: DataSheet = {
@@ -50,6 +54,8 @@ export const neophyteHybridHeavyGunner: DataSheet = {
     ...getWeaponProfiles('Seismic cannon'),
     ...getWeaponProfiles('Gun butt'),
   ],
+  defaultWeapons: ['Gun butt'],
+  weaponOptions: [[['Heavy stubber', 'Mining laser', 'Seismic cannon']]],
 }
 
 export const neophyteHybridIconBearer: DataSheet = {
@@ -64,6 +70,8 @@ export const neophyteHybridIconBearer: DataSheet = {
   ballisticSkill: 4,
   weaponSkill: 4,
   weapons: [...getWeaponProfiles('Autogun'), ...getWeaponProfiles('Shotgun'), ...getWeaponProfiles('Gun butt')],
+  defaultWeapons: ['Gun butt', 'Autogun', 'Shotgun'],
+  weaponOptions: [],
 }
 
 export const neophyteHybridLeader: DataSheet = {
@@ -88,6 +96,13 @@ export const neophyteHybridLeader: DataSheet = {
     ...getWeaponProfiles('Power maul'),
     ...getWeaponProfiles('Power pick'),
   ],
+  weaponOptions: [
+    [['Autogun', 'Shotgun'], ['Gun butt']],
+    [
+      ['Autopistol', 'Bolt pistol', 'Web pistol'],
+      ['Chainsword', 'Power maul', 'Power pick'],
+    ],
+  ],
 }
 
 export const acolyteHybridTrooper: DataSheet = {
@@ -102,6 +117,8 @@ export const acolyteHybridTrooper: DataSheet = {
   ballisticSkill: 4,
   weaponSkill: 3,
   weapons: [...getWeaponProfiles('Autopistol'), ...getWeaponProfiles('Cult knife and claw')],
+  defaultWeapons: ['Autopistol', 'Cult knife and claw'],
+  weaponOptions: [],
 }
 
 export const acolyteHybridGunner: DataSheet = {
@@ -116,6 +133,8 @@ export const acolyteHybridGunner: DataSheet = {
   ballisticSkill: 4,
   weaponSkill: 3,
   weapons: [...getWeaponProfiles('Hand flamer'), ...getWeaponProfiles('Cult knife and claw')],
+  defaultWeapons: ['Hand flamer', 'Cult knife and claw'],
+  weaponOptions: [],
 }
 
 export const acolyteHybridFighter: DataSheet = {
@@ -135,6 +154,8 @@ export const acolyteHybridFighter: DataSheet = {
     ...getWeaponProfiles('Heavy rock drill'),
     ...getWeaponProfiles('Heavy rock saw'),
   ],
+  defaultWeapons: ['Autopistol'],
+  weaponOptions: [[['Heavy rock cutter', 'Heavy rock drill', 'Heavy rock saw']]],
 }
 
 export const acolyteHybridIconBearer: DataSheet = {
@@ -149,6 +170,8 @@ export const acolyteHybridIconBearer: DataSheet = {
   ballisticSkill: 4,
   weaponSkill: 3,
   weapons: [...getWeaponProfiles('Autopistol'), ...getWeaponProfiles('Cult knife and claw')],
+  defaultWeapons: ['Autopistol', 'Cult knife and claw'],
+  weaponOptions: [],
 }
 
 export const acolyteHybridLeader: DataSheet = {
@@ -169,6 +192,12 @@ export const acolyteHybridLeader: DataSheet = {
     ...getWeaponProfiles('Cult bonesword and claw'),
     ...getWeaponProfiles('Cult knife and claw'),
   ],
+  weaponOptions: [
+    [
+      ['Autopistol', 'Hand flamer', 'Lash whip'],
+      ['Cult bonesword and claw', 'Cult knife and claw'],
+    ],
+  ],
 }
 
 export const hybridMetamorphFighter: DataSheet = {
@@ -183,6 +212,8 @@ export const hybridMetamorphFighter: DataSheet = {
   ballisticSkill: 4,
   weaponSkill: 3,
   weapons: [...getWeaponProfiles('Autopistol'), ...getWeaponProfiles('Metamorph mutations')],
+  defaultWeapons: ['Autopistol', 'Metamorph mutations'],
+  weaponOptions: [],
 }
 
 export const hybridMetamorphGunner: DataSheet = {
@@ -197,6 +228,8 @@ export const hybridMetamorphGunner: DataSheet = {
   ballisticSkill: 4,
   weaponSkill: 3,
   weapons: [...getWeaponProfiles('Hand flamer'), ...getWeaponProfiles('Metamorph mutations')],
+  defaultWeapons: ['Hand flamer', 'Metamorph mutations'],
+  weaponOptions: [],
 }
 
 export const hybridMetamorphIconBearer: DataSheet = {
@@ -211,6 +244,8 @@ export const hybridMetamorphIconBearer: DataSheet = {
   ballisticSkill: 4,
   weaponSkill: 3,
   weapons: [...getWeaponProfiles('Autopistol'), ...getWeaponProfiles('Metamorph mutations')],
+  defaultWeapons: ['Autopistol', 'Metamorph mutations'],
+  weaponOptions: [],
 }
 
 export const hybridMetamorphLeader: DataSheet = {
@@ -229,6 +264,12 @@ export const hybridMetamorphLeader: DataSheet = {
     ...getWeaponProfiles('Hand flamer'),
     ...getWeaponProfiles('Cult bonesword and metamorph mutations'),
     ...getWeaponProfiles('Metamorph mutations'),
+  ],
+  weaponOptions: [
+    [
+      ['Autopistol', 'Hand flamer'],
+      ['Cult bonesword and metamorph mutations', 'Metamorph mutations'],
+    ],
   ],
 }
 

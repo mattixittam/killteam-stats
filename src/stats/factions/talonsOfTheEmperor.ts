@@ -12,9 +12,14 @@ export const custodianGuardLeader: DataSheet = {
   wounds: 19,
   ballisticSkill: 2,
   weaponSkill: 2,
-  weapons: [...getWeaponProfiles('Guardian spear'), ...getWeaponProfiles('Sentinel blade')],
+  weapons: [
+    ...getWeaponProfiles('Guardian spear'),
+    ...getWeaponProfiles('Sentinel blade'),
+    ...getWeaponProfiles('Storm shield'),
+  ],
   defensiveMeleeWeapon: getWeaponProfiles('Guardian spear')[0],
   abilities: [abilities.THE_EMPERORS_CHOSEN],
+  weaponOptions: [[['Guardian spear']], [['Sentinel blade'], ['Storm shield']]],
 }
 
 export const custodianGuardWarrior: DataSheet = {
@@ -28,9 +33,14 @@ export const custodianGuardWarrior: DataSheet = {
   wounds: 18,
   ballisticSkill: 2,
   weaponSkill: 2,
-  weapons: [...getWeaponProfiles('Guardian spear'), ...getWeaponProfiles('Sentinel blade')],
+  weapons: [
+    ...getWeaponProfiles('Guardian spear'),
+    ...getWeaponProfiles('Sentinel blade'),
+    ...getWeaponProfiles('Storm shield'),
+  ],
   defensiveMeleeWeapon: getWeaponProfiles('Guardian spear')[0],
   abilities: [abilities.THE_EMPERORS_CHOSEN],
+  weaponOptions: [[['Guardian spear']], [['Sentinel blade'], ['Storm shield']]],
 }
 
 export const sisterOfSilenceProsecutor: DataSheet = {
@@ -46,6 +56,8 @@ export const sisterOfSilenceProsecutor: DataSheet = {
   weaponSkill: 3,
   weapons: [...getWeaponProfiles('Boltgun'), ...getWeaponProfiles('Gun butt', { attackDiceAdjustment: 1 })],
   abilities: [],
+  defaultWeapons: ['Boltgun', 'Gun butt'],
+  weaponOptions: [],
 }
 
 export const sisterOfSilenceWitchSeeker: DataSheet = {
@@ -61,6 +73,8 @@ export const sisterOfSilenceWitchSeeker: DataSheet = {
   weaponSkill: 3,
   weapons: [...getWeaponProfiles('Flamer'), ...getWeaponProfiles('Gun butt', { attackDiceAdjustment: 1 })],
   abilities: [],
+  defaultWeapons: ['Flamer', 'Gun butt'],
+  weaponOptions: [],
 }
 
 export const sisterOfSilenceVigilator: DataSheet = {
@@ -76,6 +90,8 @@ export const sisterOfSilenceVigilator: DataSheet = {
   weaponSkill: 3,
   weapons: [...getWeaponProfiles('Executioner greatblade')],
   abilities: [],
+  defaultWeapons: ['Executioner greatblade'],
+  weaponOptions: [],
 }
 
 export const sisterOfSilenceSuperior: DataSheet = {
@@ -96,6 +112,7 @@ export const sisterOfSilenceSuperior: DataSheet = {
     ...getWeaponProfiles('Gun butt', { attackDiceAdjustment: 1 }),
   ],
   abilities: [],
+  weaponOptions: [[['Boltgun'], ['Gun butt']], [['Flamer'], ['Gun butt']], [['Executioner greatblade']]],
 }
 
 export const talonsOfTheEmperorStats = {

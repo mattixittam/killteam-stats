@@ -1,6 +1,6 @@
-import { getWeaponProfiles } from '../../helpers'
+import { DataSheet, getWeaponProfiles } from '../../helpers'
 
-export const skitariiRangerTrooper = {
+export const skitariiRangerTrooper: DataSheet = {
   name: 'SKITARII RANGER (TROOPER)',
   movement: 6,
   apl: 2,
@@ -12,9 +12,11 @@ export const skitariiRangerTrooper = {
   ballisticSkill: 3,
   weaponSkill: 4,
   weapons: [...getWeaponProfiles('Galvanic rifle'), ...getWeaponProfiles('Gun butt')],
+  defaultWeapons: ['Galvanic rifle', 'Gun butt'],
+  weaponOptions: [],
 }
 
-export const skitariiRangerGunner = {
+export const skitariiRangerGunner: DataSheet = {
   name: 'SKITARII RANGER (GUNNER)',
   movement: 6,
   apl: 2,
@@ -31,9 +33,11 @@ export const skitariiRangerGunner = {
     ...getWeaponProfiles('Transuranic arquebus'),
     ...getWeaponProfiles('Gun butt'),
   ],
+  defaultWeapons: ['Gun butt'],
+  weaponOptions: [[['Arc rifle', 'Plasma caliver', 'Transuranic arquebus']]],
 }
 
-export const skitariiRangerAlpha = {
+export const skitariiRangerAlpha: DataSheet = {
   name: 'SKITARII RANGER ALPHA',
   movement: 6,
   apl: 2,
@@ -54,9 +58,16 @@ export const skitariiRangerAlpha = {
     ...getWeaponProfiles('Power weapon'),
     ...getWeaponProfiles('Taser goad'),
   ],
+  weaponOptions: [
+    [['Gun butt'], ['Galvanic rifle']],
+    [
+      ['Arc pistol', 'Phosphor blast pistol', 'Radium pistol'],
+      ['Arc maul', 'Power weapon', 'Taser goad'],
+    ],
+  ],
 }
 
-export const skitariiVanguardTrooper = {
+export const skitariiVanguardTrooper: DataSheet = {
   name: 'SKITARII VANGUARD (TROOPER)',
   movement: 6,
   apl: 2,
@@ -68,9 +79,11 @@ export const skitariiVanguardTrooper = {
   ballisticSkill: 3,
   weaponSkill: 4,
   weapons: [...getWeaponProfiles('Radium carbine'), ...getWeaponProfiles('Gun butt')],
+  defaultWeapons: ['Gun butt', 'Radium carbine'],
+  weaponOptions: [],
 }
 
-export const skitariiVanguardGunner = {
+export const skitariiVanguardGunner: DataSheet = {
   name: 'SKITARII VANGUARD (GUNNER)',
   movement: 6,
   apl: 2,
@@ -87,9 +100,11 @@ export const skitariiVanguardGunner = {
     ...getWeaponProfiles('Transuranic arquebus'),
     ...getWeaponProfiles('Gun butt'),
   ],
+  defaultWeapons: ['Gun butt'],
+  weaponOptions: [[['Arc rifle', 'Plasma caliver', 'Transuranic arquebus']]],
 }
 
-export const skitariiVanguardAlpha = {
+export const skitariiVanguardAlpha: DataSheet = {
   name: 'SKITARII VANGUARD ALPHA',
   movement: 6,
   apl: 2,
@@ -110,9 +125,16 @@ export const skitariiVanguardAlpha = {
     ...getWeaponProfiles('Power weapon'),
     ...getWeaponProfiles('Taser goad'),
   ],
+  weaponOptions: [
+    [['Gun butt'], ['Radium carbine']],
+    [
+      ['Arc pistol', 'Phosphor blast pistol', 'Radium pistol'],
+      ['Arc maul', 'Power weapon', 'Taser goad'],
+    ],
+  ],
 }
 
-export const sicarianRuststalkerTrooper = {
+export const sicarianRuststalkerTrooper: DataSheet = {
   name: 'SICARIAN RUSTSTALKER (TROOPER)',
   movement: 6,
   apl: 2,
@@ -124,9 +146,10 @@ export const sicarianRuststalkerTrooper = {
   ballisticSkill: 3,
   weaponSkill: 3,
   weapons: [...getWeaponProfiles('Chordclaw and transonic razor'), ...getWeaponProfiles('Transonic blades')],
+  weaponOptions: [[['Chordclaw and transonic razor', 'Transonic blades']]],
 }
 
-export const sicarianRuststalkerPrinceps = {
+export const sicarianRuststalkerPrinceps: DataSheet = {
   name: 'SICARIAN RUSTSTALKER PRINCEPS',
   movement: 6,
   apl: 2,
@@ -138,9 +161,10 @@ export const sicarianRuststalkerPrinceps = {
   ballisticSkill: 2,
   weaponSkill: 2,
   weapons: [...getWeaponProfiles('Chordclaw and transonic razor'), ...getWeaponProfiles('Transonic blades')],
+  weaponOptions: [[['Chordclaw and transonic razor', 'Transonic blades']]],
 }
 
-export const sicarianInfiltratorTrooper = {
+export const sicarianInfiltratorTrooper: DataSheet = {
   name: 'SICARIAN INFILTRATOR (TROOPER)',
   movement: 6,
   apl: 2,
@@ -157,9 +181,15 @@ export const sicarianInfiltratorTrooper = {
     ...getWeaponProfiles('Power weapon'),
     ...getWeaponProfiles('Taser goad'),
   ],
+  weaponOptions: [
+    [
+      ['Flechette blaster', 'Stubcarbine'],
+      ['Power weapon', 'Taser goad'],
+    ],
+  ],
 }
 
-export const sicarianInfiltratorPrinceps = {
+export const sicarianInfiltratorPrinceps: DataSheet = {
   name: 'SICARIAN INFILTRATOR PRINCEPS',
   movement: 6,
   apl: 2,
@@ -175,6 +205,12 @@ export const sicarianInfiltratorPrinceps = {
     ...getWeaponProfiles('Stubcarbine'),
     ...getWeaponProfiles('Power weapon'),
     ...getWeaponProfiles('Taser goad'),
+  ],
+  weaponOptions: [
+    [
+      ['Flechette blaster', 'Stubcarbine'],
+      ['Power weapon', 'Taser goad'],
+    ],
   ],
 }
 

@@ -16,7 +16,7 @@ import {
 } from '@material-ui/core'
 import { Weapon, WeaponName } from './stats/weapons'
 import { adeptusAstartesStats } from './stats/factions/adeptusAstartes'
-import { hereticAstartesStats } from './stats/factions/hereticAstartes'
+import { traitorSpaceMarineStats } from './stats/factions/traitorSpaceMarine'
 import { calculateDamage, DamageMelee, getAttackerAttackDice } from './calculation'
 import { specialRules } from './rules'
 import React, { Dispatch, FunctionComponent, SetStateAction, useState } from 'react'
@@ -41,7 +41,7 @@ type Factions = Faction[]
 
 const factions: Factions = [
   adeptusAstartesStats,
-  hereticAstartesStats,
+  traitorSpaceMarineStats,
   forgeWorldStats,
   broodCovenStats,
   talonsOfTheEmperorStats,
@@ -564,9 +564,9 @@ function App() {
     setIsDrawerOpen(false)
   }
 
-  const handleOpenDrawer = () => {
-    setIsDrawerOpen(true)
-  }
+  // const handleOpenDrawer = () => {
+  //   setIsDrawerOpen(true)
+  // }
 
   const handleChange = (event: any, newValue: any) => {
     setValue(newValue)
