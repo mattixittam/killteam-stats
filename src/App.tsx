@@ -13,6 +13,7 @@ import {
   Box,
   Drawer,
   Button,
+  ButtonBase,
 } from '@material-ui/core'
 import { Weapon, WeaponName } from './stats/weapons'
 import { adeptusAstartesStats } from './stats/factions/adeptusAstartes'
@@ -262,6 +263,7 @@ function generateWeaponRow(
   weapon: Weapon,
   attackProfile: DataSheet,
   setDatasheet: Dispatch<SetStateAction<DataSheet>>,
+  showStats: boolean,
   {
     isProfile,
     nextIsProfile,
@@ -366,27 +368,39 @@ function generateWeaponRow(
           </TableCell>
           <TableCell style={styles}>{weapon.specialRules.map((rule) => rule.label).join(', ')}</TableCell>
           <TableCell style={styles}>{weapon.criticalRules.map((rule) => rule.label).join(', ')}</TableCell>
-          <TableCell style={styles}>
-            <strong>{geqDamage.type === 'melee' ? formatMeleeDamage(geqDamage) : geqDamage.total}</strong>
-            {/* (hit: {geqDamage.hit}, crit: {geqDamage.crit}, mw: {geqDamage.mw}, data: {JSON.stringify(geqDamage.data)}) */}
-          </TableCell>
-          <TableCell style={styles}>
-            <strong>{meqDamage.type === 'melee' ? formatMeleeDamage(meqDamage) : meqDamage.total}</strong>
-            {/* (hit: {meqDamage.hit}, crit: {meqDamage.crit}, mw: {meqDamage.mw}) */}
-          </TableCell>
-          <TableCell style={styles}>
-            <strong>
-              {custodesDamage.type === 'melee' ? formatMeleeDamage(custodesDamage) : custodesDamage.total}
-            </strong>
-            {/* (hit: {custodesDamage.hit}, crit: {custodesDamage.crit}, mw: {custodesDamage.mw}) */}
-          </TableCell>
+          {showStats && (
+            <>
+              <TableCell style={styles}>
+                <strong>{geqDamage.type === 'melee' ? formatMeleeDamage(geqDamage) : geqDamage.total}</strong>
+                {/* (hit: {geqDamage.hit}, crit: {geqDamage.crit}, mw: {geqDamage.mw}, data: {JSON.stringify(geqDamage.data)}) */}
+              </TableCell>
+              <TableCell style={styles}>
+                <strong>{meqDamage.type === 'melee' ? formatMeleeDamage(meqDamage) : meqDamage.total}</strong>
+                {/* (hit: {meqDamage.hit}, crit: {meqDamage.crit}, mw: {meqDamage.mw}) */}
+              </TableCell>
+              <TableCell style={styles}>
+                <strong>
+                  {custodesDamage.type === 'melee' ? formatMeleeDamage(custodesDamage) : custodesDamage.total}
+                </strong>
+                {/* (hit: {custodesDamage.hit}, crit: {custodesDamage.crit}, mw: {custodesDamage.mw}) */}
+              </TableCell>
+            </>
+          )}
         </>
       )}
     </TableRow>
   )
 }
 
-function StatBlock(dataSheet: DataSheet) {
+function StatBlock({
+  dataSheet,
+  onToggleStats,
+  showStats,
+}: {
+  dataSheet: DataSheet
+  onToggleStats: () => void
+  showStats: boolean
+}) {
   const [dataSheetLocal, setDataSheetLocal] = useState<DataSheet>(dataSheet)
   let rowColor = 'rgba(1,1,1,0.1)'
 
@@ -402,14 +416,13 @@ function StatBlock(dataSheet: DataSheet) {
   const meleeWeapons = dataSheetLocal.weapons.filter((weapon) => weapon.type === 'MELEE')
 
   return (
-    <TableContainer component={Paper} style={{ margin: '20px' }} key={dataSheetLocal.name}>
+    <TableContainer component={Paper} key={dataSheetLocal.name}>
       <Table size="small">
         <TableHead>
           <TableRow style={{ backgroundColor: 'rgb(255, 102, 0)' }}>
             <TableCell rowSpan={4} style={{ width: '50%', backgroundColor: 'rgb(40,40,40)', color: 'white' }}>
-              <Typography variant="h5" fontWeight="700">
-                {dataSheetLocal.name}
-              </Typography>
+              <Typography variant="h5">{dataSheetLocal.name}</Typography>
+              <ButtonBase onClick={onToggleStats}>Toggle stats</ButtonBase>
             </TableCell>
             <TableCell style={{ textAlign: 'center', fontWeight: 700 }}>M</TableCell>
             <TableCell style={{ textAlign: 'center', fontWeight: 700 }}>APL</TableCell>
@@ -444,9 +457,13 @@ function StatBlock(dataSheet: DataSheet) {
               <TableCell>D</TableCell>
               <TableCell>SR</TableCell>
               <TableCell>!</TableCell>
-              <TableCell>Avg Dmg vs GEQ</TableCell>
-              <TableCell>Avg Dmg vs MEQ</TableCell>
-              <TableCell>Avg Dmg vs Custodes</TableCell>
+              {showStats && (
+                <>
+                  <TableCell>Avg Dmg vs GEQ</TableCell>
+                  <TableCell>Avg Dmg vs MEQ</TableCell>
+                  <TableCell>Avg Dmg vs Custodes</TableCell>
+                </>
+              )}
             </TableRow>
           )}
         </TableHead>
@@ -459,7 +476,7 @@ function StatBlock(dataSheet: DataSheet) {
               switchRowColor()
             }
 
-            return generateWeaponRow(weapon, dataSheetLocal, setDataSheetLocal, {
+            return generateWeaponRow(weapon, dataSheetLocal, setDataSheetLocal, showStats, {
               isProfile: sameNameAsPrevious,
               nextIsProfile: sameNameAsNext,
               backgroundColor: rowColor,
@@ -477,39 +494,43 @@ function StatBlock(dataSheet: DataSheet) {
               <TableCell>D</TableCell>
               <TableCell>SR</TableCell>
               <TableCell>!</TableCell>
-              <TableCell>
-                Avg Dmg vs GEQ w/ Gun butt
-                <br />
-                <div style={{ display: 'inline-flex', width: '100%' }}>
-                  <span style={{ flex: 'none', flexBasis: '100px' }}>strategy</span>
-                  <span style={{ flex: 'none', color: 'green', flexBasis: '80px', marginLeft: '10px' }}>
-                    dmg done
-                  </span>{' '}
-                  <span style={{ flex: 'none', color: 'red', flexBasis: '80px' }}>dmg taken</span>
-                </div>
-              </TableCell>
-              <TableCell>
-                Avg Dmg vs MEQ w/ Power Weapon
-                <br />
-                <div style={{ display: 'inline-flex', width: '100%' }}>
-                  <span style={{ flex: 'none', flexBasis: '100px' }}>strategy</span>
-                  <span style={{ flex: 'none', color: 'green', flexBasis: '80px', marginLeft: '10px' }}>
-                    dmg done
-                  </span>{' '}
-                  <span style={{ flex: 'none', color: 'red', flexBasis: '80px' }}>dmg taken</span>
-                </div>
-              </TableCell>
-              <TableCell>
-                Avg Dmg vs CEQ w/ Guardian Spear
-                <br />
-                <div style={{ display: 'inline-flex', width: '100%' }}>
-                  <span style={{ flex: 'none', flexBasis: '100px' }}>strategy</span>
-                  <span style={{ flex: 'none', color: 'green', flexBasis: '80px', marginLeft: '10px' }}>
-                    dmg done
-                  </span>{' '}
-                  <span style={{ flex: 'none', color: 'red', flexBasis: '80px' }}>dmg taken</span>
-                </div>
-              </TableCell>
+              {showStats && (
+                <>
+                  <TableCell>
+                    Avg Dmg vs GEQ w/ Gun butt
+                    <br />
+                    <div style={{ display: 'inline-flex', width: '100%' }}>
+                      <span style={{ flex: 'none', flexBasis: '100px' }}>strategy</span>
+                      <span style={{ flex: 'none', color: 'green', flexBasis: '80px', marginLeft: '10px' }}>
+                        dmg done
+                      </span>{' '}
+                      <span style={{ flex: 'none', color: 'red', flexBasis: '80px' }}>dmg taken</span>
+                    </div>
+                  </TableCell>
+                  <TableCell>
+                    Avg Dmg vs MEQ w/ Power Weapon
+                    <br />
+                    <div style={{ display: 'inline-flex', width: '100%' }}>
+                      <span style={{ flex: 'none', flexBasis: '100px' }}>strategy</span>
+                      <span style={{ flex: 'none', color: 'green', flexBasis: '80px', marginLeft: '10px' }}>
+                        dmg done
+                      </span>{' '}
+                      <span style={{ flex: 'none', color: 'red', flexBasis: '80px' }}>dmg taken</span>
+                    </div>
+                  </TableCell>
+                  <TableCell>
+                    Avg Dmg vs CEQ w/ Guardian Spear
+                    <br />
+                    <div style={{ display: 'inline-flex', width: '100%' }}>
+                      <span style={{ flex: 'none', flexBasis: '100px' }}>strategy</span>
+                      <span style={{ flex: 'none', color: 'green', flexBasis: '80px', marginLeft: '10px' }}>
+                        dmg done
+                      </span>{' '}
+                      <span style={{ flex: 'none', color: 'red', flexBasis: '80px' }}>dmg taken</span>
+                    </div>
+                  </TableCell>
+                </>
+              )}
             </TableRow>
           </TableHead>
         )}
@@ -522,7 +543,7 @@ function StatBlock(dataSheet: DataSheet) {
               switchRowColor()
             }
 
-            return generateWeaponRow(weapon, dataSheetLocal, setDataSheetLocal, {
+            return generateWeaponRow(weapon, dataSheetLocal, setDataSheetLocal, showStats, {
               isProfile: sameNameAsPrevious,
               nextIsProfile: sameNameAsNext,
               backgroundColor: rowColor,
@@ -559,6 +580,7 @@ function App() {
   const [value, setValue] = useState(0)
   const [lvl2Value, setLvl2Value] = useState(0)
   const [isDrawerOpen, setIsDrawerOpen] = useState(false)
+  const [showStats, setShowStats] = useState(true)
 
   const handleCloseDrawer = () => {
     setIsDrawerOpen(false)
@@ -575,6 +597,10 @@ function App() {
 
   const handleChangeLvl2 = (event: any, newValue: any) => {
     setLvl2Value(newValue)
+  }
+
+  const toggleStats = () => {
+    setShowStats(!showStats)
   }
 
   return (
@@ -608,7 +634,9 @@ function App() {
             </Box>
             {factions[index].fireTeams.map((fireTeam, fireTeamIndex) => (
               <TabPanel index={fireTeamIndex} value={lvl2Value}>
-                {fireTeam.dataSheets.map((dataSheet) => StatBlock(dataSheet))}
+                {fireTeam.dataSheets.map((dataSheet) => (
+                  <StatBlock dataSheet={dataSheet} onToggleStats={toggleStats} showStats={showStats} />
+                ))}
               </TabPanel>
             ))}
           </TabPanel>
