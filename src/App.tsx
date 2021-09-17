@@ -313,82 +313,88 @@ function generateWeaponRow(
   const isSelectable = isWeaponAddable(weapon.name, attackProfile)
   const isDefaultWeapon = attackProfile.defaultWeapons?.includes(weapon.name)
 
+  const stormShieldDummies = showStats ? [1, 2, 3, 4, 5, 6, 7, 8] : [1, 2, 3, 4, 5]
+
   return (
-    <TableRow
-      key={weapon.name + weapon.profile}
-      className={classNames({
-        'weapon-selected': isSelected,
-        'weapon-disabled': !isSelectable,
-        'default-weapon': isDefaultWeapon,
-        'is-profile': isProfile,
-        'next-is-profile': nextIsProfile,
-      })}
-    >
-      <TableCell style={buttonCellStyles}>
-        {isSelectable && !isSelected && !isProfile && (
-          <>
-            <Button
-              size="small"
-              color="primary"
-              variant="contained"
-              onClick={() => handleSelectWeapon(attackProfile, weapon.name, setDatasheet)}
-            >
-              +
-            </Button>
-          </>
-        )}
-        {isSelected && !isProfile && (
-          <Button
-            size="small"
-            color="secondary"
-            variant="contained"
-            onClick={() => handleDeselectWeapon(attackProfile, weapon.name, setDatasheet)}
-          >
-            -
-          </Button>
-        )}
-        {isDefaultWeapon && (
-          <span>
-            Always
-            <br />
-            Equipped
-          </span>
-        )}
-      </TableCell>
-      <TableCell style={styles}>{isProfile ? '' : weapon.name}</TableCell>
-      <TableCell style={styles}>{weapon.profile}</TableCell>
-      {weapon.name === 'Storm shield' ? (
-        [1, 2, 3, 4, 5, 6, 7, 8].map((item) => <TableCell style={styles} key={item}></TableCell>)
-      ) : (
-        <>
-          <TableCell style={styles}>{getAttackerAttackDice(weapon)}</TableCell>
-          <TableCell style={styles}>{adjustedWsOrBs}+</TableCell>
-          <TableCell style={styles}>
-            {weapon.damage}/{weapon.damageCritical}
+    <>
+      {(isSelectable || isSelected || isDefaultWeapon) && (
+        <TableRow
+          key={weapon.name + weapon.profile}
+          className={classNames({
+            'weapon-selected': isSelected,
+            'weapon-disabled': !isSelectable,
+            'default-weapon': isDefaultWeapon,
+            'is-profile': isProfile,
+            'next-is-profile': nextIsProfile,
+          })}
+        >
+          <TableCell style={buttonCellStyles}>
+            {isSelectable && !isSelected && !isProfile && (
+              <>
+                <Button
+                  size="small"
+                  color="primary"
+                  variant="contained"
+                  onClick={() => handleSelectWeapon(attackProfile, weapon.name, setDatasheet)}
+                >
+                  +
+                </Button>
+              </>
+            )}
+            {isSelected && !isProfile && (
+              <Button
+                size="small"
+                color="secondary"
+                variant="contained"
+                onClick={() => handleDeselectWeapon(attackProfile, weapon.name, setDatasheet)}
+              >
+                -
+              </Button>
+            )}
+            {isDefaultWeapon && (
+              <span>
+                Always
+                <br />
+                Equipped
+              </span>
+            )}
           </TableCell>
-          <TableCell style={styles}>{weapon.specialRules.map((rule) => rule.label).join(', ')}</TableCell>
-          <TableCell style={styles}>{weapon.criticalRules.map((rule) => rule.label).join(', ')}</TableCell>
-          {showStats && (
+          <TableCell style={styles}>{isProfile ? '' : weapon.name}</TableCell>
+          <TableCell style={styles}>{weapon.profile}</TableCell>
+          {weapon.name === 'Storm shield' ? (
+            [...stormShieldDummies].map((item) => <TableCell style={styles} key={item}></TableCell>)
+          ) : (
             <>
+              <TableCell style={styles}>{getAttackerAttackDice(weapon)}</TableCell>
+              <TableCell style={styles}>{adjustedWsOrBs}+</TableCell>
               <TableCell style={styles}>
-                <strong>{geqDamage.type === 'melee' ? formatMeleeDamage(geqDamage) : geqDamage.total}</strong>
-                {/* (hit: {geqDamage.hit}, crit: {geqDamage.crit}, mw: {geqDamage.mw}, data: {JSON.stringify(geqDamage.data)}) */}
+                {weapon.damage}/{weapon.damageCritical}
               </TableCell>
-              <TableCell style={styles}>
-                <strong>{meqDamage.type === 'melee' ? formatMeleeDamage(meqDamage) : meqDamage.total}</strong>
-                {/* (hit: {meqDamage.hit}, crit: {meqDamage.crit}, mw: {meqDamage.mw}) */}
-              </TableCell>
-              <TableCell style={styles}>
-                <strong>
-                  {custodesDamage.type === 'melee' ? formatMeleeDamage(custodesDamage) : custodesDamage.total}
-                </strong>
-                {/* (hit: {custodesDamage.hit}, crit: {custodesDamage.crit}, mw: {custodesDamage.mw}) */}
-              </TableCell>
+              <TableCell style={styles}>{weapon.specialRules.map((rule) => rule.label).join(', ')}</TableCell>
+              <TableCell style={styles}>{weapon.criticalRules.map((rule) => rule.label).join(', ')}</TableCell>
+              {showStats && (
+                <>
+                  <TableCell style={styles}>
+                    <strong>{geqDamage.type === 'melee' ? formatMeleeDamage(geqDamage) : geqDamage.total}</strong>
+                    {/* (hit: {geqDamage.hit}, crit: {geqDamage.crit}, mw: {geqDamage.mw}, data: {JSON.stringify(geqDamage.data)}) */}
+                  </TableCell>
+                  <TableCell style={styles}>
+                    <strong>{meqDamage.type === 'melee' ? formatMeleeDamage(meqDamage) : meqDamage.total}</strong>
+                    {/* (hit: {meqDamage.hit}, crit: {meqDamage.crit}, mw: {meqDamage.mw}) */}
+                  </TableCell>
+                  <TableCell style={styles}>
+                    <strong>
+                      {custodesDamage.type === 'melee' ? formatMeleeDamage(custodesDamage) : custodesDamage.total}
+                    </strong>
+                    {/* (hit: {custodesDamage.hit}, crit: {custodesDamage.crit}, mw: {custodesDamage.mw}) */}
+                  </TableCell>
+                </>
+              )}
             </>
           )}
-        </>
+        </TableRow>
       )}
-    </TableRow>
+    </>
   )
 }
 

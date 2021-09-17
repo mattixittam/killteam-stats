@@ -63,7 +63,7 @@ export const pistols: Weapon[] = [
     attackDice: 4,
     damage: 5,
     damageCritical: 6,
-    specialRules: [specialRules.RNG6, specialRules.AP2],
+    specialRules: [specialRules.RNG6, specialRules.AP2, specialRules.HOT],
     criticalRules: [],
     equipment: [],
     type: 'RANGED',

@@ -96,11 +96,13 @@ export const deathwatchVeteranGunner: DataSheet = {
     ...getWeaponProfiles('Plasma gun'),
     ...getWeaponProfiles('Fists'),
   ],
+  defaultWeapons: ['Fists'],
   weaponOptions: [
-    [
-      ['Fists'],
-      ['Combi-flamer', 'Combi-melta', 'Combi-grav', 'Combi-plasma', 'Flamer', 'Meltagun', 'Grav-gun', 'Plasma gun'],
-    ],
+    [['Deathwatch boltgun'], ['Combi-flamer']],
+    [['Deathwatch boltgun'], ['Combi-melta']],
+    [['Deathwatch boltgun'], ['Combi-plasma']],
+    [['Deathwatch boltgun'], ['Combi-grav']],
+    [['Flamer', 'Meltagun', 'Grav-gun', 'Plasma gun']],
   ],
 }
 export const deathwatchVeteranHeavyGunner: DataSheet = {
@@ -199,7 +201,7 @@ export const deathwatchVeteranWatchSergeant: DataSheet = {
     ],
     [
       ['Bolt pistol', 'Grav-pistol', 'Hand flamer', 'Inferno pistol', 'Plasma pistol', 'Storm shield'],
-      ['Chainsword', 'Lightning claw', 'Power fist', 'Power maul', 'Power weapon', 'Thunder hammer'],
+      ['Chainsword', 'Lightning claw', 'Power fist', 'Power maul', 'Power weapon', 'Thunder hammer', 'Xenophase blade'],
     ],
   ],
 }
