@@ -63,8 +63,15 @@ export function generateEquipmentVariantProfile(weapon: Weapon, newEquipment: Eq
     }
   }
 
+  const newWeapon = { ...weapon }
+
+  // ENRICHED ROUNDS
+  if (newEquipment === equipment.ENRICHED_ROUNDS) {
+    newWeapon.damage += 1
+  }
+
   return {
-    ...weapon,
+    ...newWeapon,
     profile: `+ ${newEquipment.label}`,
     equipment: [...weapon.equipment, newEquipment],
     specialRules: [...weapon.specialRules, ...additionalSpecialRules],

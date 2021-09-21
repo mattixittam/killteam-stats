@@ -388,7 +388,7 @@ export const nonHeavyRangedWeapons: Weapon[] = [
     profile: '',
     attackDice: 4,
     damage: 2,
-    damageCritical: 3,
+    damageCritical: 4,
     specialRules: [],
     criticalRules: [criticalRules.RENDING],
     equipment: [],

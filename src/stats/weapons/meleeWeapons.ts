@@ -194,6 +194,17 @@ export const meleeWeapons: Weapon[] = [
     type: 'MELEE',
   },
   {
+    name: 'Chordclaw and transonic blades',
+    profile: '',
+    attackDice: 5,
+    damage: 4,
+    damageCritical: 6,
+    specialRules: [specialRules.BALANCED],
+    criticalRules: [criticalRules.RENDING],
+    equipment: [],
+    type: 'MELEE',
+  },
+  {
     name: 'Transonic blades',
     profile: '',
     attackDice: 5,

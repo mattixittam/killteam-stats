@@ -2,6 +2,8 @@ import { Rule, specialRules } from '../rules'
 
 export interface Equipment {
   label: string
+  damageAdjustment?: number
+  criticalDamageAdjustment?: number
   additionalSpecialRules?: Rule[]
   additionalCriticalRules?: Rule[]
 }
@@ -26,5 +28,9 @@ export const equipment: EquipmentCollection = {
   },
   MALEFIC_ROUNDS: {
     label: 'Malefic rounds',
+  },
+  ENRICHED_ROUNDS: {
+    label: 'Enriched rounds',
+    damageAdjustment: 1,
   },
 }

@@ -8,25 +8,31 @@ import {
   TableBody,
   TableHead,
   Typography,
-  Tabs,
-  Tab,
   Box,
   Drawer,
   Button,
   ButtonBase,
+  Select,
+  MenuItem,
+  FormControl,
+  InputLabel,
+  makeStyles,
+  Theme,
 } from '@material-ui/core'
+import { createStyles } from '@material-ui/styles'
 import { Weapon, WeaponName } from './stats/weapons'
 import { adeptusAstartesStats } from './stats/factions/adeptusAstartes'
 import { traitorSpaceMarineStats } from './stats/factions/traitorSpaceMarine'
 import { calculateDamage, DamageMelee, getAttackerAttackDice } from './calculation'
 import { specialRules } from './rules'
-import React, { Dispatch, FunctionComponent, SetStateAction, useState } from 'react'
+import React, { ChangeEvent, Dispatch, FunctionComponent, SetStateAction, useState } from 'react'
 import { forgeWorldStats } from './stats/factions/forgeWorld'
 import { broodCovenStats } from './stats/factions/broodCoven'
 import { DataSheet, WeaponOption, WeaponOptions } from './helpers'
 import { custodianGuardWarrior, talonsOfTheEmperorStats } from './stats/factions/talonsOfTheEmperor'
 import classNames from 'classnames'
 import { CSSProperties } from 'react'
+import { hunterCladeStats } from './stats/factions/hunterClade'
 
 interface FireTeam {
   name: string
@@ -44,6 +50,7 @@ const factions: Factions = [
   adeptusAstartesStats,
   traitorSpaceMarineStats,
   forgeWorldStats,
+  hunterCladeStats,
   broodCovenStats,
   talonsOfTheEmperorStats,
 ]
@@ -351,7 +358,7 @@ function generateWeaponRow(
                 -
               </Button>
             )}
-            {isDefaultWeapon && (
+            {isDefaultWeapon && !isProfile && (
               <span>
                 Always
                 <br />
@@ -577,16 +584,30 @@ const TabPanel: FunctionComponent<TabPanelProps> = (props) => {
       aria-labelledby={`simple-tab-${index}`}
       {...other}
     >
-      {value === index && <Box p={3}>{children}</Box>}
+      {value === index && <Box p={1}>{children}</Box>}
     </div>
   )
 }
 
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    formControl: {
+      margin: theme.spacing(1),
+      minWidth: 120,
+    },
+    selectEmpty: {
+      marginTop: theme.spacing(2),
+    },
+  })
+)
+
 function App() {
-  const [value, setValue] = useState(0)
-  const [lvl2Value, setLvl2Value] = useState(0)
   const [isDrawerOpen, setIsDrawerOpen] = useState(false)
   const [showStats, setShowStats] = useState(true)
+  const [factionIndex, setFactionIndex] = useState(0)
+  const [fireteamIndex, setFireteamIndex] = useState(0)
+
+  const classes = useStyles()
 
   const handleCloseDrawer = () => {
     setIsDrawerOpen(false)
@@ -596,17 +617,17 @@ function App() {
   //   setIsDrawerOpen(true)
   // }
 
-  const handleChange = (event: any, newValue: any) => {
-    setValue(newValue)
-    setLvl2Value(0)
-  }
-
-  const handleChangeLvl2 = (event: any, newValue: any) => {
-    setLvl2Value(newValue)
-  }
-
   const toggleStats = () => {
     setShowStats(!showStats)
+  }
+
+  const handleChangeFaction = (event: ChangeEvent<{ value: unknown }>) => {
+    setFactionIndex(event.target.value as number)
+    setFireteamIndex(0)
+  }
+
+  const handleChangeFireteam = (event: ChangeEvent<{ value: unknown }>) => {
+    setFireteamIndex(event.target.value as number)
   }
 
   return (
@@ -620,26 +641,29 @@ function App() {
       >
         <Typography variant="h6">Roster</Typography>
       </Drawer>
-      <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-        <Tabs value={value} onChange={handleChange}>
-          {factions.map((faction) => (
-            <Tab label={faction.name} />
-          ))}
-          {/* <Tab label="Roster" onClick={handleOpenDrawer} /> */}
-        </Tabs>
+      <Box ml={2} mt={2}>
+        <FormControl className={classes.formControl}>
+          <InputLabel>Faction</InputLabel>
+          <Select label="Faction" value={factionIndex} onChange={handleChangeFaction}>
+            {factions.map((faction, index) => (
+              <MenuItem value={index}>{faction.name}</MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+        <FormControl className={classes.formControl}>
+          <InputLabel>Fireteam</InputLabel>
+          <Select label="Fireteam" value={fireteamIndex} onChange={handleChangeFireteam}>
+            {factions[factionIndex].fireTeams.map((fireTeam, index) => (
+              <MenuItem value={index}>{fireTeam.name}</MenuItem>
+            ))}
+          </Select>
+        </FormControl>
       </Box>
       {factions.map((faction, index) => (
         <>
-          <TabPanel index={index} value={value}>
-            <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-              <Tabs value={lvl2Value} onChange={handleChangeLvl2}>
-                {faction.fireTeams.map((fireTeam) => (
-                  <Tab label={fireTeam.name} />
-                ))}
-              </Tabs>
-            </Box>
-            {factions[index].fireTeams.map((fireTeam, fireTeamIndex) => (
-              <TabPanel index={fireTeamIndex} value={lvl2Value}>
+          <TabPanel index={index} value={factionIndex}>
+            {factions[index].fireTeams.map((fireTeam, index) => (
+              <TabPanel index={index} value={fireteamIndex}>
                 {fireTeam.dataSheets.map((dataSheet) => (
                   <StatBlock dataSheet={dataSheet} onToggleStats={toggleStats} showStats={showStats} />
                 ))}

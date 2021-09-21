@@ -22,6 +22,7 @@ export type WeaponName =
   | 'Power weapon'
   | 'Thunder hammer'
   | 'Chordclaw and transonic razor'
+  | 'Chordclaw and transonic blades'
   | 'Transonic blades'
   | 'Cult knife and claw'
   | 'Cult bonesword and claw'
@@ -79,6 +80,7 @@ export type WeaponName =
   | 'Arc pistol'
   | 'Phosphor blast pistol'
   | 'Radium pistol'
+  | 'Master-crafted radium pistol'
   | 'Autopistol'
   | 'Web pistol'
 
