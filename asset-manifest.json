@@ -1,29 +1,29 @@
 {
   "files": {
     "main.css": "/killteam-stats/static/css/main.d388bf61.chunk.css",
-    "main.js": "/killteam-stats/static/js/main.d7df8a9c.chunk.js",
-    "main.js.map": "/killteam-stats/static/js/main.d7df8a9c.chunk.js.map",
-    "runtime-main.js": "/killteam-stats/static/js/runtime-main.1ef69c6a.js",
-    "runtime-main.js.map": "/killteam-stats/static/js/runtime-main.1ef69c6a.js.map",
+    "main.js": "/killteam-stats/static/js/main.cff4f95f.chunk.js",
+    "main.js.map": "/killteam-stats/static/js/main.cff4f95f.chunk.js.map",
+    "runtime-main.js": "/killteam-stats/static/js/runtime-main.cd00c19b.js",
+    "runtime-main.js.map": "/killteam-stats/static/js/runtime-main.cd00c19b.js.map",
     "static/css/2.3995dbc2.chunk.css": "/killteam-stats/static/css/2.3995dbc2.chunk.css",
-    "static/js/2.869cc273.chunk.js": "/killteam-stats/static/js/2.869cc273.chunk.js",
-    "static/js/2.869cc273.chunk.js.map": "/killteam-stats/static/js/2.869cc273.chunk.js.map",
-    "static/js/3.9b1d6445.chunk.js": "/killteam-stats/static/js/3.9b1d6445.chunk.js",
-    "static/js/3.9b1d6445.chunk.js.map": "/killteam-stats/static/js/3.9b1d6445.chunk.js.map",
+    "static/js/2.2a0e33fc.chunk.js": "/killteam-stats/static/js/2.2a0e33fc.chunk.js",
+    "static/js/2.2a0e33fc.chunk.js.map": "/killteam-stats/static/js/2.2a0e33fc.chunk.js.map",
+    "static/js/3.99b8aa82.chunk.js": "/killteam-stats/static/js/3.99b8aa82.chunk.js",
+    "static/js/3.99b8aa82.chunk.js.map": "/killteam-stats/static/js/3.99b8aa82.chunk.js.map",
     "index.html": "/killteam-stats/index.html",
     "static/css/2.3995dbc2.chunk.css.map": "/killteam-stats/static/css/2.3995dbc2.chunk.css.map",
     "static/css/main.d388bf61.chunk.css.map": "/killteam-stats/static/css/main.d388bf61.chunk.css.map",
-    "static/js/2.869cc273.chunk.js.LICENSE.txt": "/killteam-stats/static/js/2.869cc273.chunk.js.LICENSE.txt",
+    "static/js/2.2a0e33fc.chunk.js.LICENSE.txt": "/killteam-stats/static/js/2.2a0e33fc.chunk.js.LICENSE.txt",
     "static/media/300.css": "/killteam-stats/static/media/roboto-vietnamese-300-normal.af9afdc1.woff2",
     "static/media/400.css": "/killteam-stats/static/media/roboto-vietnamese-400-normal.c0bec65d.woff2",
     "static/media/500.css": "/killteam-stats/static/media/roboto-vietnamese-500-normal.b8e494da.woff2",
     "static/media/700.css": "/killteam-stats/static/media/roboto-vietnamese-700-normal.3096f18a.woff2"
   },
   "entrypoints": [
-    "static/js/runtime-main.1ef69c6a.js",
+    "static/js/runtime-main.cd00c19b.js",
     "static/css/2.3995dbc2.chunk.css",
-    "static/js/2.869cc273.chunk.js",
+    "static/js/2.2a0e33fc.chunk.js",
     "static/css/main.d388bf61.chunk.css",
-    "static/js/main.d7df8a9c.chunk.js"
+    "static/js/main.cff4f95f.chunk.js"
   ]
 }
