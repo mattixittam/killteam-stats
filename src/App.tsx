@@ -669,7 +669,9 @@ function App() {
             {factions[index].fireTeams.map((fireTeam, index) => (
               <TabPanel index={index} value={fireteamIndex}>
                 {fireTeam.dataSheets.map((dataSheet) => (
-                  <StatBlock dataSheet={dataSheet} onToggleStats={toggleStats} showStats={showStats} />
+                  <Box mb={4}>
+                    <StatBlock dataSheet={dataSheet} onToggleStats={toggleStats} showStats={showStats} />
+                  </Box>
                 ))}
               </TabPanel>
             ))}
