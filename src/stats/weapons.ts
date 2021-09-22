@@ -83,6 +83,8 @@ export type WeaponName =
   | 'Master-crafted radium pistol'
   | 'Autopistol'
   | 'Web pistol'
+  | 'Neural whips'
+  | 'Marksman rail rifle'
 
 export interface Weapon {
   name: WeaponName

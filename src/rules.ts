@@ -73,6 +73,9 @@ export const specialRules = {
   BALANCED: {
     label: 'Balanced',
   },
+  SILENT: {
+    label: 'Silent',
+  },
 }
 
 export const criticalRules = {

@@ -371,4 +371,15 @@ export const meleeWeapons: Weapon[] = [
     equipment: [],
     type: 'MELEE',
   },
+  {
+    name: 'Neural whips',
+    profile: '',
+    attackDice: 5,
+    damage: 2,
+    damageCritical: 3,
+    specialRules: [specialRules.LETHAL5],
+    criticalRules: [criticalRules.STUN],
+    equipment: [],
+    type: 'MELEE',
+  },
 ]

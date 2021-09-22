@@ -33,6 +33,8 @@ import { custodianGuardWarrior, talonsOfTheEmperorStats } from './stats/factions
 import classNames from 'classnames'
 import { CSSProperties } from 'react'
 import { hunterCladeStats } from './stats/factions/hunterClade'
+import { sistersOfBattleStats } from './stats/factions/sistersOfBattle'
+import { tauPathfindersStats } from './stats/factions/tauPathfinders'
 
 interface FireTeam {
   name: string
@@ -48,11 +50,13 @@ type Factions = Faction[]
 
 const factions: Factions = [
   adeptusAstartesStats,
-  traitorSpaceMarineStats,
+  broodCovenStats,
   forgeWorldStats,
   hunterCladeStats,
-  broodCovenStats,
+  sistersOfBattleStats,
   talonsOfTheEmperorStats,
+  tauPathfindersStats,
+  traitorSpaceMarineStats,
 ]
 
 export const custodesProfile = custodianGuardWarrior
