@@ -58,3 +58,7 @@
 .weapon-selected td:last-child {
   border-right: 2px solid rgb(255, 102, 0);
 }
+
+.MuiTable-root {
+  width: calc(100% - 1px) !important;
+}
